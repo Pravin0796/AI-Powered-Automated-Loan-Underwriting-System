@@ -1,0 +1,19 @@
+// Underwriting Service
+syntax = "proto3";
+
+package underwriting;
+option go_package = "service/underwriting";
+
+service UnderwritingService {
+  rpc EvaluateLoan (UnderwritingRequest) returns (UnderwritingResponse);
+}
+
+message UnderwritingRequest {
+  uint64 loan_id = 1;
+}
+
+message UnderwritingResponse {
+  uint64 loan_id = 1;
+  string decision = 2;
+  string reasoning = 3;
+}

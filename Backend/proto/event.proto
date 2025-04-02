@@ -1,0 +1,18 @@
+// Event Service for Kafka
+syntax = "proto3";
+
+package event;
+option go_package = "service/event";
+
+service EventService {
+  rpc PublishEvent (EventRequest) returns (EventResponse);
+}
+
+message EventRequest {
+  string event_type = 1;
+  string payload = 2;
+}
+
+message EventResponse {
+  bool success = 1;
+}

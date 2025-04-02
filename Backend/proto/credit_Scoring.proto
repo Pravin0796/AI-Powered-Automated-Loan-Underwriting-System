@@ -1,0 +1,18 @@
+// Credit Scoring Service
+syntax = "proto3";
+
+package credit_scoring;
+option go_package = "service/credit_scoring";
+
+service CreditScoringService {
+  rpc GetCreditScore (CreditScoreRequest) returns (CreditScoreResponse);
+}
+
+message CreditScoreRequest {
+  uint64 user_id = 1;
+}
+
+message CreditScoreResponse {
+  uint64 user_id = 1;
+  int32 credit_score = 2;
+}

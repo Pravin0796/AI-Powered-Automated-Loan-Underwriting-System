@@ -1,0 +1,30 @@
+// Loan Service
+syntax = "proto3";
+
+package loan;
+option go_package = "service/loan";
+
+service LoanService {
+  rpc ApplyForLoan (LoanRequest) returns (LoanResponse);
+  rpc GetLoanStatus (LoanStatusRequest) returns (LoanStatusResponse);
+}
+
+message LoanRequest {
+  uint64 user_id = 1;
+  double amount_requested = 2;
+  int32 loan_term = 3;
+}
+
+message LoanResponse {
+  uint64 loan_id = 1;
+  string status = 2;
+}
+
+message LoanStatusRequest {
+  uint64 loan_id = 1;
+}
+
+message LoanStatusResponse {
+  uint64 loan_id = 1;
+  string status = 2;
+}
