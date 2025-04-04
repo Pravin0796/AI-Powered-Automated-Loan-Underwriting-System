@@ -1,6 +1,9 @@
 // import { grpc } from "@improbable-eng/grpc-web";
 import { UserServiceClient } from "../proto/UserServiceClientPb";
-import { RegisterRequest, LoginRequest } from "../proto/user_pb";
+import * as proto from '../proto/user_pb';
+
+const RegisterRequest = proto.RegisterRequest
+const LoginRequest = proto.LoginRequest;
 
 const client = new UserServiceClient("http://localhost:50051");
 
