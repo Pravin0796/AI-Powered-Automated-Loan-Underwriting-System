@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { registerUser, loginUser } from "../services/user.ts";
+import { registerUser, loginUser } from "../services/user";
 
 const Auth = () => {
-    const [form, setForm] = useState({ email: "", password: "", full_name: "",date_of_birth:"", phone: "", address: "" });
+    const [form, setForm] = useState({ email: "", password: "", full_name: "", date_of_birth: "", phone: "", address: "" });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -11,18 +11,18 @@ const Auth = () => {
     const handleRegister = async () => {
         try {
             const res = await registerUser(form);
-            console.log(res);
+            console.log("Registration successful:", res);
         } catch (err) {
-            console.error(err);
+            console.error("Registration error:", err);
         }
     };
 
     const handleLogin = async () => {
         try {
             const res = await loginUser({ email: form.email, password: form.password });
-            console.log(res);
+            console.log("Login successful:", res);
         } catch (err) {
-            console.error(err);
+            console.error("Login error:", err);
         }
     };
 
@@ -32,6 +32,9 @@ const Auth = () => {
             <input name="full_name" placeholder="Full Name" onChange={handleChange} />
             <input name="email" placeholder="Email" onChange={handleChange} />
             <input name="password" placeholder="Password" type="password" onChange={handleChange} />
+            <input name="phone" placeholder="Phone" onChange={handleChange} />
+            <input name="date_of_birth" placeholder="Date of Birth" onChange={handleChange} />
+            <input name="address" placeholder="Address" onChange={handleChange} />
             <button onClick={handleRegister}>Register</button>
 
             <h2>Login</h2>

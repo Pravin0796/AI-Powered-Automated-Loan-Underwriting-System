@@ -11,16 +11,9 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import * as jspb from 'google-protobuf';
-var goog = jspb;
-var global =
-    (typeof globalThis !== 'undefined' && globalThis) ||
-    (typeof window !== 'undefined' && window) ||
-    (typeof global !== 'undefined' && global) ||
-    (typeof self !== 'undefined' && self) ||
-    (function () { return this; }).call(null) ||
-    Function('return this')();
 
+import * as jspb from 'google-protobuf'
+var goog = jspb
 goog.exportSymbol('proto.user.LoginRequest', null, global);
 goog.exportSymbol('proto.user.LoginResponse', null, global);
 goog.exportSymbol('proto.user.RegisterRequest', null, global);

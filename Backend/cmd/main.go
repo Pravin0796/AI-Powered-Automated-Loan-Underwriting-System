@@ -7,7 +7,6 @@ import (
 	"AI-Powered-Automated-Loan-Underwriting-System/migration"
 	"AI-Powered-Automated-Loan-Underwriting-System/routes"
 	"fmt"
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
@@ -31,8 +30,6 @@ func main() {
 	//	fmt.Println("Access Token:", token)
 	//}
 
-	routes.StartGRPCServer()
-
 	fmt.Println("Fetching Credit Report...")
 	experian.FetchCreditReport()
 
@@ -41,8 +38,5 @@ func main() {
 
 	// Run migrations
 	migration.MigrateDatabase(config.DB)
-
-	r := gin.Default()
-
-	r.Run(":8080")
+	routes.StartGRPCServer()
 }

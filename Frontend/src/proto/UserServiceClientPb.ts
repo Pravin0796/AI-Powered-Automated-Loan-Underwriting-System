@@ -17,7 +17,7 @@
 
 import * as grpcWeb from 'grpc-web';
 
-import * as user_pb from './user_pb.d.ts';
+import * as user_pb from './user_pb';
 
 
 export class UserServiceClient {

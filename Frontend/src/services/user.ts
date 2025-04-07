@@ -1,8 +1,8 @@
 // import { grpc } from "@improbable-eng/grpc-web";
 import { UserServiceClient } from "../proto/UserServiceClientPb";
-import * as proto from '../proto/user_pb';
+import * as proto from '../proto/user_pb.d';
 
-const RegisterRequest = proto.RegisterRequest
+const RegisterRequest = proto.RegisterRequest;
 const LoginRequest = proto.LoginRequest;
 
 const client = new UserServiceClient("http://localhost:50051");
@@ -17,12 +17,8 @@ export const registerUser = async (data: { full_name: string; email: string; pas
         request.setDateOfBirth(data.date_of_birth);
         request.setAddress(data.address);
 
-        // ✅ Fix: Use an object instead of `grpc.Metadata`
-        const metadata: Record<string, string> = {
-            authorization: "Bearer YOUR_TOKEN_HERE"
-        };
-
-        client.register(request, metadata, (err, response) => {
+        // ❌ REMOVE token here (no auth needed)
+        client.register(request, {}, (err, response) => {
             if (err) reject(err);
             else resolve(response);
         });
@@ -35,12 +31,8 @@ export const loginUser = async (data: { email: string; password: string }) => {
         request.setEmail(data.email);
         request.setPassword(data.password);
 
-        // ✅ Fix: Use an object for metadata
-        const metadata: Record<string, string> = {
-            authorization: "Bearer YOUR_TOKEN_HERE"
-        };
-
-        client.login(request, metadata, (err, response) => {
+        // ❌ REMOVE token here (no auth needed)
+        client.login(request, {}, (err, response) => {
             if (err) reject(err);
             else resolve(response);
         });
