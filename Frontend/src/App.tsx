@@ -6,13 +6,13 @@ import Auth from "./components/user.tsx";
 // import Dashboard from "./pages/Dashboard";
 
 const App: React.FC = () => {
-  return (
-      <Router>
-        <Routes>
-          <Route path="/" element={<Auth />} />
-        </Routes>
-      </Router>
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<Auth />} />
+            </Routes>
+        </Router>
+    );
 };
 
 export default App;
