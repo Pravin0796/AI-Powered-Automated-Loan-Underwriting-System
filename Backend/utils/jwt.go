@@ -2,13 +2,27 @@ package utils
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
 	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var jwtSecret = os.Getenv("JWT_SECRETKEY")
+var jwtSecret []byte
+
+func init() {
+	// Load .env from the project root
+	err := godotenv.Load("./.env") // Adjust for cmd directory
+	if err != nil {
+		fmt.Println("Error loading .env file:", err)
+	}
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		fmt.Println("⚠️ JWT_SECRET environment variable is not set")
+	}
+	jwtSecret = []byte(secret)
+}
 
 type Claims struct {
 	UserID uint   `json:"user_id"`

@@ -4,9 +4,11 @@ import (
 	"AI-Powered-Automated-Loan-Underwriting-System/config"
 	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/pb" // Update with your actual module path
 	"AI-Powered-Automated-Loan-Underwriting-System/services"
-	"google.golang.org/grpc"
 	"log"
 	"net"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 // StartGRPCServer initializes and starts the gRPC server
@@ -17,6 +19,7 @@ func StartGRPCServer() {
 	}
 
 	grpcServer := grpc.NewServer()
+	reflection.Register(grpcServer) // Register reflection service on gRPC server used for debugging using eg. grpcurl
 
 	// Register gRPC services
 	pb.RegisterUserServiceServer(grpcServer, &services.UserService{DB: config.DB})

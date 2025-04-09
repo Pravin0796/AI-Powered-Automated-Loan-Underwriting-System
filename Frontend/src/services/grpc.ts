@@ -5,7 +5,7 @@ import { UserServiceClientImpl } from "../proto/user"; // ✅ Correct
 import { GrpcWebImpl } from '../proto/user';
 // ✅ This is the generated gRPC transport class
 
-const transport = new GrpcWebImpl('http://localhost:50051', {
+const transport = new GrpcWebImpl('http://localhost:9090', {
     // options (optional)
     // fetch: customFetch,
     // metadata: customHeaders,

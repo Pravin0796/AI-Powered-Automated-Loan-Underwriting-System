@@ -11,7 +11,7 @@ type User struct {
 	ID          uint           `gorm:"primaryKey" json:"id"`
 	FullName    string         `gorm:"type:varchar(255);not null" json:"full_name"`
 	Email       string         `gorm:"type:varchar(100);uniqueIndex;not null" json:"email"`
-	Password    string         `gorm:"type:text;not null" json:"-"`
+	Password    string         `gorm:"column:password_hash;type:text;not null" json:"-"`
 	Phone       string         `gorm:"type:varchar(20);uniqueIndex;not null" json:"phone"`
 	DateOfBirth time.Time      `json:"date_of_birth"`
 	Address     string         `gorm:"type:text" json:"address"`

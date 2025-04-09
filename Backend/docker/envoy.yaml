@@ -1,0 +1,67 @@
+static_resources:
+  listeners:
+    - name: listener_0
+      address:
+        socket_address:
+          address: 0.0.0.0
+          port_value: 9090
+      filter_chains:
+        - filters:
+            - name: envoy.filters.network.http_connection_manager
+              typed_config:
+                "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+                stat_prefix: ingress_http
+                codec_type: AUTO
+                route_config:
+                  name: local_route
+                  virtual_hosts:
+                    - name: local_service
+                      domains: ["*"]
+                      routes:
+                        - match:
+                            prefix: "/"
+                          route:
+                            cluster: grpc_backend
+                      typed_per_filter_config:
+                        envoy.filters.http.cors:
+                          "@type": type.googleapis.com/envoy.extensions.filters.http.cors.v3.CorsPolicy
+                          allow_origin_string_match:
+                            - exact: "http://localhost:5173" # Frontend origin
+                          allow_methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD"
+                          allow_headers: "keep-alive, user-agent, cache-control, content-type, content-transfer-encoding, x-accept-content-transfer-encoding, x-accept-response-streaming, x-user-agent, x-grpc-web, authorization"
+                          expose_headers: "grpc-status, grpc-message"
+                          max_age: "1728000"
+                          allow_credentials: true
+
+                http_filters:
+                  - name: envoy.filters.http.grpc_web
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.grpc_web.v3.GrpcWeb
+                  - name: envoy.filters.http.cors
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.cors.v3.Cors
+                  - name: envoy.filters.http.router
+                    typed_config:
+                      "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+
+  clusters:
+    - name: grpc_backend
+      connect_timeout: 0.25s
+      type: LOGICAL_DNS
+      http2_protocol_options: {} # still valid, just a deprecation warning
+      load_assignment:
+        cluster_name: grpc_backend
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: 172.17.0.1
+                      port_value: 50051
+
+admin:
+  access_log_path: "/tmp/admin_access.log"
+  address:
+    socket_address:
+      address: 127.0.0.1
+      port_value: 9901
