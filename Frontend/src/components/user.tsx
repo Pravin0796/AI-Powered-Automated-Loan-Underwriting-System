@@ -33,7 +33,7 @@ const Auth = () => {
             <input name="email" placeholder="Email" onChange={handleChange} />
             <input name="password" placeholder="Password" type="password" onChange={handleChange} />
             <input name="phone" placeholder="Phone" onChange={handleChange} />
-            <input name="date_of_birth" placeholder="Date of Birth" onChange={handleChange} />
+            <input type="date" name="date_of_birth" placeholder="Date of Birth" onChange={handleChange} />
             <input name="address" placeholder="Address" onChange={handleChange} />
             <button onClick={handleRegister}>Register</button>
 

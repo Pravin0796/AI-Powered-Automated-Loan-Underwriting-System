@@ -2,7 +2,7 @@
 syntax = "proto3";
 
 package event;
-option go_package = "service/event";
+option go_package = "Backend/created_proto/event";
 
 service EventService {
   rpc PublishEvent (EventRequest) returns (EventResponse);

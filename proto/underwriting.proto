@@ -2,7 +2,7 @@
 syntax = "proto3";
 
 package underwriting;
-option go_package = "service/underwriting";
+option go_package = "Backend/created_proto/underwriting";
 
 service UnderwritingService {
   rpc EvaluateLoan (UnderwritingRequest) returns (UnderwritingResponse);

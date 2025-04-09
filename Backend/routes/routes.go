@@ -1,9 +1,10 @@
 package routes
 
 import (
-	"AI-Powered-Automated-Loan-Underwriting-System/config"
-	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/pb" // Update with your actual module path
+	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/user" // Update with your actual module path
+	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
 	"AI-Powered-Automated-Loan-Underwriting-System/services"
+	"gorm.io/gorm"
 	"log"
 	"net"
 
@@ -12,7 +13,7 @@ import (
 )
 
 // StartGRPCServer initializes and starts the gRPC server
-func StartGRPCServer() {
+func StartGRPCServer(db *gorm.DB) {
 	listener, err := net.Listen("tcp", ":50051") // Use the correct port
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
@@ -22,7 +23,9 @@ func StartGRPCServer() {
 	reflection.Register(grpcServer) // Register reflection service on gRPC server used for debugging using eg. grpcurl
 
 	// Register gRPC services
-	pb.RegisterUserServiceServer(grpcServer, &services.UserService{DB: config.DB})
+	UserRepo := repositories.NewUserRepo(db)
+	userService := services.NewUserService(UserRepo)
+	pb.RegisterUserServiceServer(grpcServer, userService)
 	//pb.RegisterUserServiceServer(grpcServer, &services.UserServer{})
 	//pb.RegisterPaymentServiceServer(grpcServer, &services.PaymentServer{})
 

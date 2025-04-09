@@ -1,21 +1,26 @@
 package services
 
 import (
+	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
 	"context"
 	"errors"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 
-	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/pb"
+	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/user"
 	"AI-Powered-Automated-Loan-Underwriting-System/models"
 	"AI-Powered-Automated-Loan-Underwriting-System/utils"
 )
 
 type UserService struct {
 	pb.UnimplementedUserServiceServer
-	DB *gorm.DB
+	//DB   *gorm.DB
+	repo *repositories.UserRepo
+}
+
+func NewUserService(repo *repositories.UserRepo) *UserService {
+	return &UserService{repo: repo}
 }
 
 // Register user
@@ -34,7 +39,7 @@ func (s *UserService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 		Address:     req.Address,
 	}
 
-	if err := s.DB.Create(&user).Error; err != nil {
+	if err := s.repo.CreateUser(ctx, user); err != nil {
 		return nil, errors.New("failed to create user")
 	}
 
@@ -47,7 +52,7 @@ func (s *UserService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 // Login user
 func (s *UserService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 	var user models.User
-	if err := s.DB.Where("email = ?", req.Email).First(&user).Error; err != nil {
+	if err := s.repo.GetUser(ctx, req, user); err != nil {
 		return nil, errors.New("invalid email or password")
 	}
 

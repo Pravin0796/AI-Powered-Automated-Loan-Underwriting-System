@@ -2,7 +2,7 @@
 syntax = "proto3";
 
 package credit_scoring;
-option go_package = "service/credit_scoring";
+option go_package = "Backend/created_proto/credit_scoring";
 
 service CreditScoringService {
   rpc GetCreditScore (CreditScoreRequest) returns (CreditScoreResponse);

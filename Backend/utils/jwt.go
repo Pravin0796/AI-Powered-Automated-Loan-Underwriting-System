@@ -13,7 +13,7 @@ var jwtSecret []byte
 
 func init() {
 	// Load .env from the project root
-	err := godotenv.Load("./.env") // Adjust for cmd directory
+	err := godotenv.Load("../.env") // Adjust for cmd directory
 	if err != nil {
 		fmt.Println("Error loading .env file:", err)
 	}

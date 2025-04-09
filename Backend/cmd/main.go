@@ -38,5 +38,5 @@ func main() {
 
 	// Run migrations
 	migration.MigrateDatabase(config.DB)
-	routes.StartGRPCServer()
+	routes.StartGRPCServer(config.DB)
 }
