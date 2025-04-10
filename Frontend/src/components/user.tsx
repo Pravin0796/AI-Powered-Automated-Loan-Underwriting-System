@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { registerUser, loginUser } from "../services/user";
+import { registerUser } from "../services/userService.ts";
 
-const Auth = () => {
+const Register = () => {
     const [form, setForm] = useState({ email: "", password: "", full_name: "", date_of_birth: "", phone: "", address: "" });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -17,32 +17,36 @@ const Auth = () => {
         }
     };
 
-    const handleLogin = async () => {
-        try {
-            const res = await loginUser({ email: form.email, password: form.password });
-            console.log("Login successful:", res);
-        } catch (err) {
-            console.error("Login error:", err);
-        }
-    };
-
     return (
-        <div>
-            <h2>Register</h2>
-            <input name="full_name" placeholder="Full Name" onChange={handleChange} />
-            <input name="email" placeholder="Email" onChange={handleChange} />
-            <input name="password" placeholder="Password" type="password" onChange={handleChange} />
-            <input name="phone" placeholder="Phone" onChange={handleChange} />
-            <input type="date" name="date_of_birth" placeholder="Date of Birth" onChange={handleChange} />
-            <input name="address" placeholder="Address" onChange={handleChange} />
-            <button onClick={handleRegister}>Register</button>
-
-            <h2>Login</h2>
-            <input name="email" placeholder="Email" onChange={handleChange} />
-            <input name="password" placeholder="Password" type="password" onChange={handleChange} />
-            <button onClick={handleLogin}>Login</button>
+        <div className="flex flex-col justify-center border bg-gray-200 w-lg rounded-lg p-10 m-auto my-10 gap-6">
+            <h2 className="text-center text-4xl text-blue-800">Welcome! Register here:</h2>
+            <div className="flex flex-col gap-2 p-2">
+                <label htmlFor="first_name">Full Name <span className="text-red-700">*</span></label>
+                <input className="outline-none border p-2" name="full_name" placeholder="Full Name" onChange={handleChange} />
+            </div>
+            <div className="flex flex-col gap-2 p-2">
+                <label htmlFor="email">Email <span className="text-red-700">*</span></label>
+                <input className="outline-none border p-2" type="email" name="email" placeholder="Email" onChange={handleChange} />
+            </div>
+            <div className="flex flex-col gap-2 p-2">
+                <label htmlFor="password">Password <span className="text-red-700">*</span></label>
+                <input className="outline-none border p-2" name="password" placeholder="Password" type="password" onChange={handleChange} />
+            </div>
+            <div className="flex flex-col gap-2 p-2">
+                <label htmlFor="phone">Phone <span className="text-red-700">*</span></label>
+                <input className="border p-2" name="phone" placeholder="Phone" onChange={handleChange} />
+            </div>
+            <div className="flex flex-col gap-2 p-2">
+                <label htmlFor="date">Date of Birth <span className="text-red-700">*</span></label>
+                <input className="border p-2" type="date" name="date_of_birth" placeholder="Date of Birth" onChange={handleChange} />
+            </div>
+            <div className="flex flex-col gap-2 p-2">
+                <label htmlFor="address">Address <span className="text-red-700">*</span></label>
+                <input className="border p-2" name="address" placeholder="Address" onChange={handleChange} />
+            </div>
+            <button className="border w-25 bg-blue-400 m-auto p-1" onClick={handleRegister}>Register</button>
         </div>
     );
 };
 
-export default Auth;
+export default Register;

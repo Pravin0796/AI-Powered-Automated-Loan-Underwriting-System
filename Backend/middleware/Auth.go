@@ -18,6 +18,14 @@ var rolePermissions = map[string][]string{
 	"customer":    {"ApplyLoan", "ViewOwnLoan"},
 }
 
+// Context keys (to avoid string key collisions)
+type contextKey string
+
+const (
+	ContextUserIDKey contextKey = "user_id"
+	ContextRoleKey   contextKey = "role"
+)
+
 // JWTAuthInterceptor validates JWT and enforces role-based access control
 func JWTAuthInterceptor(
 	ctx context.Context,
@@ -50,6 +58,11 @@ func JWTAuthInterceptor(
 		return nil, status.Errorf(codes.PermissionDenied, "Access denied for role: %s", role)
 	}
 
+	// Add user claims to context
+	ctx = context.WithValue(ctx, ContextUserIDKey, claims["user_id"])
+	ctx = context.WithValue(ctx, ContextRoleKey, role)
+
+	// Proceed with the request using the updated context
 	return handler(ctx, req)
 }
 

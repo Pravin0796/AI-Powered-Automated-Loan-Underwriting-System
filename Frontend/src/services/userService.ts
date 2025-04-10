@@ -3,7 +3,7 @@ import {
     RegisterRequest,
     //RegisterResponse,
     LoginRequest,
-   // LoginResponse,
+    // LoginResponse,
 } from '../proto/user';
 
 export interface RegisterUserData {

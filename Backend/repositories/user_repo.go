@@ -20,7 +20,7 @@ func (r *UserRepo) CreateUser(ctx context.Context, user models.User) error {
 	return r.DB.WithContext(ctx).Create(&user).Error
 }
 
-func (r *UserRepo) GetUser(ctx context.Context, req *pb.LoginRequest, user models.User) error {
+func (r *UserRepo) GetUserByEmail(ctx context.Context, req *pb.LoginRequest, user *models.User) error {
 	// Implement the logic to register a user in the database
 	return r.DB.WithContext(ctx).Where("email = ?", req.Email).First(&user).Error
 }

@@ -69,8 +69,8 @@ func FetchCreditReport() {
 	req.Header.Set("Authorization", "Bearer "+accessToken)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
-	req.Header.Set("companyId", os.Getenv("EXPERIAN_COMPANY_ID"))
-	req.Header.Set("client_reference_id", "test-client-001")
+	//req.Header.Set("companyId", os.Getenv("EXPERIAN_COMPANY_ID"))
+	req.Header.Set("clientReferenceId", "SBMYSQL")
 
 	//fmt.Printf("Request:\nURL: %s\nHeaders: %+v\nBody: %s\n", req.URL.String(), req.Header, string(reqBody))
 

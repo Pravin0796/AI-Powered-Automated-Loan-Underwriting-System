@@ -4,6 +4,7 @@ import (
 	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -52,11 +53,12 @@ func (s *UserService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 // Login user
 func (s *UserService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.LoginResponse, error) {
 	var user models.User
-	if err := s.repo.GetUser(ctx, req, user); err != nil {
+	if err := s.repo.GetUserByEmail(ctx, req, &user); err != nil {
 		return nil, errors.New("invalid email or password")
 	}
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
+		fmt.Println("Password mismatch:", err)
 		return nil, errors.New("invalid email or password")
 	}
 

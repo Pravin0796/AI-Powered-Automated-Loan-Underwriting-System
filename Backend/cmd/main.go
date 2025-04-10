@@ -12,7 +12,8 @@ import (
 func main() {
 	// Initialize database connection
 	config.ConnectDatabase()
-
+	// Run migrations
+	migration.MigrateDatabase(config.DB)
 	// Fetch credit report
 	//creditProfile, err := experian.FetchCreditProfile(
 	//	"123-45-6789", "Doe", "John", "123 Main St", "New York", "NY", "10001",
@@ -35,8 +36,5 @@ func main() {
 
 	// Initialize Redis connection
 	cache.ConnectRedis()
-
-	// Run migrations
-	migration.MigrateDatabase(config.DB)
 	routes.StartGRPCServer(config.DB)
 }

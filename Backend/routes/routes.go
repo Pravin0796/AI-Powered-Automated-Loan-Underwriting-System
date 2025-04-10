@@ -1,7 +1,8 @@
 package routes
 
 import (
-	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/user" // Update with your actual module path
+	pbs "AI-Powered-Automated-Loan-Underwriting-System/created_proto/loan" // Update with your actual module path
+	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/user"
 	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
 	"AI-Powered-Automated-Loan-Underwriting-System/services"
 	"gorm.io/gorm"
@@ -26,6 +27,8 @@ func StartGRPCServer(db *gorm.DB) {
 	UserRepo := repositories.NewUserRepo(db)
 	userService := services.NewUserService(UserRepo)
 	pb.RegisterUserServiceServer(grpcServer, userService)
+
+	pbs.RegisterLoanServiceServer(grpcServer, &services.LoanServiceServer{DB: db})
 	//pb.RegisterUserServiceServer(grpcServer, &services.UserServer{})
 	//pb.RegisterPaymentServiceServer(grpcServer, &services.PaymentServer{})
 
