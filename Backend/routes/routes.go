@@ -3,6 +3,7 @@ package routes
 import (
 	pbs "AI-Powered-Automated-Loan-Underwriting-System/created_proto/loan" // Update with your actual module path
 	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/user"
+	"AI-Powered-Automated-Loan-Underwriting-System/middleware"
 	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
 	"AI-Powered-Automated-Loan-Underwriting-System/services"
 	"gorm.io/gorm"
@@ -20,7 +21,7 @@ func StartGRPCServer(db *gorm.DB) {
 		log.Fatalf("Failed to listen: %v", err)
 	}
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(middleware.JWTAuthInterceptor))
 	reflection.Register(grpcServer) // Register reflection service on gRPC server used for debugging using eg. grpcurl
 
 	// Register gRPC services

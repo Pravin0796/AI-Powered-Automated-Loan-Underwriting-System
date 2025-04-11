@@ -60,7 +60,7 @@ func JWTAuthInterceptor(
 
 	// Add user claims to context
 	ctx = context.WithValue(ctx, ContextUserIDKey, claims["user_id"])
-	ctx = context.WithValue(ctx, ContextRoleKey, role)
+	//ctx = context.WithValue(ctx, ContextRoleKey, role)
 
 	// Proceed with the request using the updated context
 	return handler(ctx, req)

@@ -3,7 +3,6 @@ package main
 import (
 	"AI-Powered-Automated-Loan-Underwriting-System/cache"
 	"AI-Powered-Automated-Loan-Underwriting-System/config"
-	"AI-Powered-Automated-Loan-Underwriting-System/experian"
 	"AI-Powered-Automated-Loan-Underwriting-System/migration"
 	"AI-Powered-Automated-Loan-Underwriting-System/routes"
 	"fmt"
@@ -32,7 +31,7 @@ func main() {
 	//}
 
 	fmt.Println("Fetching Credit Report...")
-	experian.FetchCreditReport()
+	//experian.FetchCreditReport()
 
 	// Initialize Redis connection
 	cache.ConnectRedis()

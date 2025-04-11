@@ -77,11 +77,12 @@ func (s *UserService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 // GetCurrentUser retrieves the current user based on the token
 func (s *UserService) GetUserDetails(ctx context.Context, req *pb.UserDetailsRequest) (*pb.UserDetailsResponse, error) {
 	var userID any = ctx.Value(middleware.ContextUserIDKey)
+	fmt.Println(userID)
 
 	var user models.User
-	if err := s.repo.GetUserByID(ctx, userID.(uint), &user); err != nil {
-		return nil, errors.New("user not found")
-	}
+	//if err := s.repo.GetUserByID(ctx, userID.(uint), &user); err != nil {
+	//	return nil, errors.New("user not found")
+	//}
 
 	return &pb.UserDetailsResponse{
 		FullName:    user.FullName,

@@ -27,6 +27,7 @@ func init() {
 type Claims struct {
 	UserID uint   `json:"user_id"`
 	Email  string `json:"email"`
+	Role   string `json:"role"`
 	jwt.RegisteredClaims
 }
 
@@ -36,6 +37,7 @@ func GenerateJWT(userID uint, email string) (string, error) {
 	claims := &Claims{
 		UserID: userID,
 		Email:  email,
+		Role:   "user", // Default role, can be changed as needed
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},
