@@ -24,3 +24,23 @@ func (r *UserRepo) GetUserByEmail(ctx context.Context, req *pb.LoginRequest, use
 	// Implement the logic to register a user in the database
 	return r.DB.WithContext(ctx).Where("email = ?", req.Email).First(&user).Error
 }
+
+func (r *UserRepo) GetUserByID(ctx context.Context, userID uint, user *models.User) error {
+	return r.DB.WithContext(ctx).First(&user, userID).Error
+}
+
+func (r *UserRepo) UpdateUser(ctx context.Context, user models.User) error {
+	return r.DB.WithContext(ctx).Save(&user).Error
+}
+
+func (r *UserRepo) DeleteUser(ctx context.Context, userID uint) error {
+	return r.DB.WithContext(ctx).Delete(&models.User{}, userID).Error
+}
+
+func (r *UserRepo) GetAllUsers(ctx context.Context, users *[]models.User) error {
+	return r.DB.WithContext(ctx).Find(&users).Error
+}
+
+func (r *UserRepo) GetCreditScore(ctx context.Context, userID uint, user *models.User) error {
+	return r.DB.WithContext(ctx).Raw("select credit_score from users where id=?", userID).Scan(&user.CreditScore).Error
+}

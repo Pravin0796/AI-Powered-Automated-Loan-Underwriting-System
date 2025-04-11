@@ -6,6 +6,9 @@ option go_package = "Backend/created_proto/user";
 service UserService {
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
+  rpc GetUserDetails (UserDetailsRequest) returns (UserDetailsResponse);
+  rpc UpdateUserDetails (UserUpdateRequest) returns (UserDetailsResponse);
+  rpc GetUserCreditScore (UserCreditScoreRequest) returns (UserCreditScoreResponse);
 }
 
 message RegisterRequest {
@@ -30,4 +33,40 @@ message LoginRequest {
 message LoginResponse {
   string token = 1;
   int32 status = 2;
+}
+
+message  UserDetailsRequest{
+  uint64 user_id = 1;
+}
+
+message UserDetailsResponse{
+  string full_name = 1;
+  string email = 2;
+  string phone = 3;
+  string date_of_birth = 4;
+  string address = 5;
+  int32 credit_score = 6;
+  int32 status = 7;
+}
+
+message UserUpdateRequest {
+  uint64 user_id = 1;
+  string full_name = 2;
+  string phone = 4;
+  string date_of_birth = 5;
+  string address = 6;
+}
+
+message UserUpdateResponse {
+  string message = 1;
+  int32 status = 2;
+}
+
+message UserCreditScoreRequest {
+  uint64 user_id = 1;
+}
+
+message UserCreditScoreResponse {
+  int32 credit_score = 1;
+  int32  Status  = 2;
 }

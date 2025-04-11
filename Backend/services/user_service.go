@@ -1,6 +1,7 @@
 package services
 
 import (
+	"AI-Powered-Automated-Loan-Underwriting-System/middleware"
 	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
 	"context"
 	"errors"
@@ -70,5 +71,43 @@ func (s *UserService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 	return &pb.LoginResponse{
 		Token:  token,
 		Status: 200,
+	}, nil
+}
+
+// GetCurrentUser retrieves the current user based on the token
+func (s *UserService) GetUserDetails(ctx context.Context, req *pb.UserDetailsRequest) (*pb.UserDetailsResponse, error) {
+	var userID any = ctx.Value(middleware.ContextUserIDKey)
+
+	var user models.User
+	if err := s.repo.GetUserByID(ctx, userID.(uint), &user); err != nil {
+		return nil, errors.New("user not found")
+	}
+
+	return &pb.UserDetailsResponse{
+		FullName:    user.FullName,
+		Email:       user.Email,
+		Phone:       user.Phone,
+		Address:     user.Address,
+		DateOfBirth: user.DateOfBirth.Format("02/01/2006"),
+		CreditScore: int32(user.CreditScore),
+		Status:      200,
+	}, nil
+}
+
+// GetCreditScore retrieves the credit score of a user
+func (s *UserService) GetUserCreditScore(ctx context.Context, req *pb.UserCreditScoreRequest) (*pb.UserCreditScoreResponse, error) {
+	var user models.User
+	if err := s.repo.GetUserByID(ctx, uint(req.UserId), &user); err != nil {
+		return nil, errors.New("user not found")
+	}
+
+	if err := s.repo.GetCreditScore(ctx, uint(req.UserId), &user); err != nil {
+		return nil, errors.New("failed to retrieve credit score")
+	}
+	fmt.Println(user)
+
+	return &pb.UserCreditScoreResponse{
+		CreditScore: int32(user.CreditScore),
+		Status:      200,
 	}, nil
 }

@@ -1,4 +1,4 @@
-import { userClient } from './grpc';
+import { userClient } from './Grpc.ts';
 import {
     RegisterRequest,
     //RegisterResponse,

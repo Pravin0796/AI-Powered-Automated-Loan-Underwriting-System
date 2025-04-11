@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loginUser } from "../services/userService.ts";
+import { loginUser } from "../services/UserService.ts";
 import { FaEye } from "react-icons/fa";
 
 const Login = () => {
@@ -20,7 +20,7 @@ const Login = () => {
     };
 
     return (
-        <div className="flex flex-col justify-center bg-gray-200 border m-auto my-10 w-sm rounded-lg p-10 gap-6">
+        <div className="flex flex-col justify-center shadow-[0_0_20px_3px_rgba(0,0,0,0.12)] bg-white m-auto my-10 w-sm rounded-lg p-10 gap-6">
             <h2 className="text-center text-4xl text-blue-800">Login</h2>
             <div className="flex flex-col justify-center gap-2">
                 <label htmlFor="email">Email <span className="text-red-700">*</span></label>

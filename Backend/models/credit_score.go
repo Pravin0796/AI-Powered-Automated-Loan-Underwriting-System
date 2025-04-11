@@ -10,3 +10,5 @@ type CreditScore struct {
 	ReportID  string    `gorm:"unique;not null" json:"report_id"`
 	CreatedAt time.Time `gorm:"autoCreateTime" json:"created_at"`
 }
+
+//remove credit score from user model and add a foreign key to credit score

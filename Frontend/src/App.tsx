@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 // import Home from "./pages/Home";
-import Register from "./components/user.tsx";
-import Login from "./components/login.tsx";
-import ApplyLoan from "./services/loanService.tsx";
+import Register from "./components/Register.tsx";
+import Login from "./components/Login.tsx";
+import ApplyLoan from "./services/LoanService.tsx";
 import GetLoanStatus from "./services/GetLoanStatus.tsx";
 // import Register from "./pages/Register";
 // import Dashboard from "./pages/Dashboard";

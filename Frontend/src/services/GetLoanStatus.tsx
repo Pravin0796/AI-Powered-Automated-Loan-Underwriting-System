@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { loanClient } from "../services/grpc";
+import { loanClient } from "./Grpc.ts";
 
 const GetLoanStatus: React.FC = () => {
     const [loanId, setLoanId] = useState<number>(0);

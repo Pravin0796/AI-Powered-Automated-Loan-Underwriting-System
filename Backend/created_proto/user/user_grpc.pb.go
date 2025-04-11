@@ -19,8 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	UserService_Register_FullMethodName = "/user.UserService/Register"
-	UserService_Login_FullMethodName    = "/user.UserService/Login"
+	UserService_Register_FullMethodName           = "/user.UserService/Register"
+	UserService_Login_FullMethodName              = "/user.UserService/Login"
+	UserService_GetUserDetails_FullMethodName     = "/user.UserService/GetUserDetails"
+	UserService_UpdateUserDetails_FullMethodName  = "/user.UserService/UpdateUserDetails"
+	UserService_GetUserCreditScore_FullMethodName = "/user.UserService/GetUserCreditScore"
 )
 
 // UserServiceClient is the client API for UserService service.
@@ -29,6 +32,9 @@ const (
 type UserServiceClient interface {
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
+	GetUserDetails(ctx context.Context, in *UserDetailsRequest, opts ...grpc.CallOption) (*UserDetailsResponse, error)
+	UpdateUserDetails(ctx context.Context, in *UserUpdateRequest, opts ...grpc.CallOption) (*UserDetailsResponse, error)
+	GetUserCreditScore(ctx context.Context, in *UserCreditScoreRequest, opts ...grpc.CallOption) (*UserCreditScoreResponse, error)
 }
 
 type userServiceClient struct {
@@ -59,12 +65,45 @@ func (c *userServiceClient) Login(ctx context.Context, in *LoginRequest, opts ..
 	return out, nil
 }
 
+func (c *userServiceClient) GetUserDetails(ctx context.Context, in *UserDetailsRequest, opts ...grpc.CallOption) (*UserDetailsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserDetailsResponse)
+	err := c.cc.Invoke(ctx, UserService_GetUserDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) UpdateUserDetails(ctx context.Context, in *UserUpdateRequest, opts ...grpc.CallOption) (*UserDetailsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserDetailsResponse)
+	err := c.cc.Invoke(ctx, UserService_UpdateUserDetails_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userServiceClient) GetUserCreditScore(ctx context.Context, in *UserCreditScoreRequest, opts ...grpc.CallOption) (*UserCreditScoreResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UserCreditScoreResponse)
+	err := c.cc.Invoke(ctx, UserService_GetUserCreditScore_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServiceServer is the server API for UserService service.
 // All implementations must embed UnimplementedUserServiceServer
 // for forward compatibility.
 type UserServiceServer interface {
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
+	GetUserDetails(context.Context, *UserDetailsRequest) (*UserDetailsResponse, error)
+	UpdateUserDetails(context.Context, *UserUpdateRequest) (*UserDetailsResponse, error)
+	GetUserCreditScore(context.Context, *UserCreditScoreRequest) (*UserCreditScoreResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
 
@@ -80,6 +119,15 @@ func (UnimplementedUserServiceServer) Register(context.Context, *RegisterRequest
 }
 func (UnimplementedUserServiceServer) Login(context.Context, *LoginRequest) (*LoginResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserDetails(context.Context, *UserDetailsRequest) (*UserDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserDetails not implemented")
+}
+func (UnimplementedUserServiceServer) UpdateUserDetails(context.Context, *UserUpdateRequest) (*UserDetailsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserDetails not implemented")
+}
+func (UnimplementedUserServiceServer) GetUserCreditScore(context.Context, *UserCreditScoreRequest) (*UserCreditScoreResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserCreditScore not implemented")
 }
 func (UnimplementedUserServiceServer) mustEmbedUnimplementedUserServiceServer() {}
 func (UnimplementedUserServiceServer) testEmbeddedByValue()                     {}
@@ -138,6 +186,60 @@ func _UserService_Login_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UserService_GetUserDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserDetailsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUserDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserDetails(ctx, req.(*UserDetailsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_UpdateUserDetails_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserUpdateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).UpdateUserDetails(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_UpdateUserDetails_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).UpdateUserDetails(ctx, req.(*UserUpdateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UserService_GetUserCreditScore_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UserCreditScoreRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServiceServer).GetUserCreditScore(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: UserService_GetUserCreditScore_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServiceServer).GetUserCreditScore(ctx, req.(*UserCreditScoreRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // UserService_ServiceDesc is the grpc.ServiceDesc for UserService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -152,6 +254,18 @@ var UserService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Login",
 			Handler:    _UserService_Login_Handler,
+		},
+		{
+			MethodName: "GetUserDetails",
+			Handler:    _UserService_GetUserDetails_Handler,
+		},
+		{
+			MethodName: "UpdateUserDetails",
+			Handler:    _UserService_UpdateUserDetails_Handler,
+		},
+		{
+			MethodName: "GetUserCreditScore",
+			Handler:    _UserService_GetUserCreditScore_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
