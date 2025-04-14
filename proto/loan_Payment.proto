@@ -1,0 +1,41 @@
+syntax = "proto3";
+
+package loan_payment;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "Backend/created_proto/loan_payment";
+
+// LoanPayment service for handling loan repayment transactions
+service LoanPaymentService {
+  rpc CreateLoanPayment (CreateLoanPaymentRequest) returns (CreateLoanPaymentResponse);
+  rpc GetLoanPayment (GetLoanPaymentRequest) returns (GetLoanPaymentResponse);
+}
+
+// CreateLoanPaymentRequest message for making a loan payment
+message CreateLoanPaymentRequest {
+  uint64 loan_application_id = 1;  // Loan application ID
+  double amount_paid = 2;           // Amount paid in the transaction
+  string status = 3;                // Payment status (pending, successful, failed)
+  google.protobuf.Timestamp payment_date = 4; // Payment date and time
+}
+
+// CreateLoanPaymentResponse message for response after creating a loan payment
+message CreateLoanPaymentResponse {
+  uint64 loan_payment_id = 1;       // Unique ID of the loan payment
+  string status = 2;                // Status message (e.g., "Payment successful")
+}
+
+// GetLoanPaymentRequest message to request an existing loan payment
+message GetLoanPaymentRequest {
+  uint64 loan_payment_id = 1;       // ID of the loan payment to fetch
+}
+
+// GetLoanPaymentResponse message containing the loan payment details
+message GetLoanPaymentResponse {
+  uint64 loan_payment_id = 1;       // Unique ID of the loan payment
+  uint64 loan_application_id = 2;   // Associated loan application ID
+  double amount_paid = 3;            // Amount paid in the transaction
+  string status = 4;                 // Payment status (pending, successful, failed)
+  google.protobuf.Timestamp payment_date = 5; // Payment date and time
+}

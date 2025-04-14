@@ -1,19 +1,40 @@
-// Underwriting Service
 syntax = "proto3";
 
-package underwriting;
-option go_package = "Backend/created_proto/underwriting";
+package loan_decision;
 
-service UnderwritingService {
-  rpc EvaluateLoan (UnderwritingRequest) returns (UnderwritingResponse);
+import "google/protobuf/timestamp.proto";
+
+option go_package = "Backend/created_proto/loan_decision";
+
+// LoanDecision service for interacting with loan decisions
+service LoanDecisionService {
+  rpc CreateLoanDecision (CreateLoanDecisionRequest) returns (CreateLoanDecisionResponse);
+  rpc GetLoanDecision (GetLoanDecisionRequest) returns (GetLoanDecisionResponse);
 }
 
-message UnderwritingRequest {
-  uint64 loan_id = 1;
+// CreateLoanDecisionRequest message for creating a loan decision
+message CreateLoanDecisionRequest {
+  uint64 loan_application_id = 1;  // Loan application ID
+  string ai_decision = 2;          // Decision from AI (approved/rejected)
+  string reasoning = 3;             // Reasoning for the decision
 }
 
-message UnderwritingResponse {
-  uint64 loan_id = 1;
-  string decision = 2;
-  string reasoning = 3;
+// CreateLoanDecisionResponse message for response after creating a loan decision
+message CreateLoanDecisionResponse {
+  uint64 loan_decision_id = 1;     // Unique ID of the loan decision
+  string status = 2;               // Status message (e.g., "Created successfully")
+}
+
+// GetLoanDecisionRequest message to request an existing loan decision
+message GetLoanDecisionRequest {
+  uint64 loan_decision_id = 1;     // ID of the loan decision to fetch
+}
+
+// GetLoanDecisionResponse message containing the loan decision details
+message GetLoanDecisionResponse {
+  uint64 loan_decision_id = 1;     // Unique ID of the loan decision
+  uint64 loan_application_id = 2;  // Associated loan application ID
+  string ai_decision = 3;          // Decision from AI (approved/rejected)
+  string reasoning = 4;             // Reasoning for the decision
+  google.protobuf.Timestamp created_at = 5; // Timestamp of decision creation
 }

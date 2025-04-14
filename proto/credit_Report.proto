@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package credit_report;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "Backend/created_proto/credit_report";
+
+// CreditReport service for interacting with credit reports
+service CreditReportService {
+  rpc CreateCreditReport (CreateCreditReportRequest) returns (CreateCreditReportResponse);
+  rpc GetCreditReport (GetCreditReportRequest) returns (GetCreditReportResponse);
+}
+
+// CreateCreditReportRequest message for creating a credit report
+message CreateCreditReportRequest {
+  uint64 user_id = 1;                     // User who the report belongs to
+  uint64 loan_application_id = 2;          // Loan application for which the report is generated
+  string report_data = 3;                  // Raw JSON or serialized report data
+  int32 credit_score = 4;                 // Credit score from the report
+  string fraud_indicators = 5;            // Fraud indicators (JSON string)
+}
+
+// CreateCreditReportResponse message for response after creating a credit report
+message CreateCreditReportResponse {
+  uint64 credit_report_id = 1;            // Unique ID of the created credit report
+  string status = 2;                      // Status message (e.g., "Created successfully")
+}
+
+// GetCreditReportRequest message to request an existing credit report
+message GetCreditReportRequest {
+  uint64 credit_report_id = 1;            // ID of the credit report to fetch
+}
+
+// GetCreditReportResponse message containing the credit report details
+message GetCreditReportResponse {
+  uint64 id = 1;                          // Unique ID of the credit report
+  uint64 user_id = 2;                     // ID of the user to whom the report belongs
+  uint64 loan_application_id = 3;         // ID of the loan application for which the report was generated
+  string report_data = 4;                 // Raw JSON or serialized report data
+  int32 credit_score = 5;                 // Credit score from the report
+  string fraud_indicators = 6;            // Fraud indicators (JSON string)
+  google.protobuf.Timestamp generated_at = 7; // Timestamp when the report was generated
+}

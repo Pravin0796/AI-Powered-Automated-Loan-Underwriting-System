@@ -1,13 +1,16 @@
 syntax = "proto3";
 
 package user;
-option go_package = "Backend/created_proto/user";
+
+option go_package = "Backend/created_proto/user"; // Specify your Go package location
+
+import "google/protobuf/timestamp.proto"; // Import timestamp for date fields
 
 service UserService {
   rpc Register (RegisterRequest) returns (RegisterResponse);
   rpc Login (LoginRequest) returns (LoginResponse);
   rpc GetUserDetails (UserDetailsRequest) returns (UserDetailsResponse);
-  rpc UpdateUserDetails (UserUpdateRequest) returns (UserDetailsResponse);
+  rpc UpdateUserDetails (UserUpdateRequest) returns (UserUpdateResponse);
   rpc GetUserCreditScore (UserCreditScoreRequest) returns (UserCreditScoreResponse);
 }
 
@@ -16,7 +19,7 @@ message RegisterRequest {
   string email = 2;
   string password = 3;
   string phone = 4;
-  string date_of_birth = 5;
+  google.protobuf.Timestamp date_of_birth = 5; // Consider using Google Protobuf Timestamp for date fields
   string address = 6;
 }
 
@@ -35,15 +38,15 @@ message LoginResponse {
   int32 status = 2;
 }
 
-message  UserDetailsRequest{
-  uint64 user_id = 1;
+message UserDetailsRequest {
+  uint64 user_id = 1; // Request for details of user by ID
 }
 
-message UserDetailsResponse{
+message UserDetailsResponse {
   string full_name = 1;
   string email = 2;
   string phone = 3;
-  string date_of_birth = 4;
+  google.protobuf.Timestamp date_of_birth = 4; // Consider using Google Protobuf Timestamp for dates
   string address = 5;
   int32 credit_score = 6;
   int32 status = 7;
@@ -52,9 +55,9 @@ message UserDetailsResponse{
 message UserUpdateRequest {
   uint64 user_id = 1;
   string full_name = 2;
-  string phone = 4;
-  string date_of_birth = 5;
-  string address = 6;
+  string phone = 3;  // Fixed phone field type mismatch
+  string date_of_birth = 4;
+  string address = 5;
 }
 
 message UserUpdateResponse {
@@ -68,5 +71,5 @@ message UserCreditScoreRequest {
 
 message UserCreditScoreResponse {
   int32 credit_score = 1;
-  int32  Status  = 2;
+  int32 status = 2;
 }

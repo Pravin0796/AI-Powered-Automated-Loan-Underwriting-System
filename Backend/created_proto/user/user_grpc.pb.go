@@ -33,7 +33,7 @@ type UserServiceClient interface {
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	GetUserDetails(ctx context.Context, in *UserDetailsRequest, opts ...grpc.CallOption) (*UserDetailsResponse, error)
-	UpdateUserDetails(ctx context.Context, in *UserUpdateRequest, opts ...grpc.CallOption) (*UserDetailsResponse, error)
+	UpdateUserDetails(ctx context.Context, in *UserUpdateRequest, opts ...grpc.CallOption) (*UserUpdateResponse, error)
 	GetUserCreditScore(ctx context.Context, in *UserCreditScoreRequest, opts ...grpc.CallOption) (*UserCreditScoreResponse, error)
 }
 
@@ -75,9 +75,9 @@ func (c *userServiceClient) GetUserDetails(ctx context.Context, in *UserDetailsR
 	return out, nil
 }
 
-func (c *userServiceClient) UpdateUserDetails(ctx context.Context, in *UserUpdateRequest, opts ...grpc.CallOption) (*UserDetailsResponse, error) {
+func (c *userServiceClient) UpdateUserDetails(ctx context.Context, in *UserUpdateRequest, opts ...grpc.CallOption) (*UserUpdateResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UserDetailsResponse)
+	out := new(UserUpdateResponse)
 	err := c.cc.Invoke(ctx, UserService_UpdateUserDetails_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -102,7 +102,7 @@ type UserServiceServer interface {
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	GetUserDetails(context.Context, *UserDetailsRequest) (*UserDetailsResponse, error)
-	UpdateUserDetails(context.Context, *UserUpdateRequest) (*UserDetailsResponse, error)
+	UpdateUserDetails(context.Context, *UserUpdateRequest) (*UserUpdateResponse, error)
 	GetUserCreditScore(context.Context, *UserCreditScoreRequest) (*UserCreditScoreResponse, error)
 	mustEmbedUnimplementedUserServiceServer()
 }
@@ -123,7 +123,7 @@ func (UnimplementedUserServiceServer) Login(context.Context, *LoginRequest) (*Lo
 func (UnimplementedUserServiceServer) GetUserDetails(context.Context, *UserDetailsRequest) (*UserDetailsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserDetails not implemented")
 }
-func (UnimplementedUserServiceServer) UpdateUserDetails(context.Context, *UserUpdateRequest) (*UserDetailsResponse, error) {
+func (UnimplementedUserServiceServer) UpdateUserDetails(context.Context, *UserUpdateRequest) (*UserUpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserDetails not implemented")
 }
 func (UnimplementedUserServiceServer) GetUserCreditScore(context.Context, *UserCreditScoreRequest) (*UserCreditScoreResponse, error) {

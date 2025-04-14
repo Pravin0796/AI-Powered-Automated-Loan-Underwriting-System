@@ -1,18 +1,39 @@
-// Event Service for Kafka
 syntax = "proto3";
 
 package event;
+
+import "google/protobuf/timestamp.proto";
+
 option go_package = "Backend/created_proto/event";
 
+// Event service for handling system events
 service EventService {
-  rpc PublishEvent (EventRequest) returns (EventResponse);
+  rpc CreateEvent (CreateEventRequest) returns (CreateEventResponse);
+  rpc GetEvent (GetEventRequest) returns (GetEventResponse);
 }
 
-message EventRequest {
-  string event_type = 1;
-  string payload = 2;
+// CreateEventRequest message for creating an event
+message CreateEventRequest {
+  string event_type = 1;        // Type of the event (e.g., "Loan Application Submitted")
+  string payload = 2;           // JSON string containing event details (payload)
+  google.protobuf.Timestamp timestamp = 3; // Timestamp of when the event occurred
 }
 
-message EventResponse {
-  bool success = 1;
+// CreateEventResponse message for response after creating an event
+message CreateEventResponse {
+  uint64 event_id = 1;          // Unique ID of the event
+  string status = 2;            // Status message (e.g., "Event created successfully")
+}
+
+// GetEventRequest message to request an existing event
+message GetEventRequest {
+  uint64 event_id = 1;          // ID of the event to fetch
+}
+
+// GetEventResponse message containing the event details
+message GetEventResponse {
+  uint64 event_id = 1;          // Unique ID of the event
+  string event_type = 2;        // Type of the event (e.g., "Loan Application Submitted")
+  string payload = 3;           // JSON string containing event details (payload)
+  google.protobuf.Timestamp timestamp = 4; // Timestamp of the event
 }

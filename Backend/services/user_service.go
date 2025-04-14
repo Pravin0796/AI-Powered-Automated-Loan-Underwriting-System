@@ -6,7 +6,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
+	_ "github.com/golang/protobuf/ptypes/timestamp"
+	"google.golang.org/protobuf/types/known/timestamppb"
+	_ "google.golang.org/protobuf/types/known/timestamppb"
+	_ "time"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -37,7 +40,7 @@ func (s *UserService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 		Email:       req.Email,
 		Password:    string(hashedPassword),
 		Phone:       req.Phone,
-		DateOfBirth: time.Now(), // Convert string to time if needed
+		DateOfBirth: req.DateOfBirth.AsTime(), // Convert string to time if needed
 		Address:     req.Address,
 	}
 
@@ -83,13 +86,12 @@ func (s *UserService) GetUserDetails(ctx context.Context, req *pb.UserDetailsReq
 	//if err := s.repo.GetUserByID(ctx, userID.(uint), &user); err != nil {
 	//	return nil, errors.New("user not found")
 	//}
-
 	return &pb.UserDetailsResponse{
 		FullName:    user.FullName,
 		Email:       user.Email,
 		Phone:       user.Phone,
 		Address:     user.Address,
-		DateOfBirth: user.DateOfBirth.Format("02/01/2006"),
+		DateOfBirth: timestamppb.New(user.DateOfBirth),
 		CreditScore: int32(user.CreditScore),
 		Status:      200,
 	}, nil

@@ -9,6 +9,7 @@ package user
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -27,7 +28,7 @@ type RegisterRequest struct {
 	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	Password      string                 `protobuf:"bytes,3,opt,name=password,proto3" json:"password,omitempty"`
 	Phone         string                 `protobuf:"bytes,4,opt,name=phone,proto3" json:"phone,omitempty"`
-	DateOfBirth   string                 `protobuf:"bytes,5,opt,name=date_of_birth,json=dateOfBirth,proto3" json:"date_of_birth,omitempty"`
+	DateOfBirth   *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=date_of_birth,json=dateOfBirth,proto3" json:"date_of_birth,omitempty"` // Consider using Google Protobuf Timestamp for date fields
 	Address       string                 `protobuf:"bytes,6,opt,name=address,proto3" json:"address,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -91,11 +92,11 @@ func (x *RegisterRequest) GetPhone() string {
 	return ""
 }
 
-func (x *RegisterRequest) GetDateOfBirth() string {
+func (x *RegisterRequest) GetDateOfBirth() *timestamppb.Timestamp {
 	if x != nil {
 		return x.DateOfBirth
 	}
-	return ""
+	return nil
 }
 
 func (x *RegisterRequest) GetAddress() string {
@@ -263,7 +264,7 @@ func (x *LoginResponse) GetStatus() int32 {
 
 type UserDetailsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        uint64                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserId        uint64                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // Request for details of user by ID
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -310,7 +311,7 @@ type UserDetailsResponse struct {
 	FullName      string                 `protobuf:"bytes,1,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
 	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
 	Phone         string                 `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"`
-	DateOfBirth   string                 `protobuf:"bytes,4,opt,name=date_of_birth,json=dateOfBirth,proto3" json:"date_of_birth,omitempty"`
+	DateOfBirth   *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=date_of_birth,json=dateOfBirth,proto3" json:"date_of_birth,omitempty"` // Consider using Google Protobuf Timestamp for dates
 	Address       string                 `protobuf:"bytes,5,opt,name=address,proto3" json:"address,omitempty"`
 	CreditScore   int32                  `protobuf:"varint,6,opt,name=credit_score,json=creditScore,proto3" json:"credit_score,omitempty"`
 	Status        int32                  `protobuf:"varint,7,opt,name=status,proto3" json:"status,omitempty"`
@@ -369,11 +370,11 @@ func (x *UserDetailsResponse) GetPhone() string {
 	return ""
 }
 
-func (x *UserDetailsResponse) GetDateOfBirth() string {
+func (x *UserDetailsResponse) GetDateOfBirth() *timestamppb.Timestamp {
 	if x != nil {
 		return x.DateOfBirth
 	}
-	return ""
+	return nil
 }
 
 func (x *UserDetailsResponse) GetAddress() string {
@@ -401,9 +402,9 @@ type UserUpdateRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	UserId        uint64                 `protobuf:"varint,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
 	FullName      string                 `protobuf:"bytes,2,opt,name=full_name,json=fullName,proto3" json:"full_name,omitempty"`
-	Phone         string                 `protobuf:"bytes,4,opt,name=phone,proto3" json:"phone,omitempty"`
-	DateOfBirth   string                 `protobuf:"bytes,5,opt,name=date_of_birth,json=dateOfBirth,proto3" json:"date_of_birth,omitempty"`
-	Address       string                 `protobuf:"bytes,6,opt,name=address,proto3" json:"address,omitempty"`
+	Phone         string                 `protobuf:"bytes,3,opt,name=phone,proto3" json:"phone,omitempty"` // Fixed phone field type mismatch
+	DateOfBirth   string                 `protobuf:"bytes,4,opt,name=date_of_birth,json=dateOfBirth,proto3" json:"date_of_birth,omitempty"`
+	Address       string                 `protobuf:"bytes,5,opt,name=address,proto3" json:"address,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -572,7 +573,7 @@ func (x *UserCreditScoreRequest) GetUserId() uint64 {
 type UserCreditScoreResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	CreditScore   int32                  `protobuf:"varint,1,opt,name=credit_score,json=creditScore,proto3" json:"credit_score,omitempty"`
-	Status        int32                  `protobuf:"varint,2,opt,name=Status,proto3" json:"Status,omitempty"`
+	Status        int32                  `protobuf:"varint,2,opt,name=status,proto3" json:"status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -626,13 +627,13 @@ var File_user_proto protoreflect.FileDescriptor
 const file_user_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"user.proto\x12\x04user\"\xb4\x01\n" +
+	"user.proto\x12\x04user\x1a\x1fgoogle/protobuf/timestamp.proto\"\xd0\x01\n" +
 	"\x0fRegisterRequest\x12\x1b\n" +
 	"\tfull_name\x18\x01 \x01(\tR\bfullName\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x03 \x01(\tR\bpassword\x12\x14\n" +
-	"\x05phone\x18\x04 \x01(\tR\x05phone\x12\"\n" +
-	"\rdate_of_birth\x18\x05 \x01(\tR\vdateOfBirth\x12\x18\n" +
+	"\x05phone\x18\x04 \x01(\tR\x05phone\x12>\n" +
+	"\rdate_of_birth\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\vdateOfBirth\x12\x18\n" +
 	"\aaddress\x18\x06 \x01(\tR\aaddress\"D\n" +
 	"\x10RegisterResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\x12\x16\n" +
@@ -644,21 +645,21 @@ const file_user_proto_rawDesc = "" +
 	"\x05token\x18\x01 \x01(\tR\x05token\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\x05R\x06status\"-\n" +
 	"\x12UserDetailsRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\x04R\x06userId\"\xd7\x01\n" +
+	"\auser_id\x18\x01 \x01(\x04R\x06userId\"\xf3\x01\n" +
 	"\x13UserDetailsResponse\x12\x1b\n" +
 	"\tfull_name\x18\x01 \x01(\tR\bfullName\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x14\n" +
-	"\x05phone\x18\x03 \x01(\tR\x05phone\x12\"\n" +
-	"\rdate_of_birth\x18\x04 \x01(\tR\vdateOfBirth\x12\x18\n" +
+	"\x05phone\x18\x03 \x01(\tR\x05phone\x12>\n" +
+	"\rdate_of_birth\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\vdateOfBirth\x12\x18\n" +
 	"\aaddress\x18\x05 \x01(\tR\aaddress\x12!\n" +
 	"\fcredit_score\x18\x06 \x01(\x05R\vcreditScore\x12\x16\n" +
 	"\x06status\x18\a \x01(\x05R\x06status\"\x9d\x01\n" +
 	"\x11UserUpdateRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x04R\x06userId\x12\x1b\n" +
 	"\tfull_name\x18\x02 \x01(\tR\bfullName\x12\x14\n" +
-	"\x05phone\x18\x04 \x01(\tR\x05phone\x12\"\n" +
-	"\rdate_of_birth\x18\x05 \x01(\tR\vdateOfBirth\x12\x18\n" +
-	"\aaddress\x18\x06 \x01(\tR\aaddress\"F\n" +
+	"\x05phone\x18\x03 \x01(\tR\x05phone\x12\"\n" +
+	"\rdate_of_birth\x18\x04 \x01(\tR\vdateOfBirth\x12\x18\n" +
+	"\aaddress\x18\x05 \x01(\tR\aaddress\"F\n" +
 	"\x12UserUpdateResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\x05R\x06status\"1\n" +
@@ -666,12 +667,12 @@ const file_user_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\x04R\x06userId\"T\n" +
 	"\x17UserCreditScoreResponse\x12!\n" +
 	"\fcredit_score\x18\x01 \x01(\x05R\vcreditScore\x12\x16\n" +
-	"\x06Status\x18\x02 \x01(\x05R\x06Status2\xdd\x02\n" +
+	"\x06status\x18\x02 \x01(\x05R\x06status2\xdc\x02\n" +
 	"\vUserService\x129\n" +
 	"\bRegister\x12\x15.user.RegisterRequest\x1a\x16.user.RegisterResponse\x120\n" +
 	"\x05Login\x12\x12.user.LoginRequest\x1a\x13.user.LoginResponse\x12E\n" +
-	"\x0eGetUserDetails\x12\x18.user.UserDetailsRequest\x1a\x19.user.UserDetailsResponse\x12G\n" +
-	"\x11UpdateUserDetails\x12\x17.user.UserUpdateRequest\x1a\x19.user.UserDetailsResponse\x12Q\n" +
+	"\x0eGetUserDetails\x12\x18.user.UserDetailsRequest\x1a\x19.user.UserDetailsResponse\x12F\n" +
+	"\x11UpdateUserDetails\x12\x17.user.UserUpdateRequest\x1a\x18.user.UserUpdateResponse\x12Q\n" +
 	"\x12GetUserCreditScore\x12\x1c.user.UserCreditScoreRequest\x1a\x1d.user.UserCreditScoreResponseB\x1cZ\x1aBackend/created_proto/userb\x06proto3"
 
 var (
@@ -698,23 +699,26 @@ var file_user_proto_goTypes = []any{
 	(*UserUpdateResponse)(nil),      // 7: user.UserUpdateResponse
 	(*UserCreditScoreRequest)(nil),  // 8: user.UserCreditScoreRequest
 	(*UserCreditScoreResponse)(nil), // 9: user.UserCreditScoreResponse
+	(*timestamppb.Timestamp)(nil),   // 10: google.protobuf.Timestamp
 }
 var file_user_proto_depIdxs = []int32{
-	0, // 0: user.UserService.Register:input_type -> user.RegisterRequest
-	2, // 1: user.UserService.Login:input_type -> user.LoginRequest
-	4, // 2: user.UserService.GetUserDetails:input_type -> user.UserDetailsRequest
-	6, // 3: user.UserService.UpdateUserDetails:input_type -> user.UserUpdateRequest
-	8, // 4: user.UserService.GetUserCreditScore:input_type -> user.UserCreditScoreRequest
-	1, // 5: user.UserService.Register:output_type -> user.RegisterResponse
-	3, // 6: user.UserService.Login:output_type -> user.LoginResponse
-	5, // 7: user.UserService.GetUserDetails:output_type -> user.UserDetailsResponse
-	5, // 8: user.UserService.UpdateUserDetails:output_type -> user.UserDetailsResponse
-	9, // 9: user.UserService.GetUserCreditScore:output_type -> user.UserCreditScoreResponse
-	5, // [5:10] is the sub-list for method output_type
-	0, // [0:5] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	10, // 0: user.RegisterRequest.date_of_birth:type_name -> google.protobuf.Timestamp
+	10, // 1: user.UserDetailsResponse.date_of_birth:type_name -> google.protobuf.Timestamp
+	0,  // 2: user.UserService.Register:input_type -> user.RegisterRequest
+	2,  // 3: user.UserService.Login:input_type -> user.LoginRequest
+	4,  // 4: user.UserService.GetUserDetails:input_type -> user.UserDetailsRequest
+	6,  // 5: user.UserService.UpdateUserDetails:input_type -> user.UserUpdateRequest
+	8,  // 6: user.UserService.GetUserCreditScore:input_type -> user.UserCreditScoreRequest
+	1,  // 7: user.UserService.Register:output_type -> user.RegisterResponse
+	3,  // 8: user.UserService.Login:output_type -> user.LoginResponse
+	5,  // 9: user.UserService.GetUserDetails:output_type -> user.UserDetailsResponse
+	7,  // 10: user.UserService.UpdateUserDetails:output_type -> user.UserUpdateResponse
+	9,  // 11: user.UserService.GetUserCreditScore:output_type -> user.UserCreditScoreResponse
+	7,  // [7:12] is the sub-list for method output_type
+	2,  // [2:7] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_user_proto_init() }
