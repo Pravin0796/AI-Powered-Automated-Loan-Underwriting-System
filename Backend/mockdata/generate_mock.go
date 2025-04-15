@@ -3,11 +3,11 @@ package mockdata
 import (
 	"AI-Powered-Automated-Loan-Underwriting-System/config"
 	"AI-Powered-Automated-Loan-Underwriting-System/models"
-	"errors"
 	"fmt"
+	"log"
+
 	"github.com/brianvoe/gofakeit/v6"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 )
 
 func GenerateMockData() {
@@ -21,7 +21,7 @@ func GenerateMockData() {
 		// hash the password
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
 		if err != nil {
-			errors.New("failed to hash password")
+			log.Println("Error: failed to hash password")
 		}
 
 		user := models.User{

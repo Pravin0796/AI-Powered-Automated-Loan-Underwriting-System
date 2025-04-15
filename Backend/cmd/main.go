@@ -6,6 +6,7 @@ import (
 	"AI-Powered-Automated-Loan-Underwriting-System/migration"
 	"AI-Powered-Automated-Loan-Underwriting-System/mockdata"
 	"AI-Powered-Automated-Loan-Underwriting-System/routes"
+	"AI-Powered-Automated-Loan-Underwriting-System/services"
 	"fmt"
 	"log"
 )
@@ -17,15 +18,13 @@ func main() {
 	// Run migrations
 	migration.MigrateDatabase(config.DB)
 
-	// Step 2: Backfill NULL SSNs before running migration
-	if err := config.DB.Exec(`UPDATE loan_applications SET ssn = '000-00-0000' WHERE ssn IS NULL`).Error; err != nil {
-		log.Fatalf("❌ Failed to backfill SSN: %v", err)
-	} else {
-		fmt.Println("✅ Backfilled NULL SSNs successfully")
-	}
-
 	//
 	mockdata.GenerateMockData()
+	decision, err := services.GetLoanDecision()
+	if err != nil {
+		return
+	}
+	fmt.Println(decision)
 
 	fmt.Println("Fetching Credit Report...")
 	//experian.FetchCreditReport()
