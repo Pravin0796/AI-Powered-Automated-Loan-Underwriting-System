@@ -2,10 +2,10 @@ package services
 
 import (
 	"context"
-	"time"
 
-	"backend/models"
-	"backend/protos"
+	protos "AI-Powered-Automated-Loan-Underwriting-System/created_proto/notification"
+	"AI-Powered-Automated-Loan-Underwriting-System/models"
+	"google.golang.org/protobuf/types/known/timestamppb"
 	"gorm.io/gorm"
 )
 
@@ -21,19 +21,23 @@ func (s *NotificationService) GetUserNotifications(ctx context.Context, req *pro
 		return nil, err
 	}
 
-	// Map models to proto message
 	protoNotifications := make([]*protos.Notification, len(notifications))
 	for i, notif := range notifications {
 		protoNotifications[i] = &protos.Notification{
 			Id:        uint64(notif.ID),
-			EventType: notif.EventType,
-			Payload:   notif.Payload,
-			Timestamp: notif.Timestamp.Format(time.RFC3339),
-			Read:      notif.Read,
+			UserId:    uint64(notif.UserID),
+			Title:     notif.Title,
+			Message:   notif.Message,
+			Type:      notif.Type,
+			IsRead:    notif.IsRead,
+			CreatedAt: timestamppb.New(notif.CreatedAt),
+			UpdatedAt: timestamppb.New(notif.UpdatedAt),
 		}
 	}
 
-	return &protos.UserNotificationResponse{Notifications: protoNotifications}, nil
+	return &protos.UserNotificationResponse{
+		Notifications: protoNotifications,
+	}, nil
 }
 
 // MarkNotificationRead marks a notification as read
@@ -43,7 +47,7 @@ func (s *NotificationService) MarkNotificationRead(ctx context.Context, req *pro
 		return nil, err
 	}
 
-	notification.Read = true
+	notification.IsRead = true
 	if err := s.DB.Save(&notification).Error; err != nil {
 		return nil, err
 	}

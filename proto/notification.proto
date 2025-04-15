@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package notification;
 
+import "google/protobuf/timestamp.proto";
+
 option go_package = "Backend/created_proto/notification";
 
 service NotificationService {
@@ -19,10 +21,13 @@ message UserNotificationResponse {
 
 message Notification {
   uint64 id = 1;
-  string event_type = 2;
-  string payload = 3;
-  string timestamp = 4;
-  bool read = 5;
+  uint64 user_id = 2;
+  string title = 3;
+  string message = 4;
+  string type = 5;
+  bool is_read = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
 }
 
 message MarkReadRequest {

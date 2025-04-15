@@ -4,31 +4,28 @@ import (
 	"AI-Powered-Automated-Loan-Underwriting-System/cache"
 	"AI-Powered-Automated-Loan-Underwriting-System/config"
 	"AI-Powered-Automated-Loan-Underwriting-System/migration"
+	"AI-Powered-Automated-Loan-Underwriting-System/mockdata"
 	"AI-Powered-Automated-Loan-Underwriting-System/routes"
 	"fmt"
+	"log"
 )
 
 func main() {
 	// Initialize database connection
 	config.ConnectDatabase()
+
 	// Run migrations
 	migration.MigrateDatabase(config.DB)
-	// Fetch credit report
-	//creditProfile, err := experian.FetchCreditProfile(
-	//	"123-45-6789", "Doe", "John", "123 Main St", "New York", "NY", "10001",
-	//)
-	//if err != nil {
-	//	fmt.Println("Error fetching credit report:", err)
-	//	return
-	//}
-	//fmt.Println("Credit Report:", creditProfile)
 
-	//token, err := experian.GetAccessToken()
-	//if err != nil {
-	//	fmt.Println("Error fetching access token:", err)
-	//} else {
-	//	fmt.Println("Access Token:", token)
-	//}
+	// Step 2: Backfill NULL SSNs before running migration
+	if err := config.DB.Exec(`UPDATE loan_applications SET ssn = '000-00-0000' WHERE ssn IS NULL`).Error; err != nil {
+		log.Fatalf("❌ Failed to backfill SSN: %v", err)
+	} else {
+		fmt.Println("✅ Backfilled NULL SSNs successfully")
+	}
+
+	//
+	mockdata.GenerateMockData()
 
 	fmt.Println("Fetching Credit Report...")
 	//experian.FetchCreditReport()

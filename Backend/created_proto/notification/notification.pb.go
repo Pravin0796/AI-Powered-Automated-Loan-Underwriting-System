@@ -9,6 +9,7 @@ package notification
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -112,10 +113,13 @@ func (x *UserNotificationResponse) GetNotifications() []*Notification {
 type Notification struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            uint64                 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	EventType     string                 `protobuf:"bytes,2,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
-	Payload       string                 `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
-	Timestamp     string                 `protobuf:"bytes,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
-	Read          bool                   `protobuf:"varint,5,opt,name=read,proto3" json:"read,omitempty"`
+	UserId        uint64                 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Message       string                 `protobuf:"bytes,4,opt,name=message,proto3" json:"message,omitempty"`
+	Type          string                 `protobuf:"bytes,5,opt,name=type,proto3" json:"type,omitempty"`
+	IsRead        bool                   `protobuf:"varint,6,opt,name=is_read,json=isRead,proto3" json:"is_read,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -157,32 +161,53 @@ func (x *Notification) GetId() uint64 {
 	return 0
 }
 
-func (x *Notification) GetEventType() string {
+func (x *Notification) GetUserId() uint64 {
 	if x != nil {
-		return x.EventType
+		return x.UserId
+	}
+	return 0
+}
+
+func (x *Notification) GetTitle() string {
+	if x != nil {
+		return x.Title
 	}
 	return ""
 }
 
-func (x *Notification) GetPayload() string {
+func (x *Notification) GetMessage() string {
 	if x != nil {
-		return x.Payload
+		return x.Message
 	}
 	return ""
 }
 
-func (x *Notification) GetTimestamp() string {
+func (x *Notification) GetType() string {
 	if x != nil {
-		return x.Timestamp
+		return x.Type
 	}
 	return ""
 }
 
-func (x *Notification) GetRead() bool {
+func (x *Notification) GetIsRead() bool {
 	if x != nil {
-		return x.Read
+		return x.IsRead
 	}
 	return false
+}
+
+func (x *Notification) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *Notification) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
 }
 
 type MarkReadRequest struct {
@@ -277,18 +302,22 @@ var File_notification_proto protoreflect.FileDescriptor
 
 const file_notification_proto_rawDesc = "" +
 	"\n" +
-	"\x12notification.proto\x12\fnotification\"2\n" +
+	"\x12notification.proto\x12\fnotification\x1a\x1fgoogle/protobuf/timestamp.proto\"2\n" +
 	"\x17UserNotificationRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x04R\x06userId\"\\\n" +
 	"\x18UserNotificationResponse\x12@\n" +
-	"\rnotifications\x18\x01 \x03(\v2\x1a.notification.NotificationR\rnotifications\"\x89\x01\n" +
+	"\rnotifications\x18\x01 \x03(\v2\x1a.notification.NotificationR\rnotifications\"\x8a\x02\n" +
 	"\fNotification\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x1d\n" +
+	"\x02id\x18\x01 \x01(\x04R\x02id\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\x04R\x06userId\x12\x14\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title\x12\x18\n" +
+	"\amessage\x18\x04 \x01(\tR\amessage\x12\x12\n" +
+	"\x04type\x18\x05 \x01(\tR\x04type\x12\x17\n" +
+	"\ais_read\x18\x06 \x01(\bR\x06isRead\x129\n" +
 	"\n" +
-	"event_type\x18\x02 \x01(\tR\teventType\x12\x18\n" +
-	"\apayload\x18\x03 \x01(\tR\apayload\x12\x1c\n" +
-	"\ttimestamp\x18\x04 \x01(\tR\ttimestamp\x12\x12\n" +
-	"\x04read\x18\x05 \x01(\bR\x04read\":\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\":\n" +
 	"\x0fMarkReadRequest\x12'\n" +
 	"\x0fnotification_id\x18\x01 \x01(\x04R\x0enotificationId\"*\n" +
 	"\x10MarkReadResponse\x12\x16\n" +
@@ -316,18 +345,21 @@ var file_notification_proto_goTypes = []any{
 	(*Notification)(nil),             // 2: notification.Notification
 	(*MarkReadRequest)(nil),          // 3: notification.MarkReadRequest
 	(*MarkReadResponse)(nil),         // 4: notification.MarkReadResponse
+	(*timestamppb.Timestamp)(nil),    // 5: google.protobuf.Timestamp
 }
 var file_notification_proto_depIdxs = []int32{
 	2, // 0: notification.UserNotificationResponse.notifications:type_name -> notification.Notification
-	0, // 1: notification.NotificationService.GetUserNotifications:input_type -> notification.UserNotificationRequest
-	3, // 2: notification.NotificationService.MarkNotificationRead:input_type -> notification.MarkReadRequest
-	1, // 3: notification.NotificationService.GetUserNotifications:output_type -> notification.UserNotificationResponse
-	4, // 4: notification.NotificationService.MarkNotificationRead:output_type -> notification.MarkReadResponse
-	3, // [3:5] is the sub-list for method output_type
-	1, // [1:3] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	5, // 1: notification.Notification.created_at:type_name -> google.protobuf.Timestamp
+	5, // 2: notification.Notification.updated_at:type_name -> google.protobuf.Timestamp
+	0, // 3: notification.NotificationService.GetUserNotifications:input_type -> notification.UserNotificationRequest
+	3, // 4: notification.NotificationService.MarkNotificationRead:input_type -> notification.MarkReadRequest
+	1, // 5: notification.NotificationService.GetUserNotifications:output_type -> notification.UserNotificationResponse
+	4, // 6: notification.NotificationService.MarkNotificationRead:output_type -> notification.MarkReadResponse
+	5, // [5:7] is the sub-list for method output_type
+	3, // [3:5] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_notification_proto_init() }
