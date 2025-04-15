@@ -19,6 +19,7 @@ type LoanApplication struct {
 	AnnualIncome        float64        `gorm:"type:decimal(15,2);not null" json:"annual_income"`
 	DTIRatio            float64        `gorm:"type:decimal(5,2);default:0.00" json:"dti_ratio"`
 	ApplicationStatus   string         `gorm:"type:varchar(20);default:'PENDING'" json:"application_status"`
+	Reasoning           string         `gorm:"type:text" json:"reasoning"`
 	CreditReportFetched bool           `gorm:"default:false" json:"credit_report_fetched"`
 	ExperianRequestID   string         `gorm:"type:varchar(100);default:''" json:"experian_request_id,omitempty"`
 	CreditScore         int            `gorm:"default:0" json:"credit_score"`

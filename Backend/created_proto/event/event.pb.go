@@ -250,6 +250,156 @@ func (x *GetEventResponse) GetTimestamp() *timestamppb.Timestamp {
 	return nil
 }
 
+// Empty message (for GetAllEvents)
+type Empty struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Empty) Reset() {
+	*x = Empty{}
+	mi := &file_event_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Empty) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Empty) ProtoMessage() {}
+
+func (x *Empty) ProtoReflect() protoreflect.Message {
+	mi := &file_event_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Empty.ProtoReflect.Descriptor instead.
+func (*Empty) Descriptor() ([]byte, []int) {
+	return file_event_proto_rawDescGZIP(), []int{4}
+}
+
+// EventList message for returning a list of events
+type EventResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	EventId       uint64                 `protobuf:"varint,1,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
+	EventType     string                 `protobuf:"bytes,2,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
+	Payload       string                 `protobuf:"bytes,3,opt,name=payload,proto3" json:"payload,omitempty"`
+	Timestamp     *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=timestamp,proto3" json:"timestamp,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EventResponse) Reset() {
+	*x = EventResponse{}
+	mi := &file_event_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EventResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventResponse) ProtoMessage() {}
+
+func (x *EventResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_event_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EventResponse.ProtoReflect.Descriptor instead.
+func (*EventResponse) Descriptor() ([]byte, []int) {
+	return file_event_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *EventResponse) GetEventId() uint64 {
+	if x != nil {
+		return x.EventId
+	}
+	return 0
+}
+
+func (x *EventResponse) GetEventType() string {
+	if x != nil {
+		return x.EventType
+	}
+	return ""
+}
+
+func (x *EventResponse) GetPayload() string {
+	if x != nil {
+		return x.Payload
+	}
+	return ""
+}
+
+func (x *EventResponse) GetTimestamp() *timestamppb.Timestamp {
+	if x != nil {
+		return x.Timestamp
+	}
+	return nil
+}
+
+type EventList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Events        []*EventResponse       `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *EventList) Reset() {
+	*x = EventList{}
+	mi := &file_event_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *EventList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*EventList) ProtoMessage() {}
+
+func (x *EventList) ProtoReflect() protoreflect.Message {
+	mi := &file_event_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use EventList.ProtoReflect.Descriptor instead.
+func (*EventList) Descriptor() ([]byte, []int) {
+	return file_event_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *EventList) GetEvents() []*EventResponse {
+	if x != nil {
+		return x.Events
+	}
+	return nil
+}
+
 var File_event_proto protoreflect.FileDescriptor
 
 const file_event_proto_rawDesc = "" +
@@ -270,10 +420,20 @@ const file_event_proto_rawDesc = "" +
 	"\n" +
 	"event_type\x18\x02 \x01(\tR\teventType\x12\x18\n" +
 	"\apayload\x18\x03 \x01(\tR\apayload\x128\n" +
-	"\ttimestamp\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp2\x91\x01\n" +
+	"\ttimestamp\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\"\a\n" +
+	"\x05Empty\"\x9d\x01\n" +
+	"\rEventResponse\x12\x19\n" +
+	"\bevent_id\x18\x01 \x01(\x04R\aeventId\x12\x1d\n" +
+	"\n" +
+	"event_type\x18\x02 \x01(\tR\teventType\x12\x18\n" +
+	"\apayload\x18\x03 \x01(\tR\apayload\x128\n" +
+	"\ttimestamp\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\ttimestamp\"9\n" +
+	"\tEventList\x12,\n" +
+	"\x06events\x18\x01 \x03(\v2\x14.event.EventResponseR\x06events2\xc1\x01\n" +
 	"\fEventService\x12D\n" +
 	"\vCreateEvent\x12\x19.event.CreateEventRequest\x1a\x1a.event.CreateEventResponse\x12;\n" +
-	"\bGetEvent\x12\x16.event.GetEventRequest\x1a\x17.event.GetEventResponseB\x1dZ\x1bBackend/created_proto/eventb\x06proto3"
+	"\bGetEvent\x12\x16.event.GetEventRequest\x1a\x17.event.GetEventResponse\x12.\n" +
+	"\fGetAllEvents\x12\f.event.Empty\x1a\x10.event.EventListB\x1dZ\x1bBackend/created_proto/eventb\x06proto3"
 
 var (
 	file_event_proto_rawDescOnce sync.Once
@@ -287,26 +447,33 @@ func file_event_proto_rawDescGZIP() []byte {
 	return file_event_proto_rawDescData
 }
 
-var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_event_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_event_proto_goTypes = []any{
 	(*CreateEventRequest)(nil),    // 0: event.CreateEventRequest
 	(*CreateEventResponse)(nil),   // 1: event.CreateEventResponse
 	(*GetEventRequest)(nil),       // 2: event.GetEventRequest
 	(*GetEventResponse)(nil),      // 3: event.GetEventResponse
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(*Empty)(nil),                 // 4: event.Empty
+	(*EventResponse)(nil),         // 5: event.EventResponse
+	(*EventList)(nil),             // 6: event.EventList
+	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
 }
 var file_event_proto_depIdxs = []int32{
-	4, // 0: event.CreateEventRequest.timestamp:type_name -> google.protobuf.Timestamp
-	4, // 1: event.GetEventResponse.timestamp:type_name -> google.protobuf.Timestamp
-	0, // 2: event.EventService.CreateEvent:input_type -> event.CreateEventRequest
-	2, // 3: event.EventService.GetEvent:input_type -> event.GetEventRequest
-	1, // 4: event.EventService.CreateEvent:output_type -> event.CreateEventResponse
-	3, // 5: event.EventService.GetEvent:output_type -> event.GetEventResponse
-	4, // [4:6] is the sub-list for method output_type
-	2, // [2:4] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	7, // 0: event.CreateEventRequest.timestamp:type_name -> google.protobuf.Timestamp
+	7, // 1: event.GetEventResponse.timestamp:type_name -> google.protobuf.Timestamp
+	7, // 2: event.EventResponse.timestamp:type_name -> google.protobuf.Timestamp
+	5, // 3: event.EventList.events:type_name -> event.EventResponse
+	0, // 4: event.EventService.CreateEvent:input_type -> event.CreateEventRequest
+	2, // 5: event.EventService.GetEvent:input_type -> event.GetEventRequest
+	4, // 6: event.EventService.GetAllEvents:input_type -> event.Empty
+	1, // 7: event.EventService.CreateEvent:output_type -> event.CreateEventResponse
+	3, // 8: event.EventService.GetEvent:output_type -> event.GetEventResponse
+	6, // 9: event.EventService.GetAllEvents:output_type -> event.EventList
+	7, // [7:10] is the sub-list for method output_type
+	4, // [4:7] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_event_proto_init() }
@@ -320,7 +487,7 @@ func file_event_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_event_proto_rawDesc), len(file_event_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

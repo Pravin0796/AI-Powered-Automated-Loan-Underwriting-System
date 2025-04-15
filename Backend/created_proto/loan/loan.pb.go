@@ -29,6 +29,8 @@ type LoanRequest struct {
 	LoanPurpose      string                 `protobuf:"bytes,4,opt,name=loan_purpose,json=loanPurpose,proto3" json:"loan_purpose,omitempty"`                // Purpose of the loan
 	EmploymentStatus string                 `protobuf:"bytes,5,opt,name=employment_status,json=employmentStatus,proto3" json:"employment_status,omitempty"` // Employment status of the user
 	AnnualIncome     float64                `protobuf:"fixed64,6,opt,name=annual_income,json=annualIncome,proto3" json:"annual_income,omitempty"`           // User's annual income
+	Ssn              string                 `protobuf:"bytes,7,opt,name=ssn,proto3" json:"ssn,omitempty"`                                                   // User's SSN
+	Address          string                 `protobuf:"bytes,8,opt,name=address,proto3" json:"address,omitempty"`                                           // User's residential address
 	unknownFields    protoimpl.UnknownFields
 	sizeCache        protoimpl.SizeCache
 }
@@ -103,6 +105,20 @@ func (x *LoanRequest) GetAnnualIncome() float64 {
 		return x.AnnualIncome
 	}
 	return 0
+}
+
+func (x *LoanRequest) GetSsn() string {
+	if x != nil {
+		return x.Ssn
+	}
+	return ""
+}
+
+func (x *LoanRequest) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
 }
 
 type LoanResponse struct {
@@ -299,18 +315,22 @@ func (x *LoanApplicationRequest) GetLoanId() uint64 {
 
 type LoanApplicationResponse struct {
 	state               protoimpl.MessageState `protogen:"open.v1"`
-	LoanId              uint64                 `protobuf:"varint,1,opt,name=loan_id,json=loanId,proto3" json:"loan_id,omitempty"`                                          // Unique loan application ID
-	UserId              uint64                 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`                                          // User ID of the applicant
-	LoanAmount          float64                `protobuf:"fixed64,3,opt,name=loan_amount,json=loanAmount,proto3" json:"loan_amount,omitempty"`                             // Requested loan amount
-	LoanPurpose         string                 `protobuf:"bytes,4,opt,name=loan_purpose,json=loanPurpose,proto3" json:"loan_purpose,omitempty"`                            // Purpose of the loan
-	EmploymentStatus    string                 `protobuf:"bytes,5,opt,name=employment_status,json=employmentStatus,proto3" json:"employment_status,omitempty"`             // Employment status of the user
-	AnnualIncome        float64                `protobuf:"fixed64,6,opt,name=annual_income,json=annualIncome,proto3" json:"annual_income,omitempty"`                       // User's annual income
-	ApplicationStatus   string                 `protobuf:"bytes,7,opt,name=application_status,json=applicationStatus,proto3" json:"application_status,omitempty"`          // Application status (e.g., "Pending", "Approved", "Rejected")
-	CreditReportFetched bool                   `protobuf:"varint,8,opt,name=credit_report_fetched,json=creditReportFetched,proto3" json:"credit_report_fetched,omitempty"` // Whether the credit report has been fetched
-	ExperianRequestId   string                 `protobuf:"bytes,9,opt,name=experian_request_id,json=experianRequestId,proto3" json:"experian_request_id,omitempty"`        // Experian API request ID
-	CreditScore         int32                  `protobuf:"varint,10,opt,name=credit_score,json=creditScore,proto3" json:"credit_score,omitempty"`                          // Credit score fetched from Experian
-	CreatedAt           string                 `protobuf:"bytes,11,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`                                 // Date when the loan application was created (consider using timestamp)
-	UpdatedAt           string                 `protobuf:"bytes,12,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`                                 // Date when the loan application was last updated (consider using timestamp)
+	LoanId              uint64                 `protobuf:"varint,1,opt,name=loan_id,json=loanId,proto3" json:"loan_id,omitempty"`                                           // Unique loan application ID
+	UserId              uint64                 `protobuf:"varint,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`                                           // User ID of the applicant
+	Ssn                 string                 `protobuf:"bytes,3,opt,name=ssn,proto3" json:"ssn,omitempty"`                                                                // User's SSN
+	Address             string                 `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`                                                        // User's residential address
+	LoanAmount          float64                `protobuf:"fixed64,5,opt,name=loan_amount,json=loanAmount,proto3" json:"loan_amount,omitempty"`                              // Requested loan amount
+	LoanPurpose         string                 `protobuf:"bytes,6,opt,name=loan_purpose,json=loanPurpose,proto3" json:"loan_purpose,omitempty"`                             // Purpose of the loan
+	EmploymentStatus    string                 `protobuf:"bytes,7,opt,name=employment_status,json=employmentStatus,proto3" json:"employment_status,omitempty"`              // Employment status of the user
+	AnnualIncome        float64                `protobuf:"fixed64,8,opt,name=annual_income,json=annualIncome,proto3" json:"annual_income,omitempty"`                        // User's annual income
+	ApplicationStatus   string                 `protobuf:"bytes,9,opt,name=application_status,json=applicationStatus,proto3" json:"application_status,omitempty"`           // Application status
+	CreditReportFetched bool                   `protobuf:"varint,10,opt,name=credit_report_fetched,json=creditReportFetched,proto3" json:"credit_report_fetched,omitempty"` // Whether the credit report has been fetched
+	ExperianRequestId   string                 `protobuf:"bytes,11,opt,name=experian_request_id,json=experianRequestId,proto3" json:"experian_request_id,omitempty"`        // Experian API request ID
+	DtiRatio            float64                `protobuf:"fixed64,12,opt,name=dti_ratio,json=dtiRatio,proto3" json:"dti_ratio,omitempty"`                                   // Debt-to-Income Ratio (optional field)
+	CreditScore         int32                  `protobuf:"varint,13,opt,name=credit_score,json=creditScore,proto3" json:"credit_score,omitempty"`                           // Credit score
+	CreatedAt           string                 `protobuf:"bytes,14,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`                                  // Creation date
+	UpdatedAt           string                 `protobuf:"bytes,15,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`                                  // Last update date
+	DeletedAt           string                 `protobuf:"bytes,16,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`                                  // Date when the loan application was deleted (if applicable)
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
 }
@@ -357,6 +377,20 @@ func (x *LoanApplicationResponse) GetUserId() uint64 {
 		return x.UserId
 	}
 	return 0
+}
+
+func (x *LoanApplicationResponse) GetSsn() string {
+	if x != nil {
+		return x.Ssn
+	}
+	return ""
+}
+
+func (x *LoanApplicationResponse) GetAddress() string {
+	if x != nil {
+		return x.Address
+	}
+	return ""
 }
 
 func (x *LoanApplicationResponse) GetLoanAmount() float64 {
@@ -408,6 +442,13 @@ func (x *LoanApplicationResponse) GetExperianRequestId() string {
 	return ""
 }
 
+func (x *LoanApplicationResponse) GetDtiRatio() float64 {
+	if x != nil {
+		return x.DtiRatio
+	}
+	return 0
+}
+
 func (x *LoanApplicationResponse) GetCreditScore() int32 {
 	if x != nil {
 		return x.CreditScore
@@ -429,12 +470,271 @@ func (x *LoanApplicationResponse) GetUpdatedAt() string {
 	return ""
 }
 
+func (x *LoanApplicationResponse) GetDeletedAt() string {
+	if x != nil {
+		return x.DeletedAt
+	}
+	return ""
+}
+
+type Empty struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Empty) Reset() {
+	*x = Empty{}
+	mi := &file_loan_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Empty) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Empty) ProtoMessage() {}
+
+func (x *Empty) ProtoReflect() protoreflect.Message {
+	mi := &file_loan_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Empty.ProtoReflect.Descriptor instead.
+func (*Empty) Descriptor() ([]byte, []int) {
+	return file_loan_proto_rawDescGZIP(), []int{6}
+}
+
+type LoanApplicationList struct {
+	state         protoimpl.MessageState     `protogen:"open.v1"`
+	Applications  []*LoanApplicationResponse `protobuf:"bytes,1,rep,name=applications,proto3" json:"applications,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LoanApplicationList) Reset() {
+	*x = LoanApplicationList{}
+	mi := &file_loan_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoanApplicationList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoanApplicationList) ProtoMessage() {}
+
+func (x *LoanApplicationList) ProtoReflect() protoreflect.Message {
+	mi := &file_loan_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoanApplicationList.ProtoReflect.Descriptor instead.
+func (*LoanApplicationList) Descriptor() ([]byte, []int) {
+	return file_loan_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *LoanApplicationList) GetApplications() []*LoanApplicationResponse {
+	if x != nil {
+		return x.Applications
+	}
+	return nil
+}
+
+type UpdateApplicationStatusRequest struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	LoanApplicationId uint64                 `protobuf:"varint,1,opt,name=loan_application_id,json=loanApplicationId,proto3" json:"loan_application_id,omitempty"`
+	NewStatus         string                 `protobuf:"bytes,2,opt,name=new_status,json=newStatus,proto3" json:"new_status,omitempty"` // Approved, Rejected, etc.
+	Reasoning         string                 `protobuf:"bytes,3,opt,name=reasoning,proto3" json:"reasoning,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *UpdateApplicationStatusRequest) Reset() {
+	*x = UpdateApplicationStatusRequest{}
+	mi := &file_loan_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateApplicationStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateApplicationStatusRequest) ProtoMessage() {}
+
+func (x *UpdateApplicationStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_loan_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateApplicationStatusRequest.ProtoReflect.Descriptor instead.
+func (*UpdateApplicationStatusRequest) Descriptor() ([]byte, []int) {
+	return file_loan_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *UpdateApplicationStatusRequest) GetLoanApplicationId() uint64 {
+	if x != nil {
+		return x.LoanApplicationId
+	}
+	return 0
+}
+
+func (x *UpdateApplicationStatusRequest) GetNewStatus() string {
+	if x != nil {
+		return x.NewStatus
+	}
+	return ""
+}
+
+func (x *UpdateApplicationStatusRequest) GetReasoning() string {
+	if x != nil {
+		return x.Reasoning
+	}
+	return ""
+}
+
+type UpdateApplicationStatusResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Status        string                 `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateApplicationStatusResponse) Reset() {
+	*x = UpdateApplicationStatusResponse{}
+	mi := &file_loan_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateApplicationStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateApplicationStatusResponse) ProtoMessage() {}
+
+func (x *UpdateApplicationStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_loan_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateApplicationStatusResponse.ProtoReflect.Descriptor instead.
+func (*UpdateApplicationStatusResponse) Descriptor() ([]byte, []int) {
+	return file_loan_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *UpdateApplicationStatusResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+type LoanStatsResponse struct {
+	state             protoimpl.MessageState `protogen:"open.v1"`
+	TotalApplications uint32                 `protobuf:"varint,1,opt,name=total_applications,json=totalApplications,proto3" json:"total_applications,omitempty"`
+	Approved          uint32                 `protobuf:"varint,2,opt,name=approved,proto3" json:"approved,omitempty"`
+	Rejected          uint32                 `protobuf:"varint,3,opt,name=rejected,proto3" json:"rejected,omitempty"`
+	Pending           uint32                 `protobuf:"varint,4,opt,name=pending,proto3" json:"pending,omitempty"`
+	unknownFields     protoimpl.UnknownFields
+	sizeCache         protoimpl.SizeCache
+}
+
+func (x *LoanStatsResponse) Reset() {
+	*x = LoanStatsResponse{}
+	mi := &file_loan_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LoanStatsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LoanStatsResponse) ProtoMessage() {}
+
+func (x *LoanStatsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_loan_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LoanStatsResponse.ProtoReflect.Descriptor instead.
+func (*LoanStatsResponse) Descriptor() ([]byte, []int) {
+	return file_loan_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *LoanStatsResponse) GetTotalApplications() uint32 {
+	if x != nil {
+		return x.TotalApplications
+	}
+	return 0
+}
+
+func (x *LoanStatsResponse) GetApproved() uint32 {
+	if x != nil {
+		return x.Approved
+	}
+	return 0
+}
+
+func (x *LoanStatsResponse) GetRejected() uint32 {
+	if x != nil {
+		return x.Rejected
+	}
+	return 0
+}
+
+func (x *LoanStatsResponse) GetPending() uint32 {
+	if x != nil {
+		return x.Pending
+	}
+	return 0
+}
+
 var File_loan_proto protoreflect.FileDescriptor
 
 const file_loan_proto_rawDesc = "" +
 	"\n" +
 	"\n" +
-	"loan.proto\x12\x04loan\"\xd9\x01\n" +
+	"loan.proto\x12\x04loan\"\x85\x02\n" +
 	"\vLoanRequest\x12\x17\n" +
 	"\auser_id\x18\x01 \x01(\x04R\x06userId\x12\x1f\n" +
 	"\vloan_amount\x18\x02 \x01(\x01R\n" +
@@ -442,7 +742,9 @@ const file_loan_proto_rawDesc = "" +
 	"\tloan_term\x18\x03 \x01(\x05R\bloanTerm\x12!\n" +
 	"\floan_purpose\x18\x04 \x01(\tR\vloanPurpose\x12+\n" +
 	"\x11employment_status\x18\x05 \x01(\tR\x10employmentStatus\x12#\n" +
-	"\rannual_income\x18\x06 \x01(\x01R\fannualIncome\"?\n" +
+	"\rannual_income\x18\x06 \x01(\x01R\fannualIncome\x12\x10\n" +
+	"\x03ssn\x18\a \x01(\tR\x03ssn\x12\x18\n" +
+	"\aaddress\x18\b \x01(\tR\aaddress\"?\n" +
 	"\fLoanResponse\x12\x17\n" +
 	"\aloan_id\x18\x01 \x01(\x04R\x06loanId\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\",\n" +
@@ -452,28 +754,51 @@ const file_loan_proto_rawDesc = "" +
 	"\aloan_id\x18\x01 \x01(\x04R\x06loanId\x12\x16\n" +
 	"\x06status\x18\x02 \x01(\tR\x06status\"1\n" +
 	"\x16LoanApplicationRequest\x12\x17\n" +
-	"\aloan_id\x18\x01 \x01(\x04R\x06loanId\"\xd5\x03\n" +
+	"\aloan_id\x18\x01 \x01(\x04R\x06loanId\"\xbd\x04\n" +
 	"\x17LoanApplicationResponse\x12\x17\n" +
 	"\aloan_id\x18\x01 \x01(\x04R\x06loanId\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\x04R\x06userId\x12\x1f\n" +
-	"\vloan_amount\x18\x03 \x01(\x01R\n" +
+	"\auser_id\x18\x02 \x01(\x04R\x06userId\x12\x10\n" +
+	"\x03ssn\x18\x03 \x01(\tR\x03ssn\x12\x18\n" +
+	"\aaddress\x18\x04 \x01(\tR\aaddress\x12\x1f\n" +
+	"\vloan_amount\x18\x05 \x01(\x01R\n" +
 	"loanAmount\x12!\n" +
-	"\floan_purpose\x18\x04 \x01(\tR\vloanPurpose\x12+\n" +
-	"\x11employment_status\x18\x05 \x01(\tR\x10employmentStatus\x12#\n" +
-	"\rannual_income\x18\x06 \x01(\x01R\fannualIncome\x12-\n" +
-	"\x12application_status\x18\a \x01(\tR\x11applicationStatus\x122\n" +
-	"\x15credit_report_fetched\x18\b \x01(\bR\x13creditReportFetched\x12.\n" +
-	"\x13experian_request_id\x18\t \x01(\tR\x11experianRequestId\x12!\n" +
-	"\fcredit_score\x18\n" +
-	" \x01(\x05R\vcreditScore\x12\x1d\n" +
+	"\floan_purpose\x18\x06 \x01(\tR\vloanPurpose\x12+\n" +
+	"\x11employment_status\x18\a \x01(\tR\x10employmentStatus\x12#\n" +
+	"\rannual_income\x18\b \x01(\x01R\fannualIncome\x12-\n" +
+	"\x12application_status\x18\t \x01(\tR\x11applicationStatus\x122\n" +
+	"\x15credit_report_fetched\x18\n" +
+	" \x01(\bR\x13creditReportFetched\x12.\n" +
+	"\x13experian_request_id\x18\v \x01(\tR\x11experianRequestId\x12\x1b\n" +
+	"\tdti_ratio\x18\f \x01(\x01R\bdtiRatio\x12!\n" +
+	"\fcredit_score\x18\r \x01(\x05R\vcreditScore\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\v \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"created_at\x18\x0e \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\f \x01(\tR\tupdatedAt2\xe2\x01\n" +
+	"updated_at\x18\x0f \x01(\tR\tupdatedAt\x12\x1d\n" +
+	"\n" +
+	"deleted_at\x18\x10 \x01(\tR\tdeletedAt\"\a\n" +
+	"\x05Empty\"X\n" +
+	"\x13LoanApplicationList\x12A\n" +
+	"\fapplications\x18\x01 \x03(\v2\x1d.loan.LoanApplicationResponseR\fapplications\"\x8d\x01\n" +
+	"\x1eUpdateApplicationStatusRequest\x12.\n" +
+	"\x13loan_application_id\x18\x01 \x01(\x04R\x11loanApplicationId\x12\x1d\n" +
+	"\n" +
+	"new_status\x18\x02 \x01(\tR\tnewStatus\x12\x1c\n" +
+	"\treasoning\x18\x03 \x01(\tR\treasoning\"9\n" +
+	"\x1fUpdateApplicationStatusResponse\x12\x16\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\"\x94\x01\n" +
+	"\x11LoanStatsResponse\x12-\n" +
+	"\x12total_applications\x18\x01 \x01(\rR\x11totalApplications\x12\x1a\n" +
+	"\bapproved\x18\x02 \x01(\rR\bapproved\x12\x1a\n" +
+	"\brejected\x18\x03 \x01(\rR\brejected\x12\x18\n" +
+	"\apending\x18\x04 \x01(\rR\apending2\xc2\x03\n" +
 	"\vLoanService\x125\n" +
 	"\fApplyForLoan\x12\x11.loan.LoanRequest\x1a\x12.loan.LoanResponse\x12B\n" +
 	"\rGetLoanStatus\x12\x17.loan.LoanStatusRequest\x1a\x18.loan.LoanStatusResponse\x12X\n" +
-	"\x19GetLoanApplicationDetails\x12\x1c.loan.LoanApplicationRequest\x1a\x1d.loan.LoanApplicationResponseB\x1cZ\x1aBackend/created_proto/loanb\x06proto3"
+	"\x19GetLoanApplicationDetails\x12\x1c.loan.LoanApplicationRequest\x1a\x1d.loan.LoanApplicationResponse\x12@\n" +
+	"\x16GetAllLoanApplications\x12\v.loan.Empty\x1a\x19.loan.LoanApplicationList\x12f\n" +
+	"\x17UpdateApplicationStatus\x12$.loan.UpdateApplicationStatusRequest\x1a%.loan.UpdateApplicationStatusResponse\x124\n" +
+	"\fGetLoanStats\x12\v.loan.Empty\x1a\x17.loan.LoanStatsResponseB\x1cZ\x1aBackend/created_proto/loanb\x06proto3"
 
 var (
 	file_loan_proto_rawDescOnce sync.Once
@@ -487,27 +812,39 @@ func file_loan_proto_rawDescGZIP() []byte {
 	return file_loan_proto_rawDescData
 }
 
-var file_loan_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_loan_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_loan_proto_goTypes = []any{
-	(*LoanRequest)(nil),             // 0: loan.LoanRequest
-	(*LoanResponse)(nil),            // 1: loan.LoanResponse
-	(*LoanStatusRequest)(nil),       // 2: loan.LoanStatusRequest
-	(*LoanStatusResponse)(nil),      // 3: loan.LoanStatusResponse
-	(*LoanApplicationRequest)(nil),  // 4: loan.LoanApplicationRequest
-	(*LoanApplicationResponse)(nil), // 5: loan.LoanApplicationResponse
+	(*LoanRequest)(nil),                     // 0: loan.LoanRequest
+	(*LoanResponse)(nil),                    // 1: loan.LoanResponse
+	(*LoanStatusRequest)(nil),               // 2: loan.LoanStatusRequest
+	(*LoanStatusResponse)(nil),              // 3: loan.LoanStatusResponse
+	(*LoanApplicationRequest)(nil),          // 4: loan.LoanApplicationRequest
+	(*LoanApplicationResponse)(nil),         // 5: loan.LoanApplicationResponse
+	(*Empty)(nil),                           // 6: loan.Empty
+	(*LoanApplicationList)(nil),             // 7: loan.LoanApplicationList
+	(*UpdateApplicationStatusRequest)(nil),  // 8: loan.UpdateApplicationStatusRequest
+	(*UpdateApplicationStatusResponse)(nil), // 9: loan.UpdateApplicationStatusResponse
+	(*LoanStatsResponse)(nil),               // 10: loan.LoanStatsResponse
 }
 var file_loan_proto_depIdxs = []int32{
-	0, // 0: loan.LoanService.ApplyForLoan:input_type -> loan.LoanRequest
-	2, // 1: loan.LoanService.GetLoanStatus:input_type -> loan.LoanStatusRequest
-	4, // 2: loan.LoanService.GetLoanApplicationDetails:input_type -> loan.LoanApplicationRequest
-	1, // 3: loan.LoanService.ApplyForLoan:output_type -> loan.LoanResponse
-	3, // 4: loan.LoanService.GetLoanStatus:output_type -> loan.LoanStatusResponse
-	5, // 5: loan.LoanService.GetLoanApplicationDetails:output_type -> loan.LoanApplicationResponse
-	3, // [3:6] is the sub-list for method output_type
-	0, // [0:3] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	5,  // 0: loan.LoanApplicationList.applications:type_name -> loan.LoanApplicationResponse
+	0,  // 1: loan.LoanService.ApplyForLoan:input_type -> loan.LoanRequest
+	2,  // 2: loan.LoanService.GetLoanStatus:input_type -> loan.LoanStatusRequest
+	4,  // 3: loan.LoanService.GetLoanApplicationDetails:input_type -> loan.LoanApplicationRequest
+	6,  // 4: loan.LoanService.GetAllLoanApplications:input_type -> loan.Empty
+	8,  // 5: loan.LoanService.UpdateApplicationStatus:input_type -> loan.UpdateApplicationStatusRequest
+	6,  // 6: loan.LoanService.GetLoanStats:input_type -> loan.Empty
+	1,  // 7: loan.LoanService.ApplyForLoan:output_type -> loan.LoanResponse
+	3,  // 8: loan.LoanService.GetLoanStatus:output_type -> loan.LoanStatusResponse
+	5,  // 9: loan.LoanService.GetLoanApplicationDetails:output_type -> loan.LoanApplicationResponse
+	7,  // 10: loan.LoanService.GetAllLoanApplications:output_type -> loan.LoanApplicationList
+	9,  // 11: loan.LoanService.UpdateApplicationStatus:output_type -> loan.UpdateApplicationStatusResponse
+	10, // 12: loan.LoanService.GetLoanStats:output_type -> loan.LoanStatsResponse
+	7,  // [7:13] is the sub-list for method output_type
+	1,  // [1:7] is the sub-list for method input_type
+	1,  // [1:1] is the sub-list for extension type_name
+	1,  // [1:1] is the sub-list for extension extendee
+	0,  // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_loan_proto_init() }
@@ -521,7 +858,7 @@ func file_loan_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_loan_proto_rawDesc), len(file_loan_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   6,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

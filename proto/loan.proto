@@ -8,6 +8,9 @@ service LoanService {
   rpc ApplyForLoan (LoanRequest) returns (LoanResponse);
   rpc GetLoanStatus (LoanStatusRequest) returns (LoanStatusResponse);
   rpc GetLoanApplicationDetails (LoanApplicationRequest) returns (LoanApplicationResponse);
+  rpc GetAllLoanApplications(Empty) returns (LoanApplicationList);
+  rpc UpdateApplicationStatus(UpdateApplicationStatusRequest) returns (UpdateApplicationStatusResponse);
+  rpc GetLoanStats(Empty) returns (LoanStatsResponse);
 }
 
 message LoanRequest {
@@ -59,3 +62,25 @@ message LoanApplicationResponse {
   string deleted_at = 16;            // Date when the loan application was deleted (if applicable)
 }
 
+message Empty {}
+
+message LoanApplicationList {
+  repeated LoanApplicationResponse applications = 1;
+}
+
+message UpdateApplicationStatusRequest {
+  uint64 loan_application_id = 1;
+  string new_status = 2; // Approved, Rejected, etc.
+  string reasoning = 3;
+}
+
+message UpdateApplicationStatusResponse {
+  string status = 1;
+}
+
+message LoanStatsResponse {
+  uint32 total_applications = 1;
+  uint32 approved = 2;
+  uint32 rejected = 3;
+  uint32 pending = 4;
+}

@@ -10,6 +10,7 @@ option go_package = "Backend/created_proto/event";
 service EventService {
   rpc CreateEvent (CreateEventRequest) returns (CreateEventResponse);
   rpc GetEvent (GetEventRequest) returns (GetEventResponse);
+  rpc GetAllEvents (Empty) returns (EventList);
 }
 
 // CreateEventRequest message for creating an event
@@ -36,4 +37,19 @@ message GetEventResponse {
   string event_type = 2;        // Type of the event (e.g., "Loan Application Submitted")
   string payload = 3;           // JSON string containing event details (payload)
   google.protobuf.Timestamp timestamp = 4; // Timestamp of the event
+}
+
+// Empty message (for GetAllEvents)
+message Empty {}
+
+// EventList message for returning a list of events
+message EventResponse {
+  uint64 event_id = 1;
+  string event_type = 2;
+  string payload = 3;
+  google.protobuf.Timestamp timestamp = 4;
+}
+
+message EventList {
+  repeated EventResponse events = 1;
 }

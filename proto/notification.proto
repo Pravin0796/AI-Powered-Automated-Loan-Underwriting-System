@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package notification;
+
+option go_package = "Backend/created_proto/notification";
+
+service NotificationService {
+  rpc GetUserNotifications(UserNotificationRequest) returns (UserNotificationResponse);
+  rpc MarkNotificationRead(MarkReadRequest) returns (MarkReadResponse);
+}
+
+message UserNotificationRequest {
+  uint64 user_id = 1;
+}
+
+message UserNotificationResponse {
+  repeated Notification notifications = 1;
+}
+
+message Notification {
+  uint64 id = 1;
+  string event_type = 2;
+  string payload = 3;
+  string timestamp = 4;
+  bool read = 5;
+}
+
+message MarkReadRequest {
+  uint64 notification_id = 1;
+}
+
+message MarkReadResponse {
+  string status = 1;
+}
