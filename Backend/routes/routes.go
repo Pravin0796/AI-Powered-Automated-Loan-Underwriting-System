@@ -20,7 +20,6 @@ func StartGRPCServer(db *gorm.DB) {
 	if err != nil {
 		log.Fatalf("Failed to listen: %v", err)
 	}
-
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(middleware.JWTAuthInterceptor))
 	reflection.Register(grpcServer) // Register reflection service on gRPC server used for debugging using eg. grpcurl
 

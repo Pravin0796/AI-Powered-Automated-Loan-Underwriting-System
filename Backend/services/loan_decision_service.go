@@ -22,9 +22,9 @@ func NewLoanDecisionServiceServer(db *gorm.DB) *LoanDecisionServiceServer {
 func (s *LoanDecisionServiceServer) CreateLoanDecision(ctx context.Context, req *pb.CreateLoanDecisionRequest) (*pb.CreateLoanDecisionResponse, error) {
 	loanDecision := models.LoanDecision{
 		LoanApplicationID: uint(req.LoanApplicationId),
-		AIDecision:        req.AiDecision,
-		Reasoning:         req.Reasoning,
-		CreatedAt:         time.Now(),
+		//AiDecision:        req.AiDecision,
+		Reasoning: req.Reasoning,
+		CreatedAt: time.Now(),
 	}
 
 	if err := s.DB.Create(&loanDecision).Error; err != nil {
@@ -46,8 +46,8 @@ func (s *LoanDecisionServiceServer) GetLoanDecision(ctx context.Context, req *pb
 	return &pb.GetLoanDecisionResponse{
 		LoanDecisionId:    uint64(decision.ID),
 		LoanApplicationId: uint64(decision.LoanApplicationID),
-		AiDecision:        decision.AIDecision,
-		Reasoning:         decision.Reasoning,
-		CreatedAt:         timestamppb.New(decision.CreatedAt),
+		//AiDecision:        decision.AiDecision,
+		Reasoning: decision.Reasoning,
+		CreatedAt: timestamppb.New(decision.CreatedAt),
 	}, nil
 }

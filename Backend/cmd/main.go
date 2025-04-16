@@ -6,9 +6,7 @@ import (
 	"AI-Powered-Automated-Loan-Underwriting-System/migration"
 	"AI-Powered-Automated-Loan-Underwriting-System/mockdata"
 	"AI-Powered-Automated-Loan-Underwriting-System/routes"
-	"AI-Powered-Automated-Loan-Underwriting-System/services"
 	"fmt"
-	"log"
 )
 
 func main() {
@@ -19,12 +17,15 @@ func main() {
 	migration.MigrateDatabase(config.DB)
 
 	//
-	mockdata.GenerateMockData()
-	decision, err := services.GetLoanDecision()
+	err := mockdata.SeedMockData(config.DB)
 	if err != nil {
 		return
 	}
-	fmt.Println(decision)
+	//decision, err := services.GetLoanDecision()
+	//if err != nil {
+	//	return
+	//}
+	//fmt.Println(decision)
 
 	fmt.Println("Fetching Credit Report...")
 	//experian.FetchCreditReport()

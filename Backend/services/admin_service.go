@@ -24,12 +24,12 @@ func (s *AdminService) GetAllLoanApplications(ctx context.Context, req *protos.E
 	protoApplications := make([]*protos.LoanApplicationResponse, len(applications))
 	for i, app := range applications {
 		protoApplications[i] = &protos.LoanApplicationResponse{
-			LoanId:              uint64(app.ID),
-			UserId:              uint64(app.UserID),
-			LoanAmount:          app.LoanAmount,
-			LoanPurpose:         app.LoanPurpose,
-			EmploymentStatus:    app.EmploymentStatus,
-			AnnualIncome:        app.AnnualIncome,
+			LoanId:           uint64(app.ID),
+			UserId:           uint64(app.UserID),
+			LoanAmount:       app.LoanAmount,
+			LoanPurpose:      app.LoanPurpose,
+			EmploymentStatus: app.EmploymentStatus,
+			//AnnualIncome:        app.AnnualIncome,
 			ApplicationStatus:   app.ApplicationStatus,
 			CreditReportFetched: app.CreditReportFetched,
 			ExperianRequestId:   app.ExperianRequestID,

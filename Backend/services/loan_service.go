@@ -16,11 +16,11 @@ type LoanServiceServer struct {
 // ApplyForLoan handles loan application
 func (s *LoanServiceServer) ApplyForLoan(ctx context.Context, req *pb.LoanRequest) (*pb.LoanResponse, error) {
 	loan := models.LoanApplication{
-		UserID:              uint(req.UserId),
-		LoanAmount:          req.LoanAmount,
-		LoanPurpose:         req.LoanPurpose,
-		EmploymentStatus:    req.EmploymentStatus,
-		AnnualIncome:        req.AnnualIncome,
+		UserID:           uint(req.UserId),
+		LoanAmount:       req.LoanAmount,
+		LoanPurpose:      req.LoanPurpose,
+		EmploymentStatus: req.EmploymentStatus,
+		//AnnualIncome:        req.AnnualIncome,
 		ApplicationStatus:   "PENDING",
 		CreditReportFetched: false,
 	}
@@ -70,12 +70,12 @@ func (s *LoanServiceServer) GetLoanApplicationDetails(ctx context.Context, req *
 
 	// Prepare and return the loan application response
 	return &pb.LoanApplicationResponse{
-		LoanId:              uint64(loan.ID),
-		UserId:              uint64(loan.UserID),
-		LoanAmount:          loan.LoanAmount,
-		LoanPurpose:         loan.LoanPurpose,
-		EmploymentStatus:    loan.EmploymentStatus,
-		AnnualIncome:        loan.AnnualIncome,
+		LoanId:           uint64(loan.ID),
+		UserId:           uint64(loan.UserID),
+		LoanAmount:       loan.LoanAmount,
+		LoanPurpose:      loan.LoanPurpose,
+		EmploymentStatus: loan.EmploymentStatus,
+		//AnnualIncome:        loan.AnnualIncome,
 		ApplicationStatus:   loan.ApplicationStatus,
 		CreditReportFetched: loan.CreditReportFetched,
 		ExperianRequestId:   loan.ExperianRequestID,
