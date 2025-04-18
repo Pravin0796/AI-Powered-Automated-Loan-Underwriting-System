@@ -333,6 +333,7 @@ type LoanApplicationResponse struct {
 	DeletedAt           string                 `protobuf:"bytes,16,opt,name=deleted_at,json=deletedAt,proto3" json:"deleted_at,omitempty"`                                  // Date when the loan application was deleted (if applicable)
 	unknownFields       protoimpl.UnknownFields
 	sizeCache           protoimpl.SizeCache
+	AddressArea         string
 }
 
 func (x *LoanApplicationResponse) Reset() {

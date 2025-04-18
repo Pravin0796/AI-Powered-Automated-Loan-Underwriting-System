@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package user;
 
-option go_package = "Backend/created_proto/user"; // Specify your Go package location
+option go_package = "Backend/created_proto/user";
 
-import "google/protobuf/timestamp.proto"; // Import timestamp for date fields
+import "google/protobuf/timestamp.proto";
 
 service UserService {
   rpc Register (RegisterRequest) returns (RegisterResponse);
@@ -19,7 +19,7 @@ message RegisterRequest {
   string email = 2;
   string password = 3;
   string phone = 4;
-  google.protobuf.Timestamp date_of_birth = 5; // Consider using Google Protobuf Timestamp for date fields
+  google.protobuf.Timestamp date_of_birth = 5;
   string address = 6;
 }
 
@@ -39,24 +39,26 @@ message LoginResponse {
 }
 
 message UserDetailsRequest {
-  uint64 user_id = 1; // Request for details of user by ID
+  uint64 user_id = 1;
 }
 
 message UserDetailsResponse {
   string full_name = 1;
   string email = 2;
   string phone = 3;
-  google.protobuf.Timestamp date_of_birth = 4; // Consider using Google Protobuf Timestamp for dates
+  google.protobuf.Timestamp date_of_birth = 4;
   string address = 5;
   int32 credit_score = 6;
-  int32 status = 7;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  int32 status = 9;
 }
 
 message UserUpdateRequest {
   uint64 user_id = 1;
   string full_name = 2;
-  string phone = 3;  // Fixed phone field type mismatch
-  string date_of_birth = 4;
+  string phone = 3;
+  google.protobuf.Timestamp date_of_birth = 4;
   string address = 5;
 }
 

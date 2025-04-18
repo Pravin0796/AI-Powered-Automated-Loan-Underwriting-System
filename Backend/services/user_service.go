@@ -6,9 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	_ "github.com/golang/protobuf/ptypes/timestamp"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
 	_ "time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -112,5 +110,27 @@ func (s *UserService) GetUserCreditScore(ctx context.Context, req *pb.UserCredit
 	return &pb.UserCreditScoreResponse{
 		CreditScore: int32(user.CreditScore),
 		Status:      200,
+	}, nil
+}
+
+// UpdateUserDetails updates the user info
+func (s *UserService) UpdateUserDetails(ctx context.Context, req *pb.UserUpdateRequest) (*pb.UserUpdateResponse, error) {
+	var user models.User
+	if err := s.repo.GetUserByID(ctx, uint(req.UserId), &user); err != nil {
+		return nil, errors.New("user not found")
+	}
+
+	user.FullName = req.FullName
+	user.Phone = req.Phone
+	user.DateOfBirth = req.DateOfBirth.AsTime()
+	user.Address = req.Address
+
+	if err := s.repo.UpdateUser(ctx, &user); err != nil {
+		return nil, errors.New("failed to update user details")
+	}
+
+	return &pb.UserUpdateResponse{
+		Message: "User details updated successfully",
+		Status:  200,
 	}, nil
 }

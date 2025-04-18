@@ -29,8 +29,8 @@ func (r *UserRepo) GetUserByID(ctx context.Context, userID uint, user *models.Us
 	return r.DB.WithContext(ctx).First(&user, userID).Error
 }
 
-func (r *UserRepo) UpdateUser(ctx context.Context, user models.User) error {
-	return r.DB.WithContext(ctx).Save(&user).Error
+func (r *UserRepo) UpdateUser(ctx context.Context, user *models.User) error {
+	return r.DB.WithContext(ctx).Model(&models.User{}).Where("id = ?", user.ID).Updates(user).Error
 }
 
 func (r *UserRepo) DeleteUser(ctx context.Context, userID uint) error {

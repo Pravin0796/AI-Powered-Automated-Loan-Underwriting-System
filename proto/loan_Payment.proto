@@ -14,10 +14,11 @@ service LoanPaymentService {
 
 // CreateLoanPaymentRequest message for making a loan payment
 message CreateLoanPaymentRequest {
-  uint64 loan_application_id = 1;  // Loan application ID
-  double amount_paid = 2;           // Amount paid in the transaction
-  string status = 3;                // Payment status (pending, successful, failed)
-  google.protobuf.Timestamp payment_date = 4; // Payment date and time
+  uint64 loan_application_id = 1;
+  double amount_paid = 2;
+  string status = 3;
+  google.protobuf.Timestamp payment_date = 4;
+  google.protobuf.Timestamp due_date = 5; // ✅ New field
 }
 
 // CreateLoanPaymentResponse message for response after creating a loan payment
@@ -33,9 +34,10 @@ message GetLoanPaymentRequest {
 
 // GetLoanPaymentResponse message containing the loan payment details
 message GetLoanPaymentResponse {
-  uint64 loan_payment_id = 1;       // Unique ID of the loan payment
-  uint64 loan_application_id = 2;   // Associated loan application ID
-  double amount_paid = 3;            // Amount paid in the transaction
-  string status = 4;                 // Payment status (pending, successful, failed)
-  google.protobuf.Timestamp payment_date = 5; // Payment date and time
+  uint64 loan_payment_id = 1;
+  uint64 loan_application_id = 2;
+  double amount_paid = 3;
+  string status = 4;
+  google.protobuf.Timestamp payment_date = 5;
+  google.protobuf.Timestamp due_date = 6; // ✅ New field
 }

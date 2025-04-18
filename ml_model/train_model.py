@@ -7,6 +7,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from xgboost import XGBClassifier
 from sklearn.metrics import accuracy_score, classification_report
+import matplotlib.pyplot as plt
+from xgboost import plot_importance
 
 # Step 2: Connect to PostgreSQL
 DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/testdb"
@@ -38,9 +40,6 @@ df = df.merge(credit_df, left_on='id_loan', right_on='loan_application_id')
 df = df.merge(decision_df, left_on='id_loan', right_on='loan_application_id')
 df = df.merge(payment_df, left_on='id_loan', right_on='loan_application_id', how='left', suffixes=('', '_payment'))
 
-print("🔍 Rows after all merges:", df.shape[0])
-# print("📌 df.columns after merge:\n", df.columns.tolist())
-
 # Step 6: Feature engineering from payment history
 df['annual_income'] = df['gross_monthly_income'] * 12
 
@@ -64,20 +63,9 @@ agg_features = df.groupby('id_loan').agg({
     'status': 'payment_success_ratio'
 }).reset_index()
 
-print("🧾 Aggregated payment features:\n", agg_features.head())
-print("🔢 Shape of agg_features:", agg_features.shape)
-
 # Step 7: Merge back aggregated features
 df = df.drop_duplicates(subset=['id_loan'])
 df = df.merge(agg_features, on='id_loan', how='left')
-print("📌 Rows after merging payment aggregation:", df.shape[0])
-
-
-print("🧠 Checking nulls before feature selection:\n", df[[
-    'loan_amount', 'loan_purpose', 'employment_status',
-    'gross_monthly_income', 'dti_ratio', 'credit_score',
-    'credit_score_user', 'delinquency_flag'
-]].isnull().sum())
 
 
 # Step 8: Feature selection
@@ -103,15 +91,9 @@ features = df[[
     'payment_success_ratio'
 ]]
 
-print("✅ Selected features preview:\n", features.head())
-
 
 # Step 9: Target variable (ai_decision as binary)
 target = df['ai_decision'].astype(int)
-
-print("✅ Features shape after selection:", features.shape)
-print("🧾 Columns in features:", features.columns.tolist())
-print("🎯 Target values count:\n", target.value_counts())
 
 # Step 10: Encode categoricals
 for col in ['loan_purpose', 'employment_status']:
@@ -119,13 +101,8 @@ for col in ['loan_purpose', 'employment_status']:
     features[col] = le.fit_transform(features[col].astype(str))
 
 # Step 11: Clean and align with target
-print("📊 Features shape before dropna:", features.shape)
 features = features.apply(pd.to_numeric, errors='coerce')
 features.dropna(inplace=True)
-print("📉 Final features shape after dropna:", features.shape)
-print("🎯 Final target shape:", target.shape)
-
-
 target = target.loc[features.index]
 
 # Step 12: Train/test split and training
@@ -136,6 +113,9 @@ model.fit(X_train, y_train)
 # Step 13: Evaluation
 y_pred = model.predict(X_test)
 y_prob = model.predict_proba(X_test)[:, 1]
+
+plot_importance(model)
+plt.show()
 
 print("✅ Accuracy:", accuracy_score(y_test, y_pred))
 print("✅ Classification Report:\n", classification_report(y_test, y_pred))

@@ -14,16 +14,15 @@ service LoanService {
 }
 
 message LoanRequest {
-  uint64 user_id = 1;                // User submitting the loan application
-  double loan_amount = 2;            // Amount requested for the loan
-  int32 loan_term = 3;               // Loan term in months or years
-  string loan_purpose = 4;           // Purpose of the loan
-  string employment_status = 5;      // Employment status of the user
-  double annual_income = 6;          // User's annual income
-  string ssn = 7;                    // User's SSN
-  string address = 8;                // User's residential address
+  uint64 user_id = 1;
+  string ssn = 2;
+  string address_area = 3; // "urban" or "rural"
+  double loan_amount = 4;
+  string loan_purpose = 5;
+  string employment_status = 6;
+  double gross_monthly_income = 7;
+  double total_monthly_debt_payment = 8;
 }
-
 
 message LoanResponse {
   uint64 loan_id = 1;                // Unique loan ID
@@ -44,22 +43,24 @@ message LoanApplicationRequest {
 }
 
 message LoanApplicationResponse {
-  uint64 loan_id = 1;                // Unique loan application ID
-  uint64 user_id = 2;                // User ID of the applicant
-  string ssn = 3;                    // User's SSN
-  string address = 4;                // User's residential address
-  double loan_amount = 5;            // Requested loan amount
-  string loan_purpose = 6;           // Purpose of the loan
-  string employment_status = 7;      // Employment status of the user
-  double annual_income = 8;          // User's annual income
-  string application_status = 9;     // Application status
-  bool credit_report_fetched = 10;   // Whether the credit report has been fetched
-  string experian_request_id = 11;   // Experian API request ID
-  double dti_ratio = 12;             // Debt-to-Income Ratio (optional field)
-  int32 credit_score = 13;           // Credit score
-  string created_at = 14;            // Creation date
-  string updated_at = 15;            // Last update date
-  string deleted_at = 16;            // Date when the loan application was deleted (if applicable)
+  uint64 loan_id = 1;
+  uint64 user_id = 2;
+  string ssn = 3;
+  string address_area = 4;
+  double loan_amount = 5;
+  string loan_purpose = 6;
+  string employment_status = 7;
+  double gross_monthly_income = 8;
+  double total_monthly_debt_payment = 9;
+  double dti_ratio = 10;
+  string application_status = 11;
+  bool credit_report_fetched = 12;
+  string experian_request_id = 13;
+  int32 credit_score = 14;
+  string reasoning = 15;
+  string created_at = 16;
+  string updated_at = 17;
+  string deleted_at = 18;
 }
 
 message Empty {}

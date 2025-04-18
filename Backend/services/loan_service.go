@@ -2,8 +2,11 @@ package services
 
 import (
 	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/loan"
+	"AI-Powered-Automated-Loan-Underwriting-System/kafka"
 	"AI-Powered-Automated-Loan-Underwriting-System/models"
 	"context"
+	"encoding/json"
+	"fmt"
 	"gorm.io/gorm"
 	"time"
 )
@@ -15,22 +18,43 @@ type LoanServiceServer struct {
 
 // ApplyForLoan handles loan application
 func (s *LoanServiceServer) ApplyForLoan(ctx context.Context, req *pb.LoanRequest) (*pb.LoanResponse, error) {
-	loan := models.LoanApplication{
-		UserID:           uint(req.UserId),
-		LoanAmount:       req.LoanAmount,
-		LoanPurpose:      req.LoanPurpose,
-		EmploymentStatus: req.EmploymentStatus,
-		//AnnualIncome:        req.AnnualIncome,
-		ApplicationStatus:   "PENDING",
-		CreditReportFetched: false,
+	dti := 0.0
+	if req.GrossMonthlyIncome > 0 {
+		dti = req.TotalMonthlyDebtPayment / req.GrossMonthlyIncome
 	}
 
-	// Create loan application in the database
+	loan := models.LoanApplication{
+		UserID:                  uint(req.UserId),
+		SSN:                     req.Ssn,
+		AddressArea:             req.AddressArea,
+		LoanAmount:              req.LoanAmount,
+		LoanPurpose:             req.LoanPurpose,
+		EmploymentStatus:        req.EmploymentStatus,
+		GrossMonthlyIncome:      req.GrossMonthlyIncome,
+		TotalMonthlyDebtPayment: req.TotalMonthlyDebtPayment,
+		DTIRatio:                dti,
+		ApplicationStatus:       "PENDING",
+		CreditReportFetched:     false,
+	}
+
 	if err := s.DB.Create(&loan).Error; err != nil {
 		return nil, err
 	}
 
-	// Return loan response with loan ID and status
+	// Create Kafka event payload
+	eventPayload := map[string]interface{}{
+		"loan_id":      loan.ID,
+		"user_id":      loan.UserID,
+		"loan_amount":  loan.LoanAmount,
+		"loan_purpose": loan.LoanPurpose,
+		"status":       loan.ApplicationStatus,
+		"timestamp":    time.Now().Format(time.RFC3339),
+	}
+	payloadJSON, _ := json.Marshal(eventPayload)
+
+	// Send Kafka event
+	kafka.ProduceEvent("LoanApplicationSubmitted", string(payloadJSON))
+
 	return &pb.LoanResponse{
 		LoanId: uint64(loan.ID),
 		Status: loan.ApplicationStatus,
@@ -48,6 +72,8 @@ func (s *LoanServiceServer) GetLoanStatus(ctx context.Context, req *pb.LoanStatu
 		}
 		return nil, err
 	}
+
+	kafka.ProduceEvent("LoanStatusChecked", fmt.Sprintf(`{"loan_id":%d,"status":"%s"}`, loan.ID, loan.ApplicationStatus))
 
 	// Return loan status response
 	return &pb.LoanStatusResponse{
@@ -68,19 +94,27 @@ func (s *LoanServiceServer) GetLoanApplicationDetails(ctx context.Context, req *
 		return nil, err
 	}
 
+	kafka.ProduceEvent("LoanStatusChecked", fmt.Sprintf(`{"loan_id":%d,"status":"%s"}`, loan.ID, loan.ApplicationStatus))
+
 	// Prepare and return the loan application response
 	return &pb.LoanApplicationResponse{
-		LoanId:           uint64(loan.ID),
-		UserId:           uint64(loan.UserID),
-		LoanAmount:       loan.LoanAmount,
-		LoanPurpose:      loan.LoanPurpose,
-		EmploymentStatus: loan.EmploymentStatus,
-		//AnnualIncome:        loan.AnnualIncome,
-		ApplicationStatus:   loan.ApplicationStatus,
-		CreditReportFetched: loan.CreditReportFetched,
-		ExperianRequestId:   loan.ExperianRequestID,
-		CreditScore:         int32(loan.CreditScore),
-		CreatedAt:           loan.CreatedAt.Format(time.RFC3339),
-		UpdatedAt:           loan.UpdatedAt.Format(time.RFC3339),
+		LoanId:                  uint64(loan.ID),
+		UserId:                  uint64(loan.UserID),
+		Ssn:                     loan.SSN,
+		AddressArea:             loan.AddressArea,
+		LoanAmount:              loan.LoanAmount,
+		LoanPurpose:             loan.LoanPurpose,
+		EmploymentStatus:        loan.EmploymentStatus,
+		GrossMonthlyIncome:      loan.GrossMonthlyIncome,
+		TotalMonthlyDebtPayment: loan.TotalMonthlyDebtPayment,
+		DtiRatio:                loan.DTIRatio,
+		ApplicationStatus:       loan.ApplicationStatus,
+		CreditReportFetched:     loan.CreditReportFetched,
+		ExperianRequestId:       loan.ExperianRequestID,
+		CreditScore:             int32(loan.CreditScore),
+		Reasoning:               loan.Reasoning,
+		CreatedAt:               loan.CreatedAt.Format(time.RFC3339),
+		UpdatedAt:               loan.UpdatedAt.Format(time.RFC3339),
+		DeletedAt:               loan.DeletedAt.Time.Format(time.RFC3339),
 	}, nil
 }

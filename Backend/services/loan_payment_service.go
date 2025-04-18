@@ -26,6 +26,7 @@ func (s *LoanPaymentServiceServer) CreateLoanPayment(ctx context.Context, req *p
 		AmountPaid:        req.AmountPaid,
 		Status:            req.Status,
 		PaymentDate:       req.PaymentDate.AsTime(),
+		DueDate:           req.DueDate.AsTime(), // ✅ Added due date
 	}
 
 	// Call repository to save loan payment
@@ -56,5 +57,6 @@ func (s *LoanPaymentServiceServer) GetLoanPayment(ctx context.Context, req *pb.G
 		AmountPaid:        loanPayment.AmountPaid,
 		Status:            loanPayment.Status,
 		PaymentDate:       timestamppb.New(loanPayment.PaymentDate),
+		DueDate:           timestamppb.New(loanPayment.DueDate), // ✅ Added
 	}, nil
 }
