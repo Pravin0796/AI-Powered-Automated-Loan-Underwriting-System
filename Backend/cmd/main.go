@@ -1,12 +1,12 @@
 package main
 
 import (
-	"AI-Powered-Automated-Loan-Underwriting-System/cache"
+	//"AI-Powered-Automated-Loan-Underwriting-System/cache"
 	"AI-Powered-Automated-Loan-Underwriting-System/config"
 	"AI-Powered-Automated-Loan-Underwriting-System/migration"
+
 	//"AI-Powered-Automated-Loan-Underwriting-System/mockdata"
-	"AI-Powered-Automated-Loan-Underwriting-System/kafka"
-	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
+
 	"AI-Powered-Automated-Loan-Underwriting-System/routes"
 	//"fmt"
 )
@@ -18,15 +18,15 @@ func main() {
 	// Run migrations
 	migration.MigrateDatabase(config.DB)
 
-	eventRepo := repositories.NewEventRepo(db)
+	//eventRepo := repositories.NewEventRepo(db)
 
 	// Start Kafka consumer in a goroutine
-	go kafka.StartEventConsumer("localhost:9092", "loan-events", eventRepo)
+	//go kafka.StartEventConsumer("localhost:9092", "loan-events", eventRepo)
 	//
-	//err := mockdata.SeedMockData(config.DB)
-	//if err != nil {
-	//	return
-	//}
+	// err := mockdata.SeedMockData(config.DB)
+	// if err != nil {
+	// 	return
+	// }
 	//decision, err := services.GetLoanDecision()
 	//if err != nil {
 	//	return
@@ -37,6 +37,6 @@ func main() {
 	//experian.FetchCreditReport()
 
 	// Initialize Redis connection
-	cache.ConnectRedis()
+	//cache.ConnectRedis()
 	routes.StartGRPCServer(config.DB)
 }

@@ -3,6 +3,8 @@ import { LoanServiceClientImpl } from "../proto/loan"; // ✅ Correct
 // ✅ This is the generated service client class from ts-proto
 
 import { GrpcWebImpl } from '../proto/user';
+
+
 // ✅ This is the generated gRPC transport class
 
 const transport = new GrpcWebImpl('http://localhost:9090', {

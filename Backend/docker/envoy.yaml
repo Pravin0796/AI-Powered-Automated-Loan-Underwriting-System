@@ -22,16 +22,16 @@ static_resources:
                             prefix: "/"
                           route:
                             cluster: grpc_backend
-                      typed_per_filter_config:
-                        envoy.filters.http.cors:
-                          "@type": type.googleapis.com/envoy.extensions.filters.http.cors.v3.CorsPolicy
-                          allow_origin_string_match:
-                            - exact: "http://localhost:5173" # Frontend origin
-                          allow_methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD"
-                          allow_headers: "keep-alive, user-agent, cache-control, content-type, content-transfer-encoding, x-accept-content-transfer-encoding, x-accept-response-streaming, x-user-agent, x-grpc-web, authorization"
-                          expose_headers: "grpc-status, grpc-message"
-                          max_age: "1728000"
-                          allow_credentials: true
+                          typed_per_filter_config:
+                            envoy.filters.http.cors:
+                              "@type": type.googleapis.com/envoy.extensions.filters.http.cors.v3.CorsPolicy
+                              allow_origin_string_match:
+                                - exact: "http://localhost:5173"
+                              allow_methods: "GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD"
+                              allow_headers: "keep-alive, user-agent, cache-control, content-type, content-transfer-encoding, x-accept-content-transfer-encoding, x-accept-response-streaming, x-user-agent, x-grpc-web, authorization"
+                              expose_headers: "grpc-status, grpc-message"
+                              max_age: "1728000"
+                              allow_credentials: true
 
                 http_filters:
                   - name: envoy.filters.http.grpc_web
@@ -49,6 +49,7 @@ static_resources:
       connect_timeout: 0.25s
       type: LOGICAL_DNS
       http2_protocol_options: {} # still valid, just a deprecation warning
+      dns_lookup_family: V4_ONLY 
       load_assignment:
         cluster_name: grpc_backend
         endpoints:
@@ -56,7 +57,8 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      address: 172.17.0.1
+                      address: localhost
+                      # address: 172.17.0.1
                       port_value: 50051
 
 admin:

@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 from xgboost import plot_importance
 
 # Step 2: Connect to PostgreSQL
-DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/testdb"
+DATABASE_URL = "postgresql://postgres:postgres@localhost:5432/mydata"
 engine = sa.create_engine(DATABASE_URL)
 
 # Step 3: Helper function to query SQL

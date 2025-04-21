@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/segmentio/kafka-go"
-	"log"
+	//"log"
 )
 
 type KafkaEvent struct {

@@ -2,13 +2,15 @@ package services
 
 import (
 	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/loan"
-	"AI-Powered-Automated-Loan-Underwriting-System/kafka"
+	//"AI-Powered-Automated-Loan-Underwriting-System/kafka"
 	"AI-Powered-Automated-Loan-Underwriting-System/models"
 	"context"
-	"encoding/json"
-	"fmt"
-	"gorm.io/gorm"
+
+	//"encoding/json"
+	//"fmt"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type LoanServiceServer struct {
@@ -42,18 +44,18 @@ func (s *LoanServiceServer) ApplyForLoan(ctx context.Context, req *pb.LoanReques
 	}
 
 	// Create Kafka event payload
-	eventPayload := map[string]interface{}{
-		"loan_id":      loan.ID,
-		"user_id":      loan.UserID,
-		"loan_amount":  loan.LoanAmount,
-		"loan_purpose": loan.LoanPurpose,
-		"status":       loan.ApplicationStatus,
-		"timestamp":    time.Now().Format(time.RFC3339),
-	}
-	payloadJSON, _ := json.Marshal(eventPayload)
+	// eventPayload := map[string]interface{}{
+	// 	"loan_id":      loan.ID,
+	// 	"user_id":      loan.UserID,
+	// 	"loan_amount":  loan.LoanAmount,
+	// 	"loan_purpose": loan.LoanPurpose,
+	// 	"status":       loan.ApplicationStatus,
+	// 	"timestamp":    time.Now().Format(time.RFC3339),
+	// }
+	//payloadJSON, _ := json.Marshal(eventPayload)
 
 	// Send Kafka event
-	kafka.ProduceEvent("LoanApplicationSubmitted", string(payloadJSON))
+	//kafka.ProduceEvent("LoanApplicationSubmitted", string(payloadJSON))
 
 	return &pb.LoanResponse{
 		LoanId: uint64(loan.ID),
@@ -73,7 +75,7 @@ func (s *LoanServiceServer) GetLoanStatus(ctx context.Context, req *pb.LoanStatu
 		return nil, err
 	}
 
-	kafka.ProduceEvent("LoanStatusChecked", fmt.Sprintf(`{"loan_id":%d,"status":"%s"}`, loan.ID, loan.ApplicationStatus))
+	//kafka.ProduceEvent("LoanStatusChecked", fmt.Sprintf(`{"loan_id":%d,"status":"%s"}`, loan.ID, loan.ApplicationStatus))
 
 	// Return loan status response
 	return &pb.LoanStatusResponse{
@@ -94,7 +96,7 @@ func (s *LoanServiceServer) GetLoanApplicationDetails(ctx context.Context, req *
 		return nil, err
 	}
 
-	kafka.ProduceEvent("LoanStatusChecked", fmt.Sprintf(`{"loan_id":%d,"status":"%s"}`, loan.ID, loan.ApplicationStatus))
+	//kafka.ProduceEvent("LoanStatusChecked", fmt.Sprintf(`{"loan_id":%d,"status":"%s"}`, loan.ID, loan.ApplicationStatus))
 
 	// Prepare and return the loan application response
 	return &pb.LoanApplicationResponse{
