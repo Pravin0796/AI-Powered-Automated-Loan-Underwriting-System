@@ -38,7 +38,7 @@ function toTimestamp(dateStr: string): Timestamp {
   }
 
   return {
-    seconds: Math.floor(ms / 1000).toString(), // ✅ string, not bigint
+    seconds: Math.floor(ms / 1000), // ✅ keep it as number
     nanos: (ms % 1000) * 1e6,
   };
 }
