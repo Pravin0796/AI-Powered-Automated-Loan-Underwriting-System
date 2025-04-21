@@ -6,8 +6,9 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"google.golang.org/protobuf/types/known/timestamppb"
 	_ "time"
+
+	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -81,15 +82,24 @@ func (s *UserService) GetUserDetails(ctx context.Context, req *pb.UserDetailsReq
 	fmt.Println(userID)
 
 	var user models.User
-	//if err := s.repo.GetUserByID(ctx, userID.(uint), &user); err != nil {
-	//	return nil, errors.New("user not found")
-	//}
+	if err := s.repo.GetUserByID(ctx, userID.(uint), &user); err != nil {
+		return nil, errors.New("user not found")
+	}
+
+	var dob *timestamppb.Timestamp
+	if !user.DateOfBirth.IsZero() {
+		dob = timestamppb.New(user.DateOfBirth)
+	} else {
+		dob = nil
+	}
+	fmt.Println(user.DateOfBirth)
+
 	return &pb.UserDetailsResponse{
 		FullName:    user.FullName,
 		Email:       user.Email,
 		Phone:       user.Phone,
 		Address:     user.Address,
-		DateOfBirth: timestamppb.New(user.DateOfBirth),
+		DateOfBirth: dob,
 		CreditScore: int32(user.CreditScore),
 		Status:      200,
 	}, nil
