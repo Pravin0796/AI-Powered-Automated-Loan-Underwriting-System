@@ -9,7 +9,7 @@ const Header = () => {
   const toggleMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
 
   return (
-    <header className="bg-blue-600 text-white p-4 shadow-md">
+    <header className="fixed top-0 left-0 w-full z-50 bg-blue-600 text-white p-4 shadow-md">
       <div className="container mx-auto flex justify-between items-center">
         <div className="text-xl font-semibold">
           <Link to="/">MyLoanApp</Link>
@@ -18,7 +18,7 @@ const Header = () => {
         <div className="hidden md:flex space-x-4">
           <Link to="/" className="hover:text-gray-300">Home</Link>
           <Link to="/profile" className="hover:text-gray-300">Profile</Link>
-          <Link to="/loans" className="hover:text-gray-300">Loans</Link>
+          <Link to="/loan" className="hover:text-gray-300">Loans</Link>
           <Link to="/register" className="hover:text-gray-300">Register</Link>
           <Link to="/login" className="hover:text-gray-300">Login</Link>
         </div>

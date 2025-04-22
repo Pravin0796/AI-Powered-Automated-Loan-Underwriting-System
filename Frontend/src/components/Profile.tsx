@@ -130,11 +130,11 @@ const Profile = () => {
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-semibold mb-4">Profile</h1>
       <div className="bg-white p-6 rounded-lg shadow-md">
-        <p><strong>Name:</strong> {userDetails.full_name}</p>
+        <p><strong>Name:</strong> {userDetails.fullName}</p>
         <p><strong>Email:</strong> {userDetails.email}</p>
         <p><strong>Phone:</strong> {userDetails.phone}</p>
         <p><strong>Address:</strong> {userDetails.address}</p>
-        <p><strong>Credit Score:</strong> {userDetails.credit_score}</p>
+        <p><strong>Credit Score:</strong> {userDetails.creditScore}</p>
       </div>
     </div>
   );

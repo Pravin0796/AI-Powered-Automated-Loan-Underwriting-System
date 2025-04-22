@@ -80,10 +80,9 @@ func (s *UserService) GetUserDetails(ctx context.Context, req *pb.UserDetailsReq
 	// var userID any = ctx.Value(middleware.ContextUserIDKey)
 	// fmt.Println(userID)
 
-	var userID any = req.UserId
-
+	userID := uint(req.UserId)
 	var user models.User
-	if err := s.repo.GetUserByID(ctx, userID.(uint), &user); err != nil {
+	if err := s.repo.GetUserByID(ctx, userID, &user); err != nil {
 		return nil, errors.New("user not found")
 	}
 
@@ -127,6 +126,7 @@ func (s *UserService) GetUserCreditScore(ctx context.Context, req *pb.UserCredit
 // UpdateUserDetails updates the user info
 func (s *UserService) UpdateUserDetails(ctx context.Context, req *pb.UserUpdateRequest) (*pb.UserUpdateResponse, error) {
 	var user models.User
+
 	if err := s.repo.GetUserByID(ctx, uint(req.UserId), &user); err != nil {
 		return nil, errors.New("user not found")
 	}
