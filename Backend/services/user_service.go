@@ -1,7 +1,6 @@
 package services
 
 import (
-	"AI-Powered-Automated-Loan-Underwriting-System/middleware"
 	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
 	"context"
 	"errors"
@@ -78,8 +77,10 @@ func (s *UserService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 
 // GetCurrentUser retrieves the current user based on the token
 func (s *UserService) GetUserDetails(ctx context.Context, req *pb.UserDetailsRequest) (*pb.UserDetailsResponse, error) {
-	var userID any = ctx.Value(middleware.ContextUserIDKey)
-	fmt.Println(userID)
+	// var userID any = ctx.Value(middleware.ContextUserIDKey)
+	// fmt.Println(userID)
+
+	var userID any = req.UserId
 
 	var user models.User
 	if err := s.repo.GetUserByID(ctx, userID.(uint), &user); err != nil {

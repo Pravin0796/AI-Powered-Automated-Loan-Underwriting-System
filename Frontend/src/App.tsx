@@ -1,24 +1,51 @@
-import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import Home from "./pages/Home";
-import Register from "./components/Register.tsx";
-import Login from "./components/Login.tsx";
-import ApplyLoan from "./services/LoanService.tsx";
-import GetLoanStatus from "./services/GetLoanStatus.tsx";
-// import Register from "./pages/Register";
-// import Dashboard from "./pages/Dashboard";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import DashboardLayout from "./components/DashboardLayout";
+import Dashboard from "./components/Dashboard";
+import Profile from "./components/Profile";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+//import ProtectedRoute from "./components/ProtectedRoute";
+import Home from "./components/Home";
+import Loan from "./components/Loan";
 
-const App: React.FC = () => {
-    return (
-        <Router>
-            <Routes>
-                <Route path="/register" element={<Register />} />
-                <Route path="/login" element={<Login/>} />
-                <Route path="/loan" element={<ApplyLoan />} />
-                <Route path="/getloan" element={<GetLoanStatus />} />
-             </Routes>
-        </Router>
-    );
-};
+export default function App() {
+  return (
+    <Router>
+        <Header/>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/" element={
+            // <ProtectedRoute>
+                <Home />
+                // </ProtectedRoute>
+            } />
+        <Route path="/loan" element={
+            // <ProtectedRoute>
+                <Loan />
+            // </ProtectedRoute>
+        } />
+        <Route
+          path="/dashboard"
+          element={
+            // <ProtectedRoute>
+              <DashboardLayout><Dashboard /></DashboardLayout>
+            // </ProtectedRoute>
+          }
+        />
 
-export default App;
+        <Route
+          path="/profile"
+          element={
+            // <ProtectedRoute>
+              <DashboardLayout><Profile /></DashboardLayout>
+            // </ProtectedRoute>
+          }
+        />
+      </Routes>
+      <Footer/>
+    </Router>
+  );
+}
