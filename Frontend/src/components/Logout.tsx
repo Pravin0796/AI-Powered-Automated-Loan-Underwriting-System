@@ -1,12 +1,12 @@
 // components/Sidebar.jsx (inside your menu or as a separate button)
 import { useNavigate } from "react-router-dom";
+import { removeToken } from "../utils/Auth.ts";
 
 export default function Sidebar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user_id");
+    removeToken();
     navigate("/login");
   };
 

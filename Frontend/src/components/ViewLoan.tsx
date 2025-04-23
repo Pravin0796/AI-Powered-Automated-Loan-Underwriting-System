@@ -1,18 +1,17 @@
 import { useEffect, useState } from "react";
-// import { useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { loanClient } from "../services/Grpc";
 import { LoanApplicationResponse } from "../proto/loan";
 
 const LoanDetailsPage = () => {
-//   const { loanId } = useParams();
-const loanId = 1;
+const { loanId } = useParams();
   const [loanDetails, setLoanDetails] = useState<LoanApplicationResponse | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (loanId) {
         console.log("Fetching loan details for ID:", loanId);
-      loanClient.GetLoanApplicationDetails({ loanId: loanId })
+      loanClient.GetLoanApplicationDetails({ loanId: Number(loanId) })
         .then((res) => {
           setLoanDetails(res);
           setLoading(false);

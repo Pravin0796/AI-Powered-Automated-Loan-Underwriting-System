@@ -11,51 +11,61 @@ import Home from "./components/Home";
 import LoanStatus from "./components/LoanStatus";
 import ApplyLoan from "./components/ApplyLoan";
 import LoanDetailsPage from "./components/ViewLoan";
+import ViewAllLoan from "./components/ViewAllLoan";
 
 export default function App() {
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
-        <Header/>
+        <Header />
         <main className="flex-grow mt-15">
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/" element={
-            // <ProtectedRoute>
-                <Home />
-                // </ProtectedRoute>
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/" element={
+              // <ProtectedRoute>
+              <Home />
+              // </ProtectedRoute>
             } />
-        <Route path="/viewloan" element={
-            // <ProtectedRoute>
-                <LoanStatus />
-            // </ProtectedRoute>
-        } />
-        <Route path="/loan/:id" element={
-            // <ProtectedRoute>
-                <LoanDetailsPage />
-            // </ProtectedRoute>
-        } />
-        <Route
-          path="/applyloan"
-          element={
-            // <ProtectedRoute>
-              <ApplyLoan />
-            // </ProtectedRoute>
-          }
-        />
+            <Route path="/viewloan" element={
+              // <ProtectedRoute>
+              <LoanStatus />
+              // </ProtectedRoute>
+            } />
+            <Route path="/loan/:id" element={
+              // <ProtectedRoute>
+              <LoanDetailsPage />
+              // </ProtectedRoute>
+            } />
+            <Route
+              path="/applyloan"
+              element={
+                // <ProtectedRoute>
+                <ApplyLoan />
+                // </ProtectedRoute>
+              }
+            />
 
-        <Route
-          path="/profile"
-          element={
-            // <ProtectedRoute>
-              <DashboardLayout><Profile /></DashboardLayout>
-            // </ProtectedRoute>
-          }
-        />
-      </Routes>
-      </main>
-      <Footer/>
+            <Route
+              path="/loan"
+              element={
+                // <ProtectedRoute>
+                <ViewAllLoan />
+                // </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/profile"
+              element={
+                // <ProtectedRoute>
+                <DashboardLayout><Profile /></DashboardLayout>
+                // </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </main>
+        <Footer />
       </div>
     </Router>
   );

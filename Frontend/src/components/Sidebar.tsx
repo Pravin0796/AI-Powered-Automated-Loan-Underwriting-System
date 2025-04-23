@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import classNames from "classnames";
+import { removeToken } from "../utils/Auth";
 import { FaBars, FaTimes } from "react-icons/fa";
 
 const navItemClass = (isActive: boolean) =>
@@ -13,8 +14,7 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user_id");
+    removeToken();
     navigate("/login");
   };
 

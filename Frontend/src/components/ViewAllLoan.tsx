@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { loanClient } from "../services/Grpc";
 import { LoanApplicationResponse } from "../proto/loan";
-import { Card, CardContent } from "@/components/ui/card";
 import { Loader2 } from "lucide-react";
 
 export default function AllLoanApplicationsDashboard() {
@@ -12,6 +11,7 @@ export default function AllLoanApplicationsDashboard() {
     async function fetchApplications() {
       try {
         const response = await loanClient.GetAllLoanApplications({});
+        console.log("Fetched applications:", response);
         setApplications(response.applications);
       } catch (err) {
         console.error("Error fetching applications:", err);
@@ -31,19 +31,22 @@ export default function AllLoanApplicationsDashboard() {
   }
 
   return (
-    <div className="p-4 md:p-8 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+    <div className="p-4 md:p-8 grid gap-6 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       {applications.map((app) => (
-        <Card key={app.loanId} className="shadow-md rounded-2xl">
-          <CardContent className="p-4">
-            <h2 className="text-lg font-semibold">Loan ID: {app.loanId}</h2>
+        <div
+          key={app.loanId}
+          className="bg-white shadow-lg rounded-2xl p-6 hover:shadow-xl transition-shadow duration-300 ease-in-out"
+        >
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Loan ID: {app.loanId}</h2>
+          <div className="space-y-1 text-gray-700 text-sm">
             <p><span className="font-medium">User ID:</span> {app.userId}</p>
             <p><span className="font-medium">Amount:</span> ${app.loanAmount.toLocaleString()}</p>
             <p><span className="font-medium">Status:</span> {app.applicationStatus}</p>
             <p><span className="font-medium">Purpose:</span> {app.loanPurpose}</p>
             <p><span className="font-medium">Employment:</span> {app.employmentStatus}</p>
-            <p className="text-sm text-gray-500 mt-1">Created: {app.createdAt?.split("T")[0]}</p>
-          </CardContent>
-        </Card>
+            <p className="text-gray-500 mt-2"><span className="font-medium">Created:</span> {app.createdAt?.split("T")[0]}</p>
+          </div>
+        </div>
       ))}
     </div>
   );

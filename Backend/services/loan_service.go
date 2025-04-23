@@ -6,6 +6,9 @@ import (
 	"AI-Powered-Automated-Loan-Underwriting-System/models"
 	"context"
 
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+
 	//"encoding/json"
 	//"fmt"
 	"time"
@@ -118,5 +121,68 @@ func (s *LoanServiceServer) GetLoanApplicationDetails(ctx context.Context, req *
 		CreatedAt:               loan.CreatedAt.Format(time.RFC3339),
 		UpdatedAt:               loan.UpdatedAt.Format(time.RFC3339),
 		DeletedAt:               loan.DeletedAt.Time.Format(time.RFC3339),
+	}, nil
+}
+
+// UpdateLoanStatus updates the status of a loan application
+func (s *LoanServiceServer) UpdateApplicationStatus(ctx context.Context, req *pb.UpdateApplicationStatusRequest) (*pb.UpdateApplicationStatusResponse, error) {
+	var loan models.LoanApplication
+
+	// Fetch the loan application by its ID
+	if err := s.DB.First(&loan, req.LoanApplicationId).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, status.Error(codes.NotFound, "Loan application not found")
+		}
+		return nil, err
+	}
+
+	// Update the status and reasoning
+	loan.ApplicationStatus = req.NewStatus
+	loan.Reasoning = req.Reasoning
+
+	if err := s.DB.Save(&loan).Error; err != nil {
+		return nil, err
+	}
+
+	return &pb.UpdateApplicationStatusResponse{
+		Status: "Loan status updated successfully",
+	}, nil
+}
+
+// GetAllLoanApplications retrieves all loan applications
+func (s *LoanServiceServer) GetAllLoanApplications(ctx context.Context, req *pb.Empty) (*pb.LoanApplicationList, error) {
+	var loans []models.LoanApplication
+
+	// Fetch all loan applications
+	if err := s.DB.Find(&loans).Error; err != nil {
+		return nil, err
+	}
+
+	var responses []*pb.LoanApplicationResponse
+	for _, loan := range loans {
+		responses = append(responses, &pb.LoanApplicationResponse{
+			LoanId:                  uint64(loan.ID),
+			UserId:                  uint64(loan.UserID),
+			Ssn:                     loan.SSN,
+			AddressArea:             loan.AddressArea,
+			LoanAmount:              loan.LoanAmount,
+			LoanPurpose:             loan.LoanPurpose,
+			EmploymentStatus:        loan.EmploymentStatus,
+			GrossMonthlyIncome:      loan.GrossMonthlyIncome,
+			TotalMonthlyDebtPayment: loan.TotalMonthlyDebtPayment,
+			DtiRatio:                loan.DTIRatio,
+			ApplicationStatus:       loan.ApplicationStatus,
+			CreditReportFetched:     loan.CreditReportFetched,
+			ExperianRequestId:       loan.ExperianRequestID,
+			CreditScore:             int32(loan.CreditScore),
+			Reasoning:               loan.Reasoning,
+			CreatedAt:               loan.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:               loan.UpdatedAt.Format(time.RFC3339),
+			DeletedAt:               loan.DeletedAt.Time.Format(time.RFC3339),
+		})
+	}
+
+	return &pb.LoanApplicationList{
+		Applications: responses,
 	}, nil
 }
