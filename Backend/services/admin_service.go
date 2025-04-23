@@ -5,6 +5,7 @@ import (
 	"AI-Powered-Automated-Loan-Underwriting-System/models"
 	"context"
 	"fmt"
+
 	"gorm.io/gorm"
 )
 
@@ -14,33 +15,33 @@ type AdminService struct {
 }
 
 // GetAllLoanApplications fetches all loan applications
-func (s *AdminService) GetAllLoanApplications(ctx context.Context, req *protos.Empty) (*protos.LoanApplicationList, error) {
-	var applications []models.LoanApplication
-	if err := s.DB.Preload("User").Find(&applications).Error; err != nil {
-		return nil, err
-	}
+// func (s *AdminService) GetAllLoanApplications(ctx context.Context, req *protos.Empty) (*protos.LoanApplicationList, error) {
+// 	var applications []models.LoanApplication
+// 	if err := s.DB.Preload("User").Find(&applications).Error; err != nil {
+// 		return nil, err
+// 	}
 
-	// Map models to proto message
-	protoApplications := make([]*protos.LoanApplicationResponse, len(applications))
-	for i, app := range applications {
-		protoApplications[i] = &protos.LoanApplicationResponse{
-			LoanId:           uint64(app.ID),
-			UserId:           uint64(app.UserID),
-			LoanAmount:       app.LoanAmount,
-			LoanPurpose:      app.LoanPurpose,
-			EmploymentStatus: app.EmploymentStatus,
-			//AnnualIncome:        app.AnnualIncome,
-			ApplicationStatus:   app.ApplicationStatus,
-			CreditReportFetched: app.CreditReportFetched,
-			ExperianRequestId:   app.ExperianRequestID,
-			CreditScore:         int32(app.CreditScore),
-			CreatedAt:           app.CreatedAt.Format("2006-01-02 15:04:05"),
-			UpdatedAt:           app.UpdatedAt.Format("2006-01-02 15:04:05"),
-		}
-	}
+// 	// Map models to proto message
+// 	protoApplications := make([]*protos.LoanApplicationResponse, len(applications))
+// 	for i, app := range applications {
+// 		protoApplications[i] = &protos.LoanApplicationResponse{
+// 			LoanId:           uint64(app.ID),
+// 			UserName:         app.User.FullName,
+// 			LoanAmount:       app.LoanAmount,
+// 			LoanPurpose:      app.LoanPurpose,
+// 			EmploymentStatus: app.EmploymentStatus,
+// 			//AnnualIncome:        app.AnnualIncome,
+// 			ApplicationStatus:   app.ApplicationStatus,
+// 			CreditReportFetched: app.CreditReportFetched,
+// 			ExperianRequestId:   app.ExperianRequestID,
+// 			CreditScore:         int32(app.CreditScore),
+// 			CreatedAt:           app.CreatedAt.Format("2006-01-02 15:04:05"),
+// 			UpdatedAt:           app.UpdatedAt.Format("2006-01-02 15:04:05"),
+// 		}
+// 	}
 
-	return &protos.LoanApplicationList{Applications: protoApplications}, nil
-}
+// 	return &protos.LoanApplicationList{Applications: protoApplications}, nil
+// }
 
 // UpdateApplicationStatus updates the status of a loan application
 func (s *AdminService) UpdateApplicationStatus(ctx context.Context, req *protos.UpdateApplicationStatusRequest) (*protos.UpdateApplicationStatusResponse, error) {

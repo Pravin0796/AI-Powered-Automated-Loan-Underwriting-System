@@ -6,32 +6,36 @@ import (
 	"time"
 
 	"github.com/segmentio/kafka-go"
-	//"log"
 )
 
-type KafkaEvent struct {
-	EventType string    `json:"event_type"`
-	Payload   string    `json:"payload"`
-	Timestamp time.Time `json:"timestamp"`
+// KafkaProducer wraps the Kafka writer.
+type KafkaProducer struct {
+	writer *kafka.Writer
+	topic  string
 }
 
-func ProduceEvent(broker, topic string, event KafkaEvent) error {
+// NewProducer creates a new Kafka producer for the specified topic.
+func NewProducer(broker, topic string) *KafkaProducer {
 	writer := kafka.NewWriter(kafka.WriterConfig{
-		Brokers: []string{broker},
-		Topic:   topic,
-		Async:   false,
+		Brokers:  []string{broker},
+		Topic:    topic,
+		Balancer: &kafka.LeastBytes{},
 	})
-	defer writer.Close()
+	return &KafkaProducer{
+		writer: writer,
+		topic:  topic,
+	}
+}
 
-	data, err := json.Marshal(event)
+// SendMessage sends a message to Kafka.
+func (kp *KafkaProducer) SendMessage(v interface{}) error {
+	value, err := json.Marshal(v)
 	if err != nil {
 		return err
 	}
-
 	msg := kafka.Message{
-		Key:   []byte(event.EventType),
-		Value: data,
+		Key:   []byte(time.Now().Format(time.RFC3339Nano)),
+		Value: value,
 	}
-
-	return writer.WriteMessages(context.Background(), msg)
+	return kp.writer.WriteMessages(context.Background(), msg)
 }

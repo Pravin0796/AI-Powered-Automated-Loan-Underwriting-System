@@ -36,7 +36,7 @@ const { loanId } = useParams();
       <h1 className="text-2xl font-semibold mb-4 text-center">Loan Application Details</h1>
       <div className="bg-white shadow-lg rounded-lg p-6 space-y-4">
         <div><strong>Loan ID:</strong> {loanDetails.loanId}</div>
-        <div><strong>User ID:</strong> {loanDetails.userId}</div>
+        <div><strong>User ID:</strong> {loanDetails.userName}</div>
         <div><strong>SSN:</strong> {loanDetails.ssn}</div>
         <div><strong>Address Area:</strong> {loanDetails.addressArea}</div>
         <div><strong>Loan Amount:</strong> ${loanDetails.loanAmount}</div>

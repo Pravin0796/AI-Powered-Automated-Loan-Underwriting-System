@@ -2,6 +2,7 @@ package services
 
 import (
 	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/loan"
+
 	//"AI-Powered-Automated-Loan-Underwriting-System/kafka"
 	"AI-Powered-Automated-Loan-Underwriting-System/models"
 	"context"
@@ -92,7 +93,7 @@ func (s *LoanServiceServer) GetLoanApplicationDetails(ctx context.Context, req *
 	var loan models.LoanApplication
 
 	// Fetch the loan application details by its ID
-	if err := s.DB.First(&loan, req.LoanId).Error; err != nil {
+	if err := s.DB.Preload("User").First(&loan, req.LoanId).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, err
 		}
@@ -104,7 +105,7 @@ func (s *LoanServiceServer) GetLoanApplicationDetails(ctx context.Context, req *
 	// Prepare and return the loan application response
 	return &pb.LoanApplicationResponse{
 		LoanId:                  uint64(loan.ID),
-		UserId:                  uint64(loan.UserID),
+		UserName:                loan.User.FullName,
 		Ssn:                     loan.SSN,
 		AddressArea:             loan.AddressArea,
 		LoanAmount:              loan.LoanAmount,
@@ -154,7 +155,7 @@ func (s *LoanServiceServer) GetAllLoanApplications(ctx context.Context, req *pb.
 	var loans []models.LoanApplication
 
 	// Fetch all loan applications
-	if err := s.DB.Find(&loans).Error; err != nil {
+	if err := s.DB.Preload("User").Find(&loans).Error; err != nil {
 		return nil, err
 	}
 
@@ -162,7 +163,7 @@ func (s *LoanServiceServer) GetAllLoanApplications(ctx context.Context, req *pb.
 	for _, loan := range loans {
 		responses = append(responses, &pb.LoanApplicationResponse{
 			LoanId:                  uint64(loan.ID),
-			UserId:                  uint64(loan.UserID),
+			UserName:                loan.User.FullName,
 			Ssn:                     loan.SSN,
 			AddressArea:             loan.AddressArea,
 			LoanAmount:              loan.LoanAmount,
