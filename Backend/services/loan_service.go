@@ -2,6 +2,9 @@ package services
 
 import (
 	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/loan"
+	"AI-Powered-Automated-Loan-Underwriting-System/kafka"
+	"fmt"
+	"log"
 
 	//"AI-Powered-Automated-Loan-Underwriting-System/kafka"
 	"AI-Powered-Automated-Loan-Underwriting-System/models"
@@ -47,20 +50,16 @@ func (s *LoanServiceServer) ApplyForLoan(ctx context.Context, req *pb.LoanReques
 		return nil, err
 	}
 
-	// Create Kafka event payload
-	// eventPayload := map[string]interface{}{
-	// 	"loan_id":      loan.ID,
-	// 	"user_id":      loan.UserID,
-	// 	"loan_amount":  loan.LoanAmount,
-	// 	"loan_purpose": loan.LoanPurpose,
-	// 	"status":       loan.ApplicationStatus,
-	// 	"timestamp":    time.Now().Format(time.RFC3339),
-	// }
-	//payloadJSON, _ := json.Marshal(eventPayload)
-
-	// Send Kafka event
-	//kafka.ProduceEvent("LoanApplicationSubmitted", string(payloadJSON))
-
+	event := kafka.KafkaEvent{
+		EventType: "LoanApplicationSubmitted",
+		Payload:   fmt.Sprintf(`{"loan_id":%d,"user_id":%d,"status":"%s"}`, loan.ID, loan.UserID, loan.ApplicationStatus),
+		Timestamp: time.Now(),
+	}
+	producer := kafka.NewProducer("localhost:9092", "loan-events")
+	if err := producer.SendMessage(event); err != nil {
+		log.Printf("Kafka produce error: %v", err)
+	}
+	
 	return &pb.LoanResponse{
 		LoanId: uint64(loan.ID),
 		Status: loan.ApplicationStatus,
