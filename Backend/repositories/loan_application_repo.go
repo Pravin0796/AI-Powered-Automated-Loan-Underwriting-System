@@ -3,6 +3,7 @@ package repositories
 import (
 	"AI-Powered-Automated-Loan-Underwriting-System/models"
 	"context"
+
 	"gorm.io/gorm"
 )
 
@@ -19,17 +20,21 @@ func (r *LoanApplicationRepo) CreateLoanApplication(ctx context.Context, loanApp
 }
 
 func (r *LoanApplicationRepo) GetLoanApplicationByID(ctx context.Context, loanID uint, loanApplication *models.LoanApplication) error {
-	return r.DB.WithContext(ctx).First(&loanApplication, loanID).Error
+	return r.DB.WithContext(ctx).Preload("User").First(&loanApplication, loanID).Error
 }
 
 func (r *LoanApplicationRepo) GetLoanApplicationByUserID(ctx context.Context, userID uint, loanApplications *[]models.LoanApplication) error {
 	return r.DB.WithContext(ctx).Where("user_id = ?", userID).Find(&loanApplications).Error
 }
 
-func (r *LoanApplicationRepo) UpdateLoanApplication(ctx context.Context, loanApplication models.LoanApplication) error {
+func (r *LoanApplicationRepo) UpdateLoanApplication(ctx context.Context, loanApplication *models.LoanApplication) error {
 	return r.DB.WithContext(ctx).Save(&loanApplication).Error
 }
 
 func (r *LoanApplicationRepo) DeleteLoanApplication(ctx context.Context, loanID uint) error {
 	return r.DB.WithContext(ctx).Delete(&models.LoanApplication{}, loanID).Error
+}
+
+func (r *LoanApplicationRepo) GetAllLoanApplications(ctx context.Context, loanApplications *[]models.LoanApplication) error {
+	return r.DB.WithContext(ctx).Find(&loanApplications).Error
 }

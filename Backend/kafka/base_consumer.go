@@ -2,36 +2,52 @@ package kafka
 
 import (
 	"context"
+	"encoding/json"
 	"log"
+
+	"AI-Powered-Automated-Loan-Underwriting-System/models" // replace with your actual path
 
 	"github.com/segmentio/kafka-go"
 )
 
-// KafkaConsumer wraps the Kafka reader.
-type KafkaConsumer struct {
-	Reader *kafka.Reader
-}
+const (
+	kafkaBroker = "localhost:9092"           // your Kafka broker
+	kafkaTopic  = "LoanApplicationSubmitted" // your topic name
+	kafkaGroup  = "loan-app-consumers"       // consumer group ID
+)
 
-// NewConsumer creates a new Kafka consumer for the specified topic and group.
-func NewConsumer(broker, topic, groupID string) *KafkaConsumer {
+func ConsumeLoanApplications() {
+	// Create a Kafka reader with consumer group support
 	reader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers:  []string{broker},
-		Topic:    topic,
-		GroupID:  groupID,
-		MinBytes: 10e3,
-		MaxBytes: 10e6,
+		Brokers: []string{kafkaBroker},
+		Topic:   kafkaTopic,
+		GroupID: kafkaGroup,
+		Logger:  kafka.LoggerFunc(log.Printf),
 	})
-	return &KafkaConsumer{Reader: reader}
-}
 
-// StartListening starts the consumer and processes messages with a custom handler.
-func (kc *KafkaConsumer) StartListening(handler func([]byte)) {
+	defer func() {
+		if err := reader.Close(); err != nil {
+			log.Printf("Error closing Kafka reader: %v", err)
+		}
+	}()
+
+	log.Println("Listening for LoanApplicationSubmitted events using kafka-go...")
+
 	for {
-		m, err := kc.Reader.ReadMessage(context.Background())
+		msg, err := reader.ReadMessage(context.Background())
 		if err != nil {
-			log.Printf("Kafka read error: %v", err)
+			log.Printf("Error reading Kafka message: %v", err)
 			continue
 		}
-		handler(m.Value)
+
+		var event models.Event
+		if err := json.Unmarshal(msg.Value, &event); err != nil {
+			log.Printf("Error unmarshalling Kafka message: %v", err)
+			continue
+		}
+
+		if event.EventType == "LoanApplicationSubmitted" {
+			handleLoanApplicationSubmitted(event)
+		}
 	}
 }

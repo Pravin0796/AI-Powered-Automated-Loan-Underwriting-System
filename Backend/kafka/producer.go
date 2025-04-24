@@ -39,3 +39,7 @@ func (kp *KafkaProducer) SendMessage(v interface{}) error {
 	}
 	return kp.writer.WriteMessages(context.Background(), msg)
 }
+
+func (kp *KafkaProducer) Close() error {
+	return kp.writer.Close()
+}

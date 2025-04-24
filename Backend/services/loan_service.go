@@ -1,28 +1,25 @@
 package services
 
 import (
+	"AI-Powered-Automated-Loan-Underwriting-System/config"
 	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/loan"
 	"AI-Powered-Automated-Loan-Underwriting-System/kafka"
+	"AI-Powered-Automated-Loan-Underwriting-System/models"
+	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
+	"context"
+	"errors"
 	"fmt"
 	"log"
-
-	//"AI-Powered-Automated-Loan-Underwriting-System/kafka"
-	"AI-Powered-Automated-Loan-Underwriting-System/models"
-	"context"
-
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
-	//"encoding/json"
-	//"fmt"
 	"time"
-
-	"gorm.io/gorm"
 )
 
 type LoanServiceServer struct {
 	pb.UnimplementedLoanServiceServer
-	DB *gorm.DB
+	repo *repositories.LoanApplicationRepo
+}
+
+func NewLoanServiceServer(repo *repositories.LoanApplicationRepo) *LoanServiceServer {
+	return &LoanServiceServer{repo: repo}
 }
 
 // ApplyForLoan handles loan application
@@ -46,20 +43,21 @@ func (s *LoanServiceServer) ApplyForLoan(ctx context.Context, req *pb.LoanReques
 		CreditReportFetched:     false,
 	}
 
-	if err := s.DB.Create(&loan).Error; err != nil {
-		return nil, err
+	if err := s.repo.CreateLoanApplication(ctx, loan); err != nil {
+		return nil, errors.New("failed to create Loan application")
 	}
 
-	event := kafka.KafkaEvent{
+	event := models.Event{
 		EventType: "LoanApplicationSubmitted",
 		Payload:   fmt.Sprintf(`{"loan_id":%d,"user_id":%d,"status":"%s"}`, loan.ID, loan.UserID, loan.ApplicationStatus),
 		Timestamp: time.Now(),
 	}
-	producer := kafka.NewProducer("localhost:9092", "loan-events")
+	kafkaServer := config.GetKafkaServer()
+	producer := kafka.NewProducer(kafkaServer, "LoanApplicationSubmitted")
 	if err := producer.SendMessage(event); err != nil {
 		log.Printf("Kafka produce error: %v", err)
 	}
-	
+
 	return &pb.LoanResponse{
 		LoanId: uint64(loan.ID),
 		Status: loan.ApplicationStatus,
@@ -71,11 +69,8 @@ func (s *LoanServiceServer) GetLoanStatus(ctx context.Context, req *pb.LoanStatu
 	var loan models.LoanApplication
 
 	// Fetch the loan application by its ID
-	if err := s.DB.First(&loan, req.LoanId).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, err
-		}
-		return nil, err
+	if err := s.repo.GetLoanApplicationByID(ctx, uint(req.LoanId), &loan); err != nil {
+		return nil, errors.New("failed to fetch Loan application")
 	}
 
 	//kafka.ProduceEvent("LoanStatusChecked", fmt.Sprintf(`{"loan_id":%d,"status":"%s"}`, loan.ID, loan.ApplicationStatus))
@@ -91,12 +86,9 @@ func (s *LoanServiceServer) GetLoanStatus(ctx context.Context, req *pb.LoanStatu
 func (s *LoanServiceServer) GetLoanApplicationDetails(ctx context.Context, req *pb.LoanApplicationRequest) (*pb.LoanApplicationResponse, error) {
 	var loan models.LoanApplication
 
-	// Fetch the loan application details by its ID
-	if err := s.DB.Preload("User").First(&loan, req.LoanId).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, err
-		}
-		return nil, err
+	// Fetch the loan application by its ID
+	if err := s.repo.GetLoanApplicationByID(ctx, uint(req.LoanId), &loan); err != nil {
+		return nil, errors.New("failed to fetch Loan application")
 	}
 
 	//kafka.ProduceEvent("LoanStatusChecked", fmt.Sprintf(`{"loan_id":%d,"status":"%s"}`, loan.ID, loan.ApplicationStatus))
@@ -129,19 +121,16 @@ func (s *LoanServiceServer) UpdateApplicationStatus(ctx context.Context, req *pb
 	var loan models.LoanApplication
 
 	// Fetch the loan application by its ID
-	if err := s.DB.First(&loan, req.LoanApplicationId).Error; err != nil {
-		if err == gorm.ErrRecordNotFound {
-			return nil, status.Error(codes.NotFound, "Loan application not found")
-		}
-		return nil, err
+	if err := s.repo.GetLoanApplicationByID(ctx, uint(req.LoanApplicationId), &loan); err != nil {
+		return nil, errors.New("failed to fetch Loan application")
 	}
 
 	// Update the status and reasoning
 	loan.ApplicationStatus = req.NewStatus
 	loan.Reasoning = req.Reasoning
 
-	if err := s.DB.Save(&loan).Error; err != nil {
-		return nil, err
+	if err := s.repo.UpdateLoanApplication(ctx, &loan); err != nil {
+		return nil, errors.New("failed to Update Loan application")
 	}
 
 	return &pb.UpdateApplicationStatusResponse{
@@ -154,8 +143,8 @@ func (s *LoanServiceServer) GetAllLoanApplications(ctx context.Context, req *pb.
 	var loans []models.LoanApplication
 
 	// Fetch all loan applications
-	if err := s.DB.Preload("User").Find(&loans).Error; err != nil {
-		return nil, err
+	if err := s.repo.GetAllLoanApplications(ctx, &loans); err != nil {
+		return nil, errors.New("failed to fetch all Loan application")
 	}
 
 	var responses []*pb.LoanApplicationResponse

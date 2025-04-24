@@ -44,10 +44,10 @@ func main() {
 	// Run migrations
 	migration.MigrateDatabase(config.DB)
 
-	go kafka.StartEventLoggerConsumer("localhost:9092", "loan-events", repositories.NewEventRepo(config.DB))
+	go kafka.StartEventLoggerConsumer("localhost:9092", "LoanApplicationSubmitted", repositories.NewEventRepo(config.DB))
 
 	// 🔹 Call Experian mock API test
-	testMockExperianAPI()
+	//testMockExperianAPI()
 
 	// err := mockdata.SeedMockData(config.DB)
 	// if err != nil {

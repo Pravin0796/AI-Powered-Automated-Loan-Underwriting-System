@@ -28,7 +28,11 @@ func StartGRPCServer(db *gorm.DB) {
 	userService := services.NewUserService(UserRepo)
 	pb.RegisterUserServiceServer(grpcServer, userService)
 
-	pbs.RegisterLoanServiceServer(grpcServer, &services.LoanServiceServer{DB: db})
+	// Register Loan services
+	LoanRepo := repositories.NewLoanApplicationRepo(db)
+	LoanService := services.NewLoanServiceServer(LoanRepo)
+	pbs.RegisterLoanServiceServer(grpcServer, LoanService)
+
 	//pb.RegisterUserServiceServer(grpcServer, &services.UserServer{})
 	//pb.RegisterPaymentServiceServer(grpcServer, &services.PaymentServer{})
 

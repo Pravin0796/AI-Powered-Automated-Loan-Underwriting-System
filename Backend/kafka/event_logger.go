@@ -6,16 +6,15 @@ import (
 	"context"
 	"encoding/json"
 	"log"
-	"time"
 
 	"github.com/segmentio/kafka-go"
 )
 
-type KafkaEvent struct {
-	EventType string    `json:"event_type"`
-	Payload   string    `json:"payload"` // already in JSON string format
-	Timestamp time.Time `json:"timestamp"`
-}
+// type KafkaEvent struct {
+// 	EventType string    `json:"event_type"`
+// 	Payload   string    `json:"payload"` // already in JSON string format
+// 	Timestamp time.Time `json:"timestamp"`
+// }
 
 func StartEventLoggerConsumer(broker, topic string, repo *repositories.EventRepo) {
 	reader := kafka.NewReader(kafka.ReaderConfig{
@@ -32,7 +31,7 @@ func StartEventLoggerConsumer(broker, topic string, repo *repositories.EventRepo
 			continue
 		}
 
-		var evt KafkaEvent
+		var evt models.Event
 		if err := json.Unmarshal(msg.Value, &evt); err != nil {
 			log.Println("Unmarshal error:", err)
 			continue
