@@ -3,7 +3,6 @@ package main
 import (
 	//"AI-Powered-Automated-Loan-Underwriting-System/cache"
 	"AI-Powered-Automated-Loan-Underwriting-System/config"
-	"AI-Powered-Automated-Loan-Underwriting-System/kafka"
 	"AI-Powered-Automated-Loan-Underwriting-System/migration"
 	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
 

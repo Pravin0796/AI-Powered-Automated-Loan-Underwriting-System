@@ -120,6 +120,12 @@ plt.show()
 print("✅ Accuracy:", accuracy_score(y_test, y_pred))
 print("✅ Classification Report:\n", classification_report(y_test, y_pred))
 
+le_loan_purpose = LabelEncoder().fit(features['loan_purpose'])
+le_employment_status = LabelEncoder().fit(features['employment_status'])
+
+joblib.dump(le_loan_purpose, "le_loan_purpose.pkl")
+joblib.dump(le_employment_status, "le_employment_status.pkl")
+
 # Step 14: Save model
 joblib.dump(model, "loan_model.pkl")
 print("✅ Model saved as loan_model.pkl")
