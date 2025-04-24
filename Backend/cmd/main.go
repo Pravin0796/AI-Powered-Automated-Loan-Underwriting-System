@@ -6,8 +6,10 @@ import (
 	"AI-Powered-Automated-Loan-Underwriting-System/experian"
 	"AI-Powered-Automated-Loan-Underwriting-System/kafka"
 	"AI-Powered-Automated-Loan-Underwriting-System/migration"
-	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
+	"AI-Powered-Automated-Loan-Underwriting-System/models"
 	"fmt"
+	"log"
+	"time"
 
 	//"AI-Powered-Automated-Loan-Underwriting-System/mockdata"
 
@@ -44,8 +46,20 @@ func main() {
 	// Run migrations
 	migration.MigrateDatabase(config.DB)
 
-	go kafka.StartEventLoggerConsumer("localhost:9092", "LoanApplicationSubmitted", repositories.NewEventRepo(config.DB))
+	event := models.Event{
+		EventType: "LoanApplicationSubmitted",
+		Payload:   fmt.Sprintf("{\"loan_id\":%d,\"user_id\":%d,\"status\":\"%s\"}", 1, 1, "PENDING"),
+		Timestamp: time.Now(),
+	}
+	kafkaServer := config.GetKafkaServer()
+	producer := kafka.NewProducer(kafkaServer, "LoanApplicationSubmitted")
+	if err := producer.SendMessage(event); err != nil {
+		log.Printf("Kafka produce error: %v", err)
+	}
 
+	//go kafka.StartEventLoggerConsumer("localhost:9092", "LoanApplicationSubmitted", repositories.NewEventRepo(config.DB))
+	// Start Kafka consumer for LoanApplicationSubmitted
+	go kafka.ConsumeLoanApplications()
 	// 🔹 Call Experian mock API test
 	//testMockExperianAPI()
 

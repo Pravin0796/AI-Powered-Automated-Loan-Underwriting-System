@@ -7,10 +7,13 @@ import numpy as np
 model = joblib.load("loan_model.pkl")
 
 # Label encoding maps (match with training phase)
-label_maps = {
-    'loan_purpose': {'home': 0, 'car': 1, 'business': 2},
-    'employment_status': {'employed': 0, 'self-employed': 1, 'unemployed': 2}
-}
+le_loan_purpose = joblib.load("le_loan_purpose.pkl")
+le_employment_status = joblib.load("le_employment_status.pkl")
+
+# In prediction:
+loan_purpose_encoded = le_loan_purpose.transform([data.loan_purpose.lower()])[0]
+employment_status_encoded = le_employment_status.transform([data.employment_status.lower()])[0]
+
 
 # Define expected input schema
 class LoanInput(BaseModel):

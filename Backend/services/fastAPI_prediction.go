@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// LoanPredictionInput holds the features sent to the ML model
 type LoanPredictionInput struct {
 	LoanAmount          float64 `json:"loan_amount"`
 	LoanPurpose         string  `json:"loan_purpose"`
@@ -22,35 +23,37 @@ type LoanPredictionInput struct {
 	PaymentSuccessRatio float64 `json:"payment_success_ratio"`
 }
 
-func GetLoanDecision(input LoanPredictionInput) (string, error) {
-	// Convert the input struct to JSON
+// LoanDecisionResponse holds the AI decision and reasoning
+type LoanDecisionResponse struct {
+	Decision  string `json:"decision"`  // e.g., "approved", "rejected"
+	Reasoning string `json:"reasoning"` // e.g., "High credit score and low DTI"
+}
+
+// GetLoanDecision sends input to the ML model and returns the result
+func GetLoanDecision(input LoanPredictionInput) (*LoanDecisionResponse, error) {
 	jsonData, err := json.Marshal(input)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	// Send POST request to FastAPI backend
 	resp, err := http.Post("http://localhost:8000/predict", "application/json", bytes.NewBuffer(jsonData))
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	defer resp.Body.Close()
 
-	// Handle HTTP status errors
 	if resp.StatusCode != http.StatusOK {
-		return "", errors.New("prediction API failed with status code: " + resp.Status)
+		return nil, errors.New("prediction API failed with status code: " + resp.Status)
 	}
 
-	// Decode JSON response
-	var res map[string]string
+	var res LoanDecisionResponse
 	if err := json.NewDecoder(resp.Body).Decode(&res); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	decision, ok := res["decision"]
-	if !ok {
-		return "", errors.New("missing 'decision' field in response")
+	if res.Decision == "" {
+		return nil, errors.New("missing 'decision' in ML response")
 	}
 
-	return decision, nil
+	return &res, nil
 }
