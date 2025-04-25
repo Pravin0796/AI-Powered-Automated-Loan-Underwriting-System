@@ -40,6 +40,8 @@ df = df.merge(credit_df, left_on='id_loan', right_on='loan_application_id')
 df = df.merge(decision_df, left_on='id_loan', right_on='loan_application_id')
 df = df.merge(payment_df, left_on='id_loan', right_on='loan_application_id', how='left', suffixes=('', '_payment'))
 
+print("✅ Data merged successfully",df)
+
 # Step 6: Feature engineering from payment history
 df['annual_income'] = df['gross_monthly_income'] * 12
 
@@ -114,8 +116,8 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 y_prob = model.predict_proba(X_test)[:, 1]
 
-plot_importance(model)
-plt.show()
+# plot_importance(model)
+# plt.show()
 
 print("✅ Accuracy:", accuracy_score(y_test, y_pred))
 print("✅ Classification Report:\n", classification_report(y_test, y_pred))
@@ -123,9 +125,9 @@ print("✅ Classification Report:\n", classification_report(y_test, y_pred))
 le_loan_purpose = LabelEncoder().fit(features['loan_purpose'])
 le_employment_status = LabelEncoder().fit(features['employment_status'])
 
-joblib.dump(le_loan_purpose, "le_loan_purpose.pkl")
-joblib.dump(le_employment_status, "le_employment_status.pkl")
+# joblib.dump(le_loan_purpose, "le_loan_purpose.pkl")
+# joblib.dump(le_employment_status, "le_employment_status.pkl")
 
-# Step 14: Save model
-joblib.dump(model, "loan_model.pkl")
-print("✅ Model saved as loan_model.pkl")
+# # Step 14: Save model
+# joblib.dump(model, "loan_model.pkl")
+# print("✅ Model saved as loan_model.pkl")
