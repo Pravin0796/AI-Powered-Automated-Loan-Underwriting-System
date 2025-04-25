@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
-	"time"
 )
 
 func handleLoanApplicationSubmitted(event models.Event) {
@@ -88,20 +87,14 @@ func handleLoanApplicationSubmitted(event models.Event) {
 		return
 	}
 
-	loanDecision := models.LoanDecision{
-		LoanApplicationID: loan.ID,
-		AiDecision:        res.Decision,
-		Reasoning:         res.Reasoning,
-	}
-
-	log.Printf("[DEBUG] Loan decision based on credit score (%d): %t", report.CreditScore, loanDecision)
-
 	// Save loan decision
 	loanDecisionRecord := models.LoanDecision{
 		LoanApplicationID: loan.ID,
-		AiDecision:        loanDecision,
-		Reasoning:         "Credit score evaluation",
+		AiDecision:        res.Decision == "true",
+		Reasoning:         res.Reasoning,
 	}
+	log.Printf("[DEBUG] Loan decision based on credit score (%d): %t", report.CreditScore, loanDecisionRecord.AiDecision)
+
 	if err := config.DB.Create(&loanDecisionRecord).Error; err != nil {
 		log.Printf("[ERROR] Saving loan decision to DB: %v", err)
 		return
@@ -109,23 +102,23 @@ func handleLoanApplicationSubmitted(event models.Event) {
 	log.Println("[DEBUG] Saved loan decision to DB")
 
 	// Publish event
-	event = models.Event{
-		EventType: "LoanEvaluated",
-		Payload:   fmt.Sprintf(`{"loan_id":%d,"user_id":%d,"status":"%s","decision":"%t"}`, loan.ID, loan.UserID, loan.ApplicationStatus, loanDecision),
-		Timestamp: time.Now(),
-	}
+	// event = models.Event{
+	// 	EventType: "LoanEvaluated",
+	// 	Payload:   fmt.Sprintf(`{"loan_id":%d,"user_id":%d,"status":"%s","decision":"%t"}`, loan.ID, loan.UserID, loan.ApplicationStatus, loanDecisionRecord.AiDecision),
+	// 	Timestamp: time.Now(),
+	// }
 
-	kafkaServer := config.GetKafkaServer()
-	log.Printf("[DEBUG] Kafka server: %s", kafkaServer)
+	// kafkaServer := config.GetKafkaServer()
+	// log.Printf("[DEBUG] Kafka server: %s", kafkaServer)
 
-	producer := NewProducer(kafkaServer, kafkaTopic)
-	defer func() {
-		log.Println("[DEBUG] Closing Kafka producer")
-		producer.Close()
-	}()
-	if err := producer.SendMessage(event); err != nil {
-		log.Printf("[ERROR] Publishing loan evaluated event: %v", err)
-	} else {
-		log.Printf("[DEBUG] Published loan evaluated event for loan ID %d", loan.ID)
-	}
+	// producer := NewProducer(kafkaServer, kafkaTopic)
+	// defer func() {
+	// 	log.Println("[DEBUG] Closing Kafka producer")
+	// 	producer.Close()
+	// }()
+	// if err := producer.SendMessage(event); err != nil {
+	// 	log.Printf("[ERROR] Publishing loan evaluated event: %v", err)
+	// } else {
+	// 	log.Printf("[DEBUG] Published loan evaluated event for loan ID %d", loan.ID)
+	// }
 }

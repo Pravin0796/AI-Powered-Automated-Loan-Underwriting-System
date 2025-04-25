@@ -33,7 +33,7 @@ func SeedMockData(db *gorm.DB) error {
 	rand.Seed(time.Now().UnixNano())
 	gofakeit.Seed(time.Now().UnixNano())
 
-	const mockDataSize = 5000
+	const mockDataSize = 10000
 	const batchSize = 1000
 
 	// Step 1: Generate Users

@@ -57,13 +57,17 @@ func main() {
 		log.Printf("Kafka produce error: %v", err)
 	}
 
-	//go kafka.StartEventLoggerConsumer("localhost:9092", "LoanApplicationSubmitted", repositories.NewEventRepo(config.DB))
 	// Start Kafka consumer for LoanApplicationSubmitted
 	go kafka.ConsumeLoanApplications()
+
 	// 🔹 Call Experian mock API test
 	//testMockExperianAPI()
 
 	// err := mockdata.SeedMockData(config.DB)
+	// if err != nil {
+	// 	return
+	// }
+	// err := mockdata.ExportMockDataToCSV(config.DB)
 	// if err != nil {
 	// 	return
 	// }
