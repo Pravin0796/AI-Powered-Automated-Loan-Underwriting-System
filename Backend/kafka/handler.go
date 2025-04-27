@@ -188,11 +188,26 @@ func handleLoanApplicationSubmitted(event models.Event) {
 	}
 	log.Printf("[DEBUG] Loan decision based on credit score (%d): %t", creditReport.CreditScore, loanDecisionRecord.AiDecision)
 
-	if err := config.DB.Create(&loanDecisionRecord).Error; err != nil {
+	tx = config.DB.Begin()
+	if tx.Error != nil {
+		log.Printf("[ERROR] Starting transaction: %v", tx.Error)
+		return
+	}
+	if err := tx.Create(&loanDecisionRecord).Error; err != nil {
 		log.Printf("[ERROR] Saving loan decision to DB: %v", err)
 		return
 	}
 	log.Println("[DEBUG] Saved loan decision to DB")
+
+	// Update loan application status
+	if err := tx.Model(&loan).Where("id = ?", loan.ID).Updates(map[string]interface{}{
+		"application_status": loan.ApplicationStatus,
+		"reasoning":          loanDecisionRecord.Reasoning,
+	}).Error; err != nil {
+		log.Printf("[ERROR] Updating loan application status: %v", err)
+		tx.Rollback()
+		return
+	}
 
 	//Publish event
 	// event = models.Event{

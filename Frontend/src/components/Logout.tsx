@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { removeToken } from "../utils/Auth.ts";
 
-export default function Sidebar() {
+export default function Logout() {
   const navigate = useNavigate();
 
   const handleLogout = () => {

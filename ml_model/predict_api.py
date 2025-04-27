@@ -70,3 +70,8 @@ def predict(data: LoanInput):
     except Exception as e:
         # Handle any exceptions that occur during prediction and return an HTTP error
         raise HTTPException(status_code=500, detail=str(e))
+
+
+
+# commAN to run
+# uvicorn predict_api:app --reload --port 8000

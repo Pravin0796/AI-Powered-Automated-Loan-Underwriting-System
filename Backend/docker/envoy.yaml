@@ -57,8 +57,8 @@ static_resources:
               - endpoint:
                   address:
                     socket_address:
-                      # address: host.docker.internal
-                      address: 172.17.0.1
+                      address: host.docker.internal
+                      # address: 172.17.0.1
                       port_value: 50051
 
 admin:
