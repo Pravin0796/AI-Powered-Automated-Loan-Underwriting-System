@@ -12,14 +12,40 @@ import LoanStatus from "./components/LoanStatus";
 import ApplyLoan from "./components/ApplyLoan";
 import LoanDetailsPage from "./components/ViewLoan";
 import ViewAllLoan from "./components/ViewAllLoan";
+import Dashboard from "./components/Dashboard";
+
+import LoanManagement from "./components/LoanManagement";
+import UserManagement from "./components/UserManagement";
+import Notifications from "./components/Notification";
+import Settings from "./components/Settings";
 
 export default function App() {
+
+  const sampleNotifications = [
+    "Your loan application has been approved!",
+    "Reminder: Complete your KYC verification.",
+    "New loan offer available: Check it out now!",
+  ];
+
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
         <Header />
         <main className="flex-grow mt-15">
-          <Routes>
+
+          {/* <Routes>
+          <Route path="/admin">
+          <Header1/>
+            <Route path="" element={<Sidebar1 />}/>
+            <Route path="/admin/dashboard" element={<Dashboard1 />} />
+            <Route path="/admin/loans" element={<LoanManagement />} />
+            <Route path="/admin/users" element={<UserManagement />} />
+            <Route path="/admin/notifications" element={<Notifications1 />} />
+            <Route path="/admin/settings" element={<Settings1 />} />
+          </Route>
+
+
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/" element={
@@ -63,7 +89,26 @@ export default function App() {
                 // </ProtectedRoute>
               }
             />
-          </Routes>
+          </Routes> */}
+
+<Routes>
+  {/* Public user routes */}
+  <Route path="/dashboard" element={<Dashboard />} />
+  <Route path="/login" element={<Login />} />
+  <Route path="/register" element={<Register />} />
+  <Route path="/" element={<Home />} />
+  <Route path="/viewloan" element={<LoanStatus />} />
+  <Route path="/loan/:id" element={<LoanDetailsPage />} />
+  <Route path="/applyloan" element={<ApplyLoan />} />
+  <Route path="/loan" element={<ViewAllLoan />} />
+  <Route path="/profile" element={<DashboardLayout><Profile /></DashboardLayout>} />
+
+    <Route path="loans" element={<LoanManagement />} />
+    <Route path="users" element={<UserManagement />} />
+    <Route path="notifications" element={<Notifications notifications={sampleNotifications} />} />
+    <Route path="settings" element={<Settings />} />
+</Routes>
+
         </main>
         <Footer />
       </div>

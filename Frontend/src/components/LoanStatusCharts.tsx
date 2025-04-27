@@ -23,7 +23,12 @@ const LoanStatsChart = () => {
     const fetchStats = async () => {
       try {
         const response = await loanClient.GetLoanStats(Empty.create());
-        setStats(response);
+        setStats({
+          total_applications: response.totalApplications || 0,
+          approved: response.approved || 0,
+          rejected: response.rejected || 0,
+          pending: response.pending || 0,
+        });
       } catch (error) {
         console.error("Error fetching stats:", error);
       }

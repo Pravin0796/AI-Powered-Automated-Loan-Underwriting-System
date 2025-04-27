@@ -4,14 +4,16 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"time"
 
+	"AI-Powered-Automated-Loan-Underwriting-System/config"
 	"AI-Powered-Automated-Loan-Underwriting-System/models" // replace with your actual path
 
 	"github.com/segmentio/kafka-go"
 )
 
-const (
-	kafkaBroker = "localhost:9092"           // your Kafka broker
+var (
+	kafkaBroker = config.GetKafkaServer()    // your Kafka broker
 	kafkaTopic  = "LoanApplicationSubmitted" // your topic name
 	kafkaGroup  = "loan-app-consumers"       // consumer group ID
 )
@@ -19,10 +21,13 @@ const (
 func ConsumeLoanApplications() {
 	// Create a Kafka reader with consumer group support
 	reader := kafka.NewReader(kafka.ReaderConfig{
-		Brokers: []string{kafkaBroker},
-		Topic:   kafkaTopic,
-		GroupID: kafkaGroup,
-		Logger:  kafka.LoggerFunc(log.Printf),
+		Brokers:  []string{kafkaBroker},
+		Topic:    kafkaTopic,
+		GroupID:  kafkaGroup,
+		MinBytes: 10e3,
+		MaxBytes: 10e6,
+		MaxWait:  10 * time.Second,
+		Logger:   kafka.LoggerFunc(log.Printf),
 	})
 
 	defer func() {
@@ -49,5 +54,8 @@ func ConsumeLoanApplications() {
 		if event.EventType == "LoanApplicationSubmitted" {
 			handleLoanApplicationSubmitted(event)
 		}
+		// if event.EventType == "LoanEvaluated" {
+		// 	(event)
+		// }
 	}
 }

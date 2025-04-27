@@ -142,30 +142,46 @@ func SeedMockData(db *gorm.DB) error {
 		NumExistingLoans int
 		NumLatePayments  int
 	}
+
 	paymentStats := make(map[uint]PaymentStats)
 	var payments []models.LoanPayment
 
 	for _, app := range persistedApps {
-		numPayments := gofakeit.Number(1, 5)
+		numPayments := gofakeit.Number(1, 5) // Random number of payments per loan
 		lateCount := 0
 
 		for i := 0; i < numPayments; i++ {
-			status := gofakeit.RandomString([]string{"on-time", "late", "missed"})
-			if status == "late" {
+			dueDate := gofakeit.DateRange(time.Now().AddDate(-1, 0, 0), time.Now())
+			paymentDelayDays := gofakeit.Number(-5, 15) // Can be paid early (-5 days) or late (+15 days)
+			paymentDate := dueDate.AddDate(0, 0, paymentDelayDays)
+
+			status := "successful"
+			if paymentDelayDays > 0 {
+				status = "failed" // late payments more likely to fail
 				lateCount++
+			} else if gofakeit.Bool() {
+				status = "successful"
+			} else {
+				status = "pending"
 			}
+
 			payments = append(payments, models.LoanPayment{
 				LoanApplicationID: app.ID,
 				AmountPaid:        gofakeit.Price(100, 500),
-				PaymentDate:       gofakeit.Date(),
+				DueDate:           dueDate,
+				PaymentDate:       paymentDate,
 				Status:            status,
+				CreatedAt:         gofakeit.Date(),
+				UpdatedAt:         time.Now(),
 			})
 		}
+
 		stats := paymentStats[app.UserID]
 		stats.NumExistingLoans++
 		stats.NumLatePayments += lateCount
 		paymentStats[app.UserID] = stats
 	}
+
 	if err := batchInsert(db, payments, batchSize, "loan payments"); err != nil {
 		return err
 	}

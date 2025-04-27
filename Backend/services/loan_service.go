@@ -2,16 +2,15 @@ package services
 
 import (
 	//"AI-Powered-Automated-Loan-Underwriting-System/config"
+	"AI-Powered-Automated-Loan-Underwriting-System/config"
 	pb "AI-Powered-Automated-Loan-Underwriting-System/created_proto/loan"
-	//"AI-Powered-Automated-Loan-Underwriting-System/kafka"
-
-	//"AI-Powered-Automated-Loan-Underwriting-System/kafka"
-
-	//"AI-Powered-Automated-Loan-Underwriting-System/kafka"
+	"AI-Powered-Automated-Loan-Underwriting-System/kafka"
 	"AI-Powered-Automated-Loan-Underwriting-System/models"
 	"AI-Powered-Automated-Loan-Underwriting-System/repositories"
 	"context"
 	"errors"
+	"fmt"
+	"log"
 	"time"
 )
 
@@ -49,16 +48,20 @@ func (s *LoanServiceServer) ApplyForLoan(ctx context.Context, req *pb.LoanReques
 		return nil, errors.New("failed to create Loan application")
 	}
 
-	// event := models.Event{
-	// 	EventType: "LoanApplicationSubmitted",
-	// 	Payload:   fmt.Sprintf(`{"loan_id":%d,"user_id":%d,"status":"%s"}`, loan.ID, loan.UserID, loan.ApplicationStatus),
-	// 	Timestamp: time.Now(),
-	// }
-	// kafkaServer := config.GetKafkaServer()
-	// producer := kafka.NewProducer(kafkaServer, "LoanApplicationSubmitted")
-	// if err := producer.SendMessage(event); err != nil {
-	// 	log.Printf("Kafka produce error: %v", err)
-	// }
+	if err := s.repo.GetLoanApplicationBySSN(ctx, loan.SSN, &loan); err != nil {
+		return nil, errors.New("failed to fetch Loan application")
+	}
+
+	event := models.Event{
+		EventType: "LoanApplicationSubmitted",
+		Payload:   fmt.Sprintf(`{"loan_id":%d,"user_id":%d,"status":"%s"}`, loan.ID, loan.UserID, loan.ApplicationStatus),
+		Timestamp: time.Now(),
+	}
+	kafkaServer := config.GetKafkaServer()
+	producer := kafka.NewProducer(kafkaServer, "LoanApplicationSubmitted")
+	if err := producer.SendMessage(event); err != nil {
+		log.Printf("Kafka produce error: %v", err)
+	}
 
 	return &pb.LoanResponse{
 		LoanId: uint64(loan.ID),

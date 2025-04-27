@@ -38,3 +38,7 @@ func (r *LoanApplicationRepo) DeleteLoanApplication(ctx context.Context, loanID 
 func (r *LoanApplicationRepo) GetAllLoanApplications(ctx context.Context, loanApplications *[]models.LoanApplication) error {
 	return r.DB.WithContext(ctx).Find(&loanApplications).Error
 }
+
+func (r *LoanApplicationRepo) GetLoanApplicationBySSN(ctx context.Context, ssn string, loanApplication *models.LoanApplication) error {
+	return r.DB.WithContext(ctx).Where("ssn = ?", ssn).First(&loanApplication).Error
+}

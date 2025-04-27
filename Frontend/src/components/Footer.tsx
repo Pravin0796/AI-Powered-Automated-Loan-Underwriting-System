@@ -1,5 +1,3 @@
-// src/components/Footer.tsx
-
 const Footer = () => {
   return (
     <footer className="bg-blue-600 text-white py-4">

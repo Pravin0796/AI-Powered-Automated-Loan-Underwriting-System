@@ -1,4 +1,4 @@
-package services
+package ml_model
 
 import (
 	"bytes"
@@ -15,7 +15,7 @@ type LoanPredictionInput struct {
 	AnnualIncome        float64 `json:"annual_income"`
 	DTIRatio            float64 `json:"dti_ratio"`
 	ReportCreditScore   int     `json:"report_credit_score"`
-	UserCreditScore     int     `json:"user_credit_score"`
+	// UserCreditScore     int     `json:"user_credit_score"`
 	DelinquencyFlag     bool    `json:"delinquency_flag"`
 	NumPaymentsMade     int     `json:"num_payments_made"`
 	NumLatePayments     int     `json:"num_late_payments"`
@@ -23,10 +23,10 @@ type LoanPredictionInput struct {
 	PaymentSuccessRatio float64 `json:"payment_success_ratio"`
 }
 
-// LoanDecisionResponse holds the AI decision and reasoning
+// LoanDecisionResponse holds the AI decision
 type LoanDecisionResponse struct {
-	Decision  string `json:"decision"`  // e.g., "approved", "rejected"
-	Reasoning string `json:"reasoning"` // e.g., "High credit score and low DTI"
+	Decision string `json:"decision"` // only decision
+	Reasoning string `json:"reasoning"`
 }
 
 // GetLoanDecision sends input to the ML model and returns the result

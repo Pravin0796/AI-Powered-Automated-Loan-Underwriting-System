@@ -7,7 +7,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="flex h-screen overflow-hidden">
-      <div className={`fixed inset-y-0 left-0 z-30 w-64 bg-white p-4 shadow-md transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:block`}>
+      <div
+        className={`fixed inset-y-0 left-0 z-30 w-64 bg-white p-4 shadow-md transform transition-transform duration-300 ease-in-out ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        } lg:relative lg:translate-x-0`}
+      >
         <Sidebar />
       </div>
       <div className="flex-1 flex flex-col">
@@ -22,4 +26,3 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     </div>
   );
 }
-
