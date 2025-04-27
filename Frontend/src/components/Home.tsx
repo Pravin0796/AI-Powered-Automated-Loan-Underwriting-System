@@ -1,4 +1,16 @@
+import React from 'react';
+import LoadingSpinner from './LoadingSpinner';  
+
 const Home = () => {
+  
+  const [isLoading, setIsLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    setTimeout(() => setIsLoading(false), 2000); // Simulate loading
+  }, []);
+
+  if (isLoading) return <LoadingSpinner />;
+
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-4">Welcome to the Loan Underwriting System</h1>

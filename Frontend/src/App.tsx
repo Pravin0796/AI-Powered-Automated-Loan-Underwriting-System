@@ -13,7 +13,7 @@ import ApplyLoan from "./components/ApplyLoan";
 import LoanDetailsPage from "./components/ViewLoan";
 import ViewAllLoan from "./components/ViewAllLoan";
 import Dashboard from "./components/Dashboard";
-
+import ErrorBoundary from "./components/ErrorBoundary";
 import LoanManagement from "./components/LoanManagement";
 import UserManagement from "./components/UserManagement";
 import Notifications from "./components/Notification";
@@ -29,6 +29,7 @@ export default function App() {
 
   return (
     <Router>
+      <ErrorBoundary>
       <div className="flex flex-col min-h-screen">
         <Header />
         <main className="flex-grow mt-15">
@@ -112,6 +113,7 @@ export default function App() {
         </main>
         <Footer />
       </div>
+      </ErrorBoundary>
     </Router>
   );
 }
