@@ -1,6 +1,6 @@
 const Footer = () => {
   return (
-    <footer className="bg-blue-800 text-white py-6">
+    <footer className="bg-blue-800 z-50 text-white py-3">
       <div className="max-w-6xl mx-auto px-4 text-center">
         <p className="text-sm md:text-base">
           &copy; {new Date().getFullYear()} MyLoanApp. All rights reserved.

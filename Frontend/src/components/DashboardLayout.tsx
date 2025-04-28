@@ -12,9 +12,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
         } lg:relative lg:translate-x-0`}
       >
-        <Sidebar />
+        <Sidebar isOpen={sidebarOpen} />
       </div>
-      <div className="flex-1 flex flex-col">
+      <div
+        className={`flex-1 flex flex-col transition-all duration-300 ${
+          sidebarOpen ? "ml-64" : "ml-0"
+        }`}
+      >
         <header className="flex items-center justify-between p-4 bg-gray-100 shadow-md lg:hidden">
           <button onClick={() => setSidebarOpen(!sidebarOpen)}>
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
