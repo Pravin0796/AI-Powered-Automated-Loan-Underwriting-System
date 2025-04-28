@@ -17,6 +17,7 @@ import UserManagement from "./components/UserManagement";
 import Notifications from "./components/Notification";
 import Settings from "./components/Settings";
 import ProtectedRoute from "./components/ProtectedRoute";
+import ViewCreditPage from "./components/ViewCreditPage";
 
 
 export default function App() {
@@ -42,6 +43,9 @@ export default function App() {
               <Route path="/loan/:id" element={<LoanDetailsPage />} />
               <Route path="/loan-applications" element={<ProtectedRoute><ApplyLoan /></ProtectedRoute>} />
               <Route path="/loan" element={<ViewAllLoan />} />
+              <Route path="/viewcredit" element={<ViewCreditPage />} />
+
+              {/* Protected user routes */}
               <Route
                 path="/profile"
                 element={<DashboardLayout><Profile /></DashboardLayout>}
