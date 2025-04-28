@@ -17,10 +17,10 @@ type LoanPredictionInput struct {
 	ReportCreditScore   int     `json:"report_credit_score"`
 	// UserCreditScore     int     `json:"user_credit_score"`
 	DelinquencyFlag     bool    `json:"delinquency_flag"`
-	NumPaymentsMade     int     `json:"num_payments_made"`
-	NumLatePayments     int     `json:"num_late_payments"`
-	TotalAmountPaid     float64 `json:"total_amount_paid"`
-	PaymentSuccessRatio float64 `json:"payment_success_ratio"`
+	// NumPaymentsMade     int     `json:"num_payments_made"`
+	// NumLatePayments     int     `json:"num_late_payments"`
+	// TotalAmountPaid     float64 `json:"total_amount_paid"`
+	// PaymentSuccessRatio float64 `json:"payment_success_ratio"`
 }
 
 // LoanDecisionResponse holds the AI decision

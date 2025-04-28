@@ -19,10 +19,10 @@ class LoanInput(BaseModel):
     dti_ratio: float
     report_credit_score: int
     delinquency_flag: bool
-    num_payments_made: int
-    num_late_payments: int
-    total_amount_paid: float
-    payment_success_ratio: float
+    # num_payments_made: int
+    # num_late_payments: int
+    # total_amount_paid: float
+    # payment_success_ratio: float
 
 app = FastAPI()
 
@@ -51,10 +51,10 @@ def predict(data: LoanInput):
             data.dti_ratio,
             data.report_credit_score,
             int(data.delinquency_flag),
-            data.num_payments_made,
-            data.num_late_payments,
-            data.total_amount_paid,
-            data.payment_success_ratio
+            # data.num_payments_made,
+            # data.num_late_payments,
+            # data.total_amount_paid,
+            # data.payment_success_ratio
         ]])
 
         # Make the prediction using the trained model

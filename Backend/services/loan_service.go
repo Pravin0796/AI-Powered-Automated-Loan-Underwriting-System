@@ -176,7 +176,7 @@ func (s *LoanServiceServer) GetAllLoanApplications(ctx context.Context, req *pb.
 		})
 	}
 
-	fmt.Println("Fetched all loan applications:", responses)
+	//fmt.Println("Fetched all loan applications:", responses)
 
 	return &pb.LoanApplicationList{
 		Applications: responses,

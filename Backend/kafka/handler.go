@@ -111,56 +111,56 @@ func handleLoanApplicationSubmitted(event models.Event) {
 
 	log.Println("[DEBUG] Transaction committed successfully")
 
-	no_payments_made := 0
-	no_late_payments := 0
-	total_amount_paid := 0.0
-	payment_success_ratio := 0.0
+	// no_payments_made := 0
+	// no_late_payments := 0
+	// total_amount_paid := 0.0
+	// payment_success_ratio := 0.0
 
-	// Fetch past payment history for this user, excluding current loan
-	paymentHistory := []models.LoanPayment{}
-	if err := config.DB.
-		Where("user_id = ? AND loan_application_id != ?", loan.UserID, loan.ID).
-		Find(&paymentHistory).Error; err != nil {
-		log.Printf("[ERROR] Fetching past payment history: %v", err)
-	}
-	log.Printf("[DEBUG] Fetched past payment history for user %d: %+v", loan.UserID, paymentHistory)
+	// // Fetch past payment history for this user, excluding current loan
+	// paymentHistory := []models.LoanPayment{}
+	// if err := config.DB.
+	// 	Where("user_id = ? AND loan_application_id != ?", loan.UserID, loan.ID).
+	// 	Find(&paymentHistory).Error; err != nil {
+	// 	log.Printf("[ERROR] Fetching past payment history: %v", err)
+	// }
+	// log.Printf("[DEBUG] Fetched past payment history for user %d: %+v", loan.UserID, paymentHistory)
 
-	if len(paymentHistory) == 0 {
-		log.Println("[DEBUG] No past payment history found")
-	} else {
-		for _, payment := range paymentHistory {
-			no_payments_made++
-			if payment.Status == "successful" {
-				total_amount_paid += payment.AmountPaid
-			}
-			if payment.PaymentDate.After(payment.DueDate) {
-				no_late_payments++
-			}
-		}
+	// if len(paymentHistory) == 0 {
+	// 	log.Println("[DEBUG] No past payment history found")
+	// } else {
+	// 	for _, payment := range paymentHistory {
+	// 		no_payments_made++
+	// 		if payment.Status == "successful" {
+	// 			total_amount_paid += payment.AmountPaid
+	// 		}
+	// 		if payment.PaymentDate.After(payment.DueDate) {
+	// 			no_late_payments++
+	// 		}
+	// 	}
 
-		if no_payments_made > 0 {
-			payment_success_ratio = total_amount_paid / float64(no_payments_made)
-		} else {
-			payment_success_ratio = 0.0
-		}
-	}
+	// 	if no_payments_made > 0 {
+	// 		payment_success_ratio = total_amount_paid / float64(no_payments_made)
+	// 	} else {
+	// 		payment_success_ratio = 0.0
+	// 	}
+	// }
 
-	log.Printf("[DEBUG] Past payment stats: no_payments_made=%d, no_late_payments=%d, total_amount_paid=%.2f, payment_success_ratio=%.2f",
-		no_payments_made, no_late_payments, total_amount_paid, payment_success_ratio)
+	// log.Printf("[DEBUG] Past payment stats: no_payments_made=%d, no_late_payments=%d, total_amount_paid=%.2f, payment_success_ratio=%.2f",
+	// 	no_payments_made, no_late_payments, total_amount_paid, payment_success_ratio)
 
 	// Decision logic
 	decisionInput := ml_model.LoanPredictionInput{
-		LoanAmount:          loan.LoanAmount,
-		LoanPurpose:         loan.LoanPurpose,
-		EmploymentStatus:    loan.EmploymentStatus,
-		AnnualIncome:        loan.GrossMonthlyIncome * 12,
-		DTIRatio:            loan.DTIRatio,
-		ReportCreditScore:   creditReport.CreditScore,
-		DelinquencyFlag:     creditReport.DelinquencyFlag,
-		NumPaymentsMade:     no_payments_made,
-		NumLatePayments:     no_late_payments,
-		TotalAmountPaid:     total_amount_paid,
-		PaymentSuccessRatio: payment_success_ratio,
+		LoanAmount:        loan.LoanAmount,
+		LoanPurpose:       loan.LoanPurpose,
+		EmploymentStatus:  loan.EmploymentStatus,
+		AnnualIncome:      loan.GrossMonthlyIncome * 12,
+		DTIRatio:          loan.DTIRatio,
+		ReportCreditScore: creditReport.CreditScore,
+		DelinquencyFlag:   creditReport.DelinquencyFlag,
+		// NumPaymentsMade:     no_payments_made,
+		// NumLatePayments:     no_late_payments,
+		// TotalAmountPaid:     total_amount_paid,
+		// PaymentSuccessRatio: payment_success_ratio,
 	}
 
 	res, err := ml_model.GetLoanDecision(decisionInput)
@@ -199,6 +199,13 @@ func handleLoanApplicationSubmitted(event models.Event) {
 	}
 	log.Println("[DEBUG] Saved loan decision to DB")
 
+	if loanDecisionRecord.AiDecision {
+		loan.ApplicationStatus = "APPROVED"
+	} else {
+		loan.ApplicationStatus = "REJECTED"
+	}
+	log.Printf("[DEBUG] Loan application status set to: %s", loan.ApplicationStatus)
+
 	// Update loan application status
 	if err := tx.Model(&loan).Where("id = ?", loan.ID).Updates(map[string]interface{}{
 		"application_status": loan.ApplicationStatus,
@@ -208,6 +215,12 @@ func handleLoanApplicationSubmitted(event models.Event) {
 		tx.Rollback()
 		return
 	}
+
+	tx.Commit()
+	log.Println("[DEBUG] Transaction committed successfully")
+	log.Printf("[DEBUG] Loan application status updated to: %s", loan.ApplicationStatus)
+	log.Printf("[DEBUG] Loan decision saved: %t", loanDecisionRecord.AiDecision)
+	log.Printf("[DEBUG] Reasoning: %s", loanDecisionRecord.Reasoning)
 
 	//Publish event
 	// event = models.Event{

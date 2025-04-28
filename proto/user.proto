@@ -12,6 +12,7 @@ service UserService {
   rpc GetUserDetails (UserDetailsRequest) returns (UserDetailsResponse);
   rpc UpdateUserDetails (UserUpdateRequest) returns (UserUpdateResponse);
   rpc GetUserCreditScore (UserCreditScoreRequest) returns (UserCreditScoreResponse);
+  rpc GetAllUsers (Empty) returns (userList);
 }
 
 message RegisterRequest {
@@ -52,6 +53,13 @@ message UserDetailsResponse {
   google.protobuf.Timestamp created_at = 7;
   google.protobuf.Timestamp updated_at = 8;
   int32 status = 9;
+  uint64 user_id = 10;
+}
+
+message Empty {}
+
+message userList{
+  repeated UserDetailsResponse users = 1;
 }
 
 message UserUpdateRequest {

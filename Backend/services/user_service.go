@@ -145,3 +145,30 @@ func (s *UserService) UpdateUserDetails(ctx context.Context, req *pb.UserUpdateR
 		Status:  200,
 	}, nil
 }
+
+// GetAllUsers retrieves all users
+func (s *UserService) GetAllUsers(ctx context.Context, req *pb.Empty) (*pb.UserList, error) {
+	var users []models.User
+	if err := s.repo.GetAllUsers(ctx, &users); err != nil {
+		return nil, errors.New("failed to fetch users")
+	}
+
+	// fmt.Println(users)
+
+	var userResponses []*pb.UserDetailsResponse
+	for _, user := range users {
+		userResponses = append(userResponses, &pb.UserDetailsResponse{
+			UserId:      uint64(user.ID),
+			FullName:    user.FullName,
+			Email:       user.Email,
+			Phone:       user.Phone,
+			Address:     user.Address,
+			DateOfBirth: timestamppb.New(user.DateOfBirth),
+			Status:      200,
+		})
+	}
+
+	return &pb.UserList{
+		Users: userResponses,
+	}, nil
+}
