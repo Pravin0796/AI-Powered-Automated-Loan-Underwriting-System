@@ -23,7 +23,7 @@ type LoanServiceClient interface {
 	GetLoanApplicationDetails(ctx context.Context, in *LoanApplicationRequest, opts ...grpc.CallOption) (*LoanApplicationResponse, error)
 	GetAllLoanApplications(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*LoanApplicationList, error)
 	UpdateApplicationStatus(ctx context.Context, in *UpdateApplicationStatusRequest, opts ...grpc.CallOption) (*UpdateApplicationStatusResponse, error)
-	GetLoanStats(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*LoanStatsResponse, error)
+	GetLoanStatusCount(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*LoanStatsResponse, error)
 }
 
 type loanServiceClient struct {
@@ -79,9 +79,9 @@ func (c *loanServiceClient) UpdateApplicationStatus(ctx context.Context, in *Upd
 	return out, nil
 }
 
-func (c *loanServiceClient) GetLoanStats(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*LoanStatsResponse, error) {
+func (c *loanServiceClient) GetLoanStatusCount(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*LoanStatsResponse, error) {
 	out := new(LoanStatsResponse)
-	err := c.cc.Invoke(ctx, "/loan.LoanService/GetLoanStats", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/loan.LoanService/GetLoanStatusCount", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ type LoanServiceServer interface {
 	GetLoanApplicationDetails(context.Context, *LoanApplicationRequest) (*LoanApplicationResponse, error)
 	GetAllLoanApplications(context.Context, *Empty) (*LoanApplicationList, error)
 	UpdateApplicationStatus(context.Context, *UpdateApplicationStatusRequest) (*UpdateApplicationStatusResponse, error)
-	GetLoanStats(context.Context, *Empty) (*LoanStatsResponse, error)
+	GetLoanStatusCount(context.Context, *Empty) (*LoanStatsResponse, error)
 	mustEmbedUnimplementedLoanServiceServer()
 }
 
@@ -120,8 +120,8 @@ func (UnimplementedLoanServiceServer) GetAllLoanApplications(context.Context, *E
 func (UnimplementedLoanServiceServer) UpdateApplicationStatus(context.Context, *UpdateApplicationStatusRequest) (*UpdateApplicationStatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateApplicationStatus not implemented")
 }
-func (UnimplementedLoanServiceServer) GetLoanStats(context.Context, *Empty) (*LoanStatsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetLoanStats not implemented")
+func (UnimplementedLoanServiceServer) GetLoanStatusCount(context.Context, *Empty) (*LoanStatsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLoanStatusCount not implemented")
 }
 func (UnimplementedLoanServiceServer) mustEmbedUnimplementedLoanServiceServer() {}
 
@@ -226,20 +226,20 @@ func _LoanService_UpdateApplicationStatus_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
-func _LoanService_GetLoanStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _LoanService_GetLoanStatusCount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(Empty)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(LoanServiceServer).GetLoanStats(ctx, in)
+		return srv.(LoanServiceServer).GetLoanStatusCount(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/loan.LoanService/GetLoanStats",
+		FullMethod: "/loan.LoanService/GetLoanStatusCount",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoanServiceServer).GetLoanStats(ctx, req.(*Empty))
+		return srv.(LoanServiceServer).GetLoanStatusCount(ctx, req.(*Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -272,8 +272,8 @@ var LoanService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _LoanService_UpdateApplicationStatus_Handler,
 		},
 		{
-			MethodName: "GetLoanStats",
-			Handler:    _LoanService_GetLoanStats_Handler,
+			MethodName: "GetLoanStatusCount",
+			Handler:    _LoanService_GetLoanStatusCount_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

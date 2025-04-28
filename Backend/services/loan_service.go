@@ -182,3 +182,19 @@ func (s *LoanServiceServer) GetAllLoanApplications(ctx context.Context, req *pb.
 		Applications: responses,
 	}, nil
 }
+
+// GetLoanstatus retrieves the status of a loan application
+func (s *LoanServiceServer) GetLoanStatusCount(ctx context.Context, req *pb.Empty) (*pb.LoanStatsResponse, error) {
+	// Fetch loan statistics
+	totalApplications, approved, rejected, pending, err := s.repo.GetLoanStatistics(ctx)
+	if err != nil {
+		return nil, errors.New("failed to retrieve loan statistics")
+	}
+
+	return &pb.LoanStatsResponse{
+		TotalApplications: uint32(totalApplications),
+		Approved:          uint32(approved),
+		Rejected:          uint32(rejected),
+		Pending:           uint32(pending),
+	}, nil
+}

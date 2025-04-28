@@ -1276,7 +1276,7 @@ export interface LoanService {
     request: DeepPartial<UpdateApplicationStatusRequest>,
     metadata?: grpc.Metadata,
   ): Promise<UpdateApplicationStatusResponse>;
-  GetLoanStats(request: DeepPartial<Empty>, metadata?: grpc.Metadata): Promise<LoanStatsResponse>;
+  GetLoanStatusCount(request: DeepPartial<Empty>, metadata?: grpc.Metadata): Promise<LoanStatsResponse>;
 }
 
 export class LoanServiceClientImpl implements LoanService {
@@ -1289,7 +1289,7 @@ export class LoanServiceClientImpl implements LoanService {
     this.GetLoanApplicationDetails = this.GetLoanApplicationDetails.bind(this);
     this.GetAllLoanApplications = this.GetAllLoanApplications.bind(this);
     this.UpdateApplicationStatus = this.UpdateApplicationStatus.bind(this);
-    this.GetLoanStats = this.GetLoanStats.bind(this);
+    this.GetLoanStatusCount = this.GetLoanStatusCount.bind(this);
   }
 
   ApplyForLoan(request: DeepPartial<LoanRequest>, metadata?: grpc.Metadata): Promise<LoanResponse> {
@@ -1326,8 +1326,8 @@ export class LoanServiceClientImpl implements LoanService {
     );
   }
 
-  GetLoanStats(request: DeepPartial<Empty>, metadata?: grpc.Metadata): Promise<LoanStatsResponse> {
-    return this.rpc.unary(LoanServiceGetLoanStatsDesc, Empty.fromPartial(request), metadata);
+  GetLoanStatusCount(request: DeepPartial<Empty>, metadata?: grpc.Metadata): Promise<LoanStatsResponse> {
+    return this.rpc.unary(LoanServiceGetLoanStatusCountDesc, Empty.fromPartial(request), metadata);
   }
 }
 
@@ -1448,8 +1448,8 @@ export const LoanServiceUpdateApplicationStatusDesc: UnaryMethodDefinitionish = 
   } as any,
 };
 
-export const LoanServiceGetLoanStatsDesc: UnaryMethodDefinitionish = {
-  methodName: "GetLoanStats",
+export const LoanServiceGetLoanStatusCountDesc: UnaryMethodDefinitionish = {
+  methodName: "GetLoanStatusCount",
   service: LoanServiceDesc,
   requestStream: false,
   responseStream: false,

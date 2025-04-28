@@ -20,7 +20,6 @@ func batchInsert[T any](db *gorm.DB, data []T, batchSize int, label string) erro
 			end = len(data)
 		}
 
-		// ✅ Fix: Copy chunk to a temporary slice so we can take its address
 		chunk := data[i:end]
 		if err := db.Create(&chunk).Error; err != nil {
 			return fmt.Errorf("failed to insert batch for %s: %w", label, err)
@@ -56,7 +55,7 @@ func SeedMockData(db *gorm.DB) error {
 		return err
 	}
 
-	// Re-fetch user IDs to ensure they are populated
+	// Re-fetch inserted Users
 	var persistedUsers []models.User
 	if err := db.Find(&persistedUsers).Error; err != nil {
 		return fmt.Errorf("failed to fetch inserted users: %w", err)
@@ -67,13 +66,13 @@ func SeedMockData(db *gorm.DB) error {
 		userMap[user.ID] = user
 	}
 
-	// Step 2: LoanApplications
+	// Step 2: Generate LoanApplications
 	var applications []models.LoanApplication
 	for _, user := range persistedUsers {
 		loanAmount := gofakeit.Price(5000, 100000)
 		grossIncome := gofakeit.Price(3000, 10000)
 		debtPayment := gofakeit.Price(500, 3000)
-		dti := (debtPayment / grossIncome)
+		dti := debtPayment / grossIncome
 
 		applications = append(applications, models.LoanApplication{
 			UserID:                  user.ID,
@@ -86,24 +85,24 @@ func SeedMockData(db *gorm.DB) error {
 			TotalMonthlyDebtPayment: debtPayment,
 			DTIRatio:                dti,
 			ApplicationStatus:       "PENDING",
-			Reasoning:               gofakeit.Sentence(10),
-			CreditReportFetched:     true,
-			ExperianRequestID:       gofakeit.UUID(),
-			CreditScore:             user.CreditScore,
+			CreditReportFetched:     false,
+			ExperianRequestID:       "",
+			CreditScore:             0,
+			Reasoning:               "",
 		})
 	}
 	if err := batchInsert(db, applications, batchSize, "loan applications"); err != nil {
 		return err
 	}
 
-	// Fetch back applications with IDs
+	// Re-fetch LoanApplications
 	var persistedApps []models.LoanApplication
 	if err := db.Find(&persistedApps).Error; err != nil {
 		return fmt.Errorf("failed to fetch applications: %w", err)
 	}
 
+	// Step 3: Generate CreditReports and Update LoanApplications
 	reportMap := make(map[uint]models.CreditReport)
-	var reports []models.CreditReport
 	for _, app := range persistedApps {
 		reportData, _ := json.Marshal(map[string]interface{}{
 			"tradelines": []map[string]interface{}{
@@ -122,98 +121,76 @@ func SeedMockData(db *gorm.DB) error {
 			"multipleSSN":       gofakeit.Bool(),
 		})
 
+		fakeCreditScore := gofakeit.Number(500, 850)
+
 		report := models.CreditReport{
 			UserID:            app.UserID,
 			LoanApplicationID: app.ID,
 			ReportData:        datatypes.JSON(reportData),
-			CreditScore:       app.CreditScore,
+			CreditScore:       fakeCreditScore,
 			FraudIndicators:   datatypes.JSON(fraudIndicators),
 			DelinquencyFlag:   gofakeit.Bool(),
 		}
-		reports = append(reports, report)
 		reportMap[app.ID] = report
+
+		// Update LoanApplication with fake Experian details
+		if err := db.Model(&models.LoanApplication{}).Where("id = ?", app.ID).Updates(map[string]interface{}{
+			"credit_report_fetched": true,
+			"experian_request_id":   gofakeit.UUID(),
+			"credit_score":          fakeCreditScore,
+		}).Error; err != nil {
+			return fmt.Errorf("failed to update loan application after experian generation: %w", err)
+		}
+	}
+
+	// Insert CreditReports
+	var reports []models.CreditReport
+	for _, r := range reportMap {
+		reports = append(reports, r)
 	}
 	if err := batchInsert(db, reports, batchSize, "credit reports"); err != nil {
 		return err
 	}
 
-	// Step 4: LoanPayments
-	type PaymentStats struct {
-		NumExistingLoans int
-		NumLatePayments  int
-	}
-
-	paymentStats := make(map[uint]PaymentStats)
-	var payments []models.LoanPayment
-
-	for _, app := range persistedApps {
-		numPayments := gofakeit.Number(1, 5) // Random number of payments per loan
-		lateCount := 0
-
-		for i := 0; i < numPayments; i++ {
-			dueDate := gofakeit.DateRange(time.Now().AddDate(-1, 0, 0), time.Now())
-			paymentDelayDays := gofakeit.Number(-5, 15) // Can be paid early (-5 days) or late (+15 days)
-			paymentDate := dueDate.AddDate(0, 0, paymentDelayDays)
-
-			status := "successful"
-			if paymentDelayDays > 0 {
-				status = "failed" // late payments more likely to fail
-				lateCount++
-			} else if gofakeit.Bool() {
-				status = "successful"
-			} else {
-				status = "pending"
-			}
-
-			payments = append(payments, models.LoanPayment{
-				LoanApplicationID: app.ID,
-				AmountPaid:        gofakeit.Price(100, 500),
-				DueDate:           dueDate,
-				PaymentDate:       paymentDate,
-				Status:            status,
-				CreatedAt:         gofakeit.Date(),
-				UpdatedAt:         time.Now(),
-			})
-		}
-
-		stats := paymentStats[app.UserID]
-		stats.NumExistingLoans++
-		stats.NumLatePayments += lateCount
-		paymentStats[app.UserID] = stats
-	}
-
-	if err := batchInsert(db, payments, batchSize, "loan payments"); err != nil {
-		return err
-	}
-
-	// Step 5: LoanDecisions
-	var decisions []models.LoanDecision
+	// Step 4: Generate LoanDecisions and Update LoanApplications
 	for _, app := range persistedApps {
 		user := userMap[app.UserID]
 		report := reportMap[app.ID]
-		stats := paymentStats[app.UserID]
 
 		approve := false
 		reason := ""
-		if user.CreditScore >= 650 && app.DTIRatio <= 0.35 && !report.DelinquencyFlag && stats.NumLatePayments <= 1 {
+		if user.CreditScore >= 650 && app.DTIRatio <= 0.35 && !report.DelinquencyFlag {
 			approve = true
-			reason = "Meets all criteria: High credit score, low DTI, good history"
+			reason = "Meets all criteria: High credit score, low DTI, no delinquency"
 		} else {
-			reason = fmt.Sprintf("CreditScore=%d, DTI=%.2f, Delinquent=%v, LatePayments=%d",
-				user.CreditScore, app.DTIRatio, report.DelinquencyFlag, stats.NumLatePayments)
+			reason = fmt.Sprintf("CreditScore=%d, DTI=%.2f, Delinquent=%v", user.CreditScore, app.DTIRatio, report.DelinquencyFlag)
 		}
 
-		decisions = append(decisions, models.LoanDecision{
+		// Insert LoanDecision
+		decision := models.LoanDecision{
 			LoanApplicationID: app.ID,
 			AiDecision:        approve,
 			Reasoning:         reason,
 			CreatedAt:         time.Now(),
-		})
-	}
-	if err := batchInsert(db, decisions, batchSize, "loan decisions"); err != nil {
-		return err
+		}
+		if err := db.Create(&decision).Error; err != nil {
+			return fmt.Errorf("failed to insert loan decision: %w", err)
+		}
+
+		// Update LoanApplication with Decision Status
+		status := "REJECTED"
+		if approve {
+			status = "APPROVED"
+		}
+
+		if err := db.Model(&models.LoanApplication{}).Where("id = ?", app.ID).Updates(map[string]interface{}{
+			"application_status": status,
+			"reasoning":           reason,
+		}).Error; err != nil {
+			return fmt.Errorf("failed to update loan application after decision: %w", err)
+		}
 	}
 
-	fmt.Println("✅ Successfully seeded 5000 mock data records.")
+	fmt.Println("✅ Successfully seeded mock data and updated loan applications.")
 	return nil
 }

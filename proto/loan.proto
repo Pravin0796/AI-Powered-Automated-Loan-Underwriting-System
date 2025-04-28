@@ -10,7 +10,7 @@ service LoanService {
   rpc GetLoanApplicationDetails (LoanApplicationRequest) returns (LoanApplicationResponse);
   rpc GetAllLoanApplications(Empty) returns (LoanApplicationList);
   rpc UpdateApplicationStatus(UpdateApplicationStatusRequest) returns (UpdateApplicationStatusResponse);
-  rpc GetLoanStats(Empty) returns (LoanStatsResponse);
+  rpc GetLoanStatusCount (Empty) returns (LoanStatsResponse);
 }
 
 message LoanRequest {
@@ -85,3 +85,4 @@ message LoanStatsResponse {
   uint32 rejected = 3;
   uint32 pending = 4;
 }
+

@@ -22,7 +22,7 @@ const LoanStatsChart = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await loanClient.GetLoanStats(Empty.create());
+        const response = await loanClient.GetLoanStatusCount(Empty.create());
         setStats({
           total_applications: response.totalApplications || 0,
           approved: response.approved || 0,

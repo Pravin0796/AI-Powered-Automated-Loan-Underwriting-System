@@ -87,19 +87,6 @@ func ExportToCSV(filename string, data interface{}, headers []string) error {
 				return fmt.Errorf("failed to write credit report record to CSV: %w", err)
 			}
 		}
-	case []models.LoanPayment:
-		for _, record := range v {
-			if err := writer.Write([]string{
-				fmt.Sprintf("%d", record.ID),
-				fmt.Sprintf("%d", record.LoanApplicationID),
-				fmt.Sprintf("%.2f", record.AmountPaid),
-				record.PaymentDate.Format(time.RFC3339),
-				record.DueDate.Format(time.RFC3339),
-				record.Status,
-			}); err != nil {
-				return fmt.Errorf("failed to write loan payment record to CSV: %w", err)
-			}
-		}
 	case []models.LoanDecision:
 		for _, record := range v {
 			if err := writer.Write([]string{
@@ -143,18 +130,6 @@ func ExportMockDataToCSV(db *gorm.DB) error {
 		return fmt.Errorf("failed to fetch credit reports: %w", err)
 	}
 	if err := ExportToCSV("credit_reports.csv", creditReports, []string{"ID", "UserID", "LoanApplicationID", "ReportData", "CreditScore", "FraudIndicators", "DelinquencyFlag"}); err != nil {
-		return err
-	}
-
-	var loanPayments []models.LoanPayment
-	if err := db.Find(&loanPayments).Error; err != nil {
-		return fmt.Errorf("failed to fetch loan payments: %w", err)
-	}
-
-	// Now also export DueDate
-	if err := ExportToCSV("loan_payments.csv", loanPayments, []string{
-		"ID", "LoanApplicationID", "AmountPaid", "PaymentDate", "DueDate", "Status",
-	}); err != nil {
 		return err
 	}
 
