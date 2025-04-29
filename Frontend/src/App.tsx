@@ -31,6 +31,8 @@ export default function App() {
     "New loan offer available: Check it out now!",
   ];
 
+  
+
   return (
     <Router>
       <ErrorBoundary>
@@ -44,7 +46,7 @@ export default function App() {
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/faq" element={<FAQ />} />
 
-              <Route element={<ProtectedRoute allowedRoles={["user", "Admin"]} />}>
+              <Route element={<ProtectedRoute allowedRoles={["user", "admin"]} />}>
                 <Route path="/loan-applications" element={<ApplyLoan />} />
                 <Route path="/loan-status" element={<LoanStatus />} />
                 <Route path="/loan/:id" element={<LoanDetailsPage />} />
@@ -54,7 +56,7 @@ export default function App() {
                 <Route path="/settings" element={<Settings />} />
               </Route>
 
-              <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
+              <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/loans" element={<LoanManagement />} />
                 <Route path="/users" element={<UserManagement />} />

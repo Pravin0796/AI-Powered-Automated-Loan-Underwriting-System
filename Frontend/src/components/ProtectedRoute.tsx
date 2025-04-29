@@ -10,7 +10,6 @@ type ProtectedRouteProps = {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
   const tokenValid = unAuthorized(); // Check if token is present
   const role = getUserRole(); // Get user role from token
-  console.log("Role:", role);
 
   if (!tokenValid || (allowedRoles && !allowedRoles.includes(role))) {
     toast.error("You are not authorized to access this page.");

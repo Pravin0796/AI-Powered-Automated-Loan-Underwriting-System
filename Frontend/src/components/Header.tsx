@@ -26,9 +26,9 @@ const Header = () => {
           <Link to="/loan-applications" className="hover:text-gray-300">
             ApplyLoan
           </Link>
-          <Link to="/analytics" className="hover:text-gray-300">
+          {/* <Link to="/analytics" className="hover:text-gray-300">
             Analytics
-          </Link>
+          </Link> */}
           <Link to="/login" className="hover:text-gray-300">
             Login
           </Link>
@@ -55,9 +55,9 @@ const Header = () => {
           <Link to="/loan-applications" className="block px-4 py-2 hover:bg-blue-600 rounded">
             ApplyLoan
           </Link>
-          <Link to="/analytics" className="block px-4 py-2 hover:bg-blue-600 rounded">
+          {/* <Link to="/analytics" className="block px-4 py-2 hover:bg-blue-600 rounded">
             Analytics
-          </Link>
+          </Link> */}
           <Link to="/login" className="block px-4 py-2 hover:bg-blue-600 rounded">
             Login
           </Link>

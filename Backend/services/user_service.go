@@ -41,7 +41,6 @@ func (s *UserService) Register(ctx context.Context, req *pb.RegisterRequest) (*p
 		DateOfBirth: req.DateOfBirth.AsTime(), // Convert string to time if needed
 		Address:     req.Address,
 	}
-	user.Role = "Admin"
 
 	if err := s.repo.CreateUser(ctx, user); err != nil {
 		return nil, errors.New("failed to create user")
@@ -64,7 +63,7 @@ func (s *UserService) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 		fmt.Println("Password mismatch:", err)
 		return nil, errors.New("invalid email or password")
 	}
-	fmt.Println("User found:", user)
+	
 	token, err := utils.GenerateJWT(user.ID, user.Email, user.Role)
 	if err != nil {
 		return nil, errors.New("failed to generate token")
