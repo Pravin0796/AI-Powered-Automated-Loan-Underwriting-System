@@ -5,7 +5,6 @@ import (
 	"AI-Powered-Automated-Loan-Underwriting-System/config"
 	"AI-Powered-Automated-Loan-Underwriting-System/experian"
 	"AI-Powered-Automated-Loan-Underwriting-System/migration"
-	"AI-Powered-Automated-Loan-Underwriting-System/mockdata"
 	"fmt"
 
 	//"AI-Powered-Automated-Loan-Underwriting-System/mockdata"
@@ -60,14 +59,14 @@ func main() {
 	// 🔹 Call Experian mock API test
 	//testMockExperianAPI()
 
-	err := mockdata.SeedMockData(config.DB)
-	if err != nil {
-		return
-	}
-	err = mockdata.ExportMockDataToCSV(config.DB)
-	if err != nil {
-		return
-	}
+	// err := mockdata.SeedMockData(config.DB)
+	// if err != nil {
+	// 	return
+	// }
+	// err = mockdata.ExportMockDataToCSV(config.DB)
+	// if err != nil {
+	// 	return
+	// }
 	//decision, err := services.GetLoanDecision()
 	//if err != nil {
 	//	return

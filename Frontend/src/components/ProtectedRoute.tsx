@@ -1,17 +1,45 @@
-import { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
-import { getToken } from "../utils/Auth";
+import React from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { getUserRole, unAuthorized } from "../utils/Auth"; // Import role utility functions
+import { toast } from 'react-toastify';
 
-interface ProtectedRouteProps {
-  children: ReactNode;
-}
+type ProtectedRouteProps = {
+  allowedRoles?: string[]; 
+};
 
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const token = getToken(); // Replace with sessionStorage if needed
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ allowedRoles }) => {
+  const tokenValid = unAuthorized(); // Check if token is present
+  const role = getUserRole(); // Get user role from token
+  console.log("Role:", role);
 
-  if (!token) {
+  if (!tokenValid || (allowedRoles && !allowedRoles.includes(role))) {
+    toast.error("You are not authorized to access this page.");
     return <Navigate to="/login" replace />;
   }
 
-  return <>{children}</>; // Wrapping children in a fragment
-}
+  return <Outlet />;
+};
+
+export default ProtectedRoute;
+
+
+
+// import { ReactNode } from "react";
+// import { Navigate } from "react-router-dom";
+// import { getToken } from "../utils/Auth";
+
+// interface ProtectedRouteProps {
+//   children: ReactNode;
+// }
+
+// export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+//   const token = getToken(); // Replace with sessionStorage if needed
+
+//   if (!token) {
+//     return <Navigate to="/login" replace />;
+//   }
+
+//   return <>{children}</>; // Wrapping children in a fragment
+// }
+
+

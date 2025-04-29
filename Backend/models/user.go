@@ -15,7 +15,8 @@ type User struct {
 	Phone       string         `gorm:"type:varchar(20);uniqueIndex;not null" json:"phone"`
 	DateOfBirth time.Time      `json:"date_of_birth"`
 	Address     string         `gorm:"type:text" json:"address"`
-	CreditScore int            `gorm:"default:0" json:"credit_score"` // Default credit score
+	Role        string         `gorm:"type:varchar(20);default:'USER'" json:"role"` // Default role is USER
+	CreditScore int            `gorm:"default:0" json:"credit_score"`               // Default credit score
 	CreatedAt   time.Time      `gorm:"autoCreateTime" json:"created_at"`
 	UpdatedAt   time.Time      `gorm:"autoUpdateTime" json:"updated_at"`
 	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"` // Soft delete

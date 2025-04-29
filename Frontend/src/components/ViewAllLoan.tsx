@@ -3,24 +3,35 @@ import { loanClient } from "../services/Grpc";
 import { LoanApplicationResponse } from "../proto/loan";
 import { Loader2 } from "lucide-react";
 
-export default function AllLoanApplicationsDashboard() {
+interface Props {
+  currentPage: number;
+  setTotalPages: (totalPages: number) => void;
+}
+
+export default function ViewAllLoans({ currentPage, setTotalPages }: Props) {
   const [applications, setApplications] = useState<LoanApplicationResponse[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchApplications() {
       try {
-        const response = await loanClient.GetAllLoanApplications({});
+        setLoading(true);
+        const response = await loanClient.GetAllLoanApplications({
+          page: currentPage,
+          limit: 10,
+        });
         console.log("Fetched applications:", response);
         setApplications(response.applications || []);
+        setTotalPages(response.totalPages || 1);
       } catch (err) {
         console.error("Error fetching applications:", err);
       } finally {
         setLoading(false);
       }
     }
+
     fetchApplications();
-  }, []);
+  }, [currentPage]);
 
   if (loading) {
     return (
@@ -45,7 +56,6 @@ export default function AllLoanApplicationsDashboard() {
             <th className="px-4 py-2">Status</th>
             <th className="px-4 py-2">Score</th>
             <th className="px-4 py-2">Reasoning</th>
-            <th className="px-4 py-2">Updated</th>
           </tr>
         </thead>
         <tbody>
@@ -61,7 +71,6 @@ export default function AllLoanApplicationsDashboard() {
               <td className="px-4 py-2">{app.applicationStatus}</td>
               <td className="px-4 py-2">{app.creditScore}</td>
               <td className="px-4 py-2">{app.reasoning}</td>
-              <td className="px-4 py-2">{app.createdAt?.split("T")[0]}</td>
             </tr>
           ))}
         </tbody>

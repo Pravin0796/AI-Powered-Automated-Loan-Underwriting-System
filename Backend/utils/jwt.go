@@ -2,9 +2,10 @@ package utils
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
 	"os"
 	"time"
+
+	"github.com/joho/godotenv"
 
 	"github.com/golang-jwt/jwt/v4"
 )
@@ -32,12 +33,12 @@ type Claims struct {
 }
 
 // Generate JWT Token
-func GenerateJWT(userID uint, email string) (string, error) {
+func GenerateJWT(userID uint, email string, role string) (string, error) {
 	expirationTime := time.Now().Add(24 * time.Hour)
 	claims := &Claims{
 		UserID: userID,
 		Email:  email,
-		Role:   "user", // Default role, can be changed as needed
+		Role:   role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expirationTime),
 		},

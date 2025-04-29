@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { loanClient } from "../services/Grpc";
 import { Empty } from "../proto/loan";
 import {

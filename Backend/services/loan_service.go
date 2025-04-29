@@ -144,12 +144,25 @@ func (s *LoanServiceServer) UpdateApplicationStatus(ctx context.Context, req *pb
 }
 
 // GetAllLoanApplications retrieves all loan applications
-func (s *LoanServiceServer) GetAllLoanApplications(ctx context.Context, req *pb.Empty) (*pb.LoanApplicationList, error) {
-	var loans []models.LoanApplication
+func (s *LoanServiceServer) GetAllLoanApplications(ctx context.Context, req *pb.GetAllLoanApplicationsRequest) (*pb.GetAllLoanApplicationsResponse, error) {
+	var totalCount int64
+	if err := s.repo.CountLoanApplications(ctx, &totalCount); err != nil {
+		return nil, errors.New("failed to count Loan applications")
+	}
 
-	// Fetch all loan applications
-	if err := s.repo.GetAllLoanApplications(ctx, &loans); err != nil {
-		return nil, errors.New("failed to fetch all Loan application")
+	limit := int(req.Limit)
+	if limit <= 0 {
+		limit = 10
+	}
+	page := int(req.Page)
+	if page <= 0 {
+		page = 1
+	}
+	offset := (page - 1) * limit
+
+	var loans []models.LoanApplication
+	if err := s.repo.GetPaginatedLoanApplications(ctx, limit, offset, &loans); err != nil {
+		return nil, errors.New("failed to fetch paginated Loan applications")
 	}
 
 	var responses []*pb.LoanApplicationResponse
@@ -176,10 +189,11 @@ func (s *LoanServiceServer) GetAllLoanApplications(ctx context.Context, req *pb.
 		})
 	}
 
-	//fmt.Println("Fetched all loan applications:", responses)
+	totalPages := int32((totalCount + int64(limit) - 1) / int64(limit))
 
-	return &pb.LoanApplicationList{
+	return &pb.GetAllLoanApplicationsResponse{
 		Applications: responses,
+		TotalPages:   totalPages,
 	}, nil
 }
 

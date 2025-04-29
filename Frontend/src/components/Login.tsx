@@ -18,7 +18,7 @@ const Login = () => {
       const res = await loginUser(form);
       if (!res.token) throw new Error("Invalid login credentials");
       setToken(res.token);
-      navigate("/dashboard");
+      navigate("/profile");
     } catch (err) {
       if (err instanceof Error) {
         alert(err.message || "Login failed. Please try again.");

@@ -35,3 +35,12 @@ export const getUserRole = () => {
     }
     return null;
 }
+
+export const unAuthorized = () => {
+    const token = getToken();
+    if (token) {
+        console.log("Token is present");
+        return true;
+    }
+    return false;
+}

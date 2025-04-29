@@ -1,25 +1,28 @@
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import DashboardLayout from "./components/DashboardLayout";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Profile from "./components/Profile";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
 import LoanStatus from "./components/LoanStatus";
 import ApplyLoan from "./components/ApplyLoan";
-import LoanDetailsPage from "./components/ViewLoan";
-import ViewAllLoan from "./components/ViewAllLoan";
+import LoanDetailsPage from "./components/LoanDetailsPage";
+// import ViewAllLoan from "./components/ViewAllLoan";
 import Dashboard from "./components/Dashboard";
 import ErrorBoundary from "./components/ErrorBoundary";
 import LoanManagement from "./components/LoanManagement";
 import UserManagement from "./components/UserManagement";
 import Notifications from "./components/Notification";
 import Settings from "./components/Settings";
-// import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 import ViewCreditPage from "./components/ViewCreditPage";
-import { getUserRole } from "./utils/Auth"; // Assuming this function gets the token
-
+import FAQ from "./components/FAQ";
+import ContactUs from "./components/ContactUs";
 
 export default function App() {
   const sampleNotifications = [
@@ -28,8 +31,6 @@ export default function App() {
     "New loan offer available: Check it out now!",
   ];
 
-  const userRole = getUserRole(); // Get user role from token
-
   return (
     <Router>
       <ErrorBoundary>
@@ -37,53 +38,40 @@ export default function App() {
           <Header />
           <main className="flex-grow mt-15">
             <Routes>
-              {/* Public Routes */}
-              <Route path="/" element={<Home />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
-              <Route path="/viewloan" element={<LoanStatus />} />
-              <Route path="/loan/:id" element={<LoanDetailsPage />} />
-              <Route path="/loan" element={<ViewAllLoan />} />
-              <Route path="/viewcredit" element={<ViewCreditPage />} />
+              <Route path="/" element={<Home />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/faq" element={<FAQ />} />
 
-              {/* Protected Routes - User only */}
-              {userRole === "user" && (
-                <>
-                  <Route
-                    path="/profile"
-                    element={<DashboardLayout><Profile /></DashboardLayout>}
-                  />
-                  <Route
-                    path="/loan-applications"
-                    element={<DashboardLayout><ApplyLoan /></DashboardLayout>}
-                  />
-                  <Route
-                    path="/notifications"
-                    element={<Notifications notifications={sampleNotifications} />}
-                  />
-                </>
-              )}
+              <Route element={<ProtectedRoute allowedRoles={["user", "Admin"]} />}>
+                <Route path="/loan-applications" element={<ApplyLoan />} />
+                <Route path="/loan-status" element={<LoanStatus />} />
+                <Route path="/loan/:id" element={<LoanDetailsPage />} />
+                <Route path="/viewcredit" element={<ViewCreditPage />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/notifications" element={<Notifications notifications={sampleNotifications} />} />
+                <Route path="/settings" element={<Settings />} />
+              </Route>
 
-              {/* Protected Routes - Admin only */}
-              {userRole === "admin" && (
-                <>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route
-                    path="/loans"
-                    element={<LoanManagement />}
-                  />
-                  <Route
-                    path="/users"
-                    element={<UserManagement />}
-                  />
-                  <Route path="/settings" element={<Settings />} />
-                </>
-              )}
+              <Route element={<ProtectedRoute allowedRoles={["Admin"]} />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/loans" element={<LoanManagement />} />
+                <Route path="/users" element={<UserManagement />} />
+              </Route>
             </Routes>
           </main>
           <Footer />
+          <ToastContainer />
         </div>
       </ErrorBoundary>
     </Router>
   );
 }
+
+
+{/* <Route element={<ProtectedRoute allowedRoles={["customer", "manager", "admin"]} />}>
+<Route>
+
+  <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+<Route> */}

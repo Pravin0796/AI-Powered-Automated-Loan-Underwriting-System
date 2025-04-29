@@ -71,8 +71,14 @@ export interface LoanApplicationResponse {
 export interface Empty {
 }
 
-export interface LoanApplicationList {
+export interface GetAllLoanApplicationsRequest {
+  page: number;
+  limit: number;
+}
+
+export interface GetAllLoanApplicationsResponse {
   applications: LoanApplicationResponse[];
+  totalPages: number;
 }
 
 export interface UpdateApplicationStatusRequest {
@@ -940,31 +946,42 @@ export const Empty: MessageFns<Empty> = {
   },
 };
 
-function createBaseLoanApplicationList(): LoanApplicationList {
-  return { applications: [] };
+function createBaseGetAllLoanApplicationsRequest(): GetAllLoanApplicationsRequest {
+  return { page: 0, limit: 0 };
 }
 
-export const LoanApplicationList: MessageFns<LoanApplicationList> = {
-  encode(message: LoanApplicationList, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
-    for (const v of message.applications) {
-      LoanApplicationResponse.encode(v!, writer.uint32(10).fork()).join();
+export const GetAllLoanApplicationsRequest: MessageFns<GetAllLoanApplicationsRequest> = {
+  encode(message: GetAllLoanApplicationsRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.page !== 0) {
+      writer.uint32(8).int32(message.page);
+    }
+    if (message.limit !== 0) {
+      writer.uint32(16).int32(message.limit);
     }
     return writer;
   },
 
-  decode(input: BinaryReader | Uint8Array, length?: number): LoanApplicationList {
+  decode(input: BinaryReader | Uint8Array, length?: number): GetAllLoanApplicationsRequest {
     const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
     let end = length === undefined ? reader.len : reader.pos + length;
-    const message = createBaseLoanApplicationList();
+    const message = createBaseGetAllLoanApplicationsRequest();
     while (reader.pos < end) {
       const tag = reader.uint32();
       switch (tag >>> 3) {
         case 1: {
-          if (tag !== 10) {
+          if (tag !== 8) {
             break;
           }
 
-          message.applications.push(LoanApplicationResponse.decode(reader, reader.uint32()));
+          message.page = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.limit = reader.int32();
           continue;
         }
       }
@@ -976,28 +993,113 @@ export const LoanApplicationList: MessageFns<LoanApplicationList> = {
     return message;
   },
 
-  fromJSON(object: any): LoanApplicationList {
+  fromJSON(object: any): GetAllLoanApplicationsRequest {
     return {
-      applications: globalThis.Array.isArray(object?.applications)
-        ? object.applications.map((e: any) => LoanApplicationResponse.fromJSON(e))
-        : [],
+      page: isSet(object.page) ? globalThis.Number(object.page) : 0,
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : 0,
     };
   },
 
-  toJSON(message: LoanApplicationList): unknown {
+  toJSON(message: GetAllLoanApplicationsRequest): unknown {
     const obj: any = {};
-    if (message.applications?.length) {
-      obj.applications = message.applications.map((e) => LoanApplicationResponse.toJSON(e));
+    if (message.page !== 0) {
+      obj.page = Math.round(message.page);
+    }
+    if (message.limit !== 0) {
+      obj.limit = Math.round(message.limit);
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<LoanApplicationList>, I>>(base?: I): LoanApplicationList {
-    return LoanApplicationList.fromPartial(base ?? ({} as any));
+  create<I extends Exact<DeepPartial<GetAllLoanApplicationsRequest>, I>>(base?: I): GetAllLoanApplicationsRequest {
+    return GetAllLoanApplicationsRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<LoanApplicationList>, I>>(object: I): LoanApplicationList {
-    const message = createBaseLoanApplicationList();
+  fromPartial<I extends Exact<DeepPartial<GetAllLoanApplicationsRequest>, I>>(
+    object: I,
+  ): GetAllLoanApplicationsRequest {
+    const message = createBaseGetAllLoanApplicationsRequest();
+    message.page = object.page ?? 0;
+    message.limit = object.limit ?? 0;
+    return message;
+  },
+};
+
+function createBaseGetAllLoanApplicationsResponse(): GetAllLoanApplicationsResponse {
+  return { applications: [], totalPages: 0 };
+}
+
+export const GetAllLoanApplicationsResponse: MessageFns<GetAllLoanApplicationsResponse> = {
+  encode(message: GetAllLoanApplicationsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.applications) {
+      LoanApplicationResponse.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.totalPages !== 0) {
+      writer.uint32(16).int32(message.totalPages);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetAllLoanApplicationsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetAllLoanApplicationsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.applications.push(LoanApplicationResponse.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.totalPages = reader.int32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetAllLoanApplicationsResponse {
+    return {
+      applications: globalThis.Array.isArray(object?.applications)
+        ? object.applications.map((e: any) => LoanApplicationResponse.fromJSON(e))
+        : [],
+      totalPages: isSet(object.totalPages) ? globalThis.Number(object.totalPages) : 0,
+    };
+  },
+
+  toJSON(message: GetAllLoanApplicationsResponse): unknown {
+    const obj: any = {};
+    if (message.applications?.length) {
+      obj.applications = message.applications.map((e) => LoanApplicationResponse.toJSON(e));
+    }
+    if (message.totalPages !== 0) {
+      obj.totalPages = Math.round(message.totalPages);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetAllLoanApplicationsResponse>, I>>(base?: I): GetAllLoanApplicationsResponse {
+    return GetAllLoanApplicationsResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<GetAllLoanApplicationsResponse>, I>>(
+    object: I,
+  ): GetAllLoanApplicationsResponse {
+    const message = createBaseGetAllLoanApplicationsResponse();
     message.applications = object.applications?.map((e) => LoanApplicationResponse.fromPartial(e)) || [];
+    message.totalPages = object.totalPages ?? 0;
     return message;
   },
 };
@@ -1271,7 +1373,10 @@ export interface LoanService {
     request: DeepPartial<LoanApplicationRequest>,
     metadata?: grpc.Metadata,
   ): Promise<LoanApplicationResponse>;
-  GetAllLoanApplications(request: DeepPartial<Empty>, metadata?: grpc.Metadata): Promise<LoanApplicationList>;
+  GetAllLoanApplications(
+    request: DeepPartial<GetAllLoanApplicationsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<GetAllLoanApplicationsResponse>;
   UpdateApplicationStatus(
     request: DeepPartial<UpdateApplicationStatusRequest>,
     metadata?: grpc.Metadata,
@@ -1311,8 +1416,15 @@ export class LoanServiceClientImpl implements LoanService {
     );
   }
 
-  GetAllLoanApplications(request: DeepPartial<Empty>, metadata?: grpc.Metadata): Promise<LoanApplicationList> {
-    return this.rpc.unary(LoanServiceGetAllLoanApplicationsDesc, Empty.fromPartial(request), metadata);
+  GetAllLoanApplications(
+    request: DeepPartial<GetAllLoanApplicationsRequest>,
+    metadata?: grpc.Metadata,
+  ): Promise<GetAllLoanApplicationsResponse> {
+    return this.rpc.unary(
+      LoanServiceGetAllLoanApplicationsDesc,
+      GetAllLoanApplicationsRequest.fromPartial(request),
+      metadata,
+    );
   }
 
   UpdateApplicationStatus(
@@ -1409,12 +1521,12 @@ export const LoanServiceGetAllLoanApplicationsDesc: UnaryMethodDefinitionish = {
   responseStream: false,
   requestType: {
     serializeBinary() {
-      return Empty.encode(this).finish();
+      return GetAllLoanApplicationsRequest.encode(this).finish();
     },
   } as any,
   responseType: {
     deserializeBinary(data: Uint8Array) {
-      const value = LoanApplicationList.decode(data);
+      const value = GetAllLoanApplicationsResponse.decode(data);
       return {
         ...value,
         toObject() {

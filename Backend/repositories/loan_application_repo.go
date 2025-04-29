@@ -73,3 +73,15 @@ func (r *LoanApplicationRepo) GetLoanStatistics(ctx context.Context) (totalAppli
 func (r *LoanApplicationRepo) GetLoanApplicationBySSN(ctx context.Context, ssn string, loanApplication *models.LoanApplication) error {
 	return r.DB.WithContext(ctx).Where("ssn = ?", ssn).First(&loanApplication).Error
 }
+
+func (r *LoanApplicationRepo) CountLoanApplications(ctx context.Context, total *int64) error {
+	return r.DB.WithContext(ctx).Model(&models.LoanApplication{}).Count(total).Error
+}
+
+func (r *LoanApplicationRepo) GetPaginatedLoanApplications(ctx context.Context, limit, offset int, loans *[]models.LoanApplication) error {
+	return r.DB.WithContext(ctx).
+		Preload("User").
+		Limit(limit).
+		Offset(offset).
+		Find(loans).Error
+}

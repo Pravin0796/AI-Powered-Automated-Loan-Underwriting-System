@@ -4,14 +4,15 @@ import { loanClient } from "../services/Grpc";
 import { LoanApplicationResponse } from "../proto/loan";
 
 const LoanDetailsPage = () => {
-const { loanId } = useParams();
+  const { id } = useParams<{ id: string }>();
+  const parsedLoanId = id ? parseInt(id) : undefined;
   const [loanDetails, setLoanDetails] = useState<LoanApplicationResponse | null>(null);
   const [loading, setLoading] = useState(true);
-
+  console.log("hello")
   useEffect(() => {
-    if (loanId) {
-        console.log("Fetching loan details for ID:", loanId);
-      loanClient.GetLoanApplicationDetails({ loanId: Number(loanId) })
+    if (parsedLoanId !== undefined && !isNaN(parsedLoanId)) {
+      console.log("Fetching loan details for ID:", parsedLoanId);
+      loanClient.GetLoanApplicationDetails({ loanId: parsedLoanId })
         .then((res) => {
           setLoanDetails(res);
           setLoading(false);
@@ -21,7 +22,7 @@ const { loanId } = useParams();
           setLoading(false);
         });
     }
-  }, [loanId]);
+  }, [parsedLoanId]);
 
   if (loading) {
     return <div className="text-center mt-8">Loading...</div>;
@@ -36,7 +37,7 @@ const { loanId } = useParams();
       <h1 className="text-2xl font-semibold mb-4 text-center">Loan Application Details</h1>
       <div className="bg-white shadow-lg rounded-lg p-6 space-y-4">
         <div><strong>Loan ID:</strong> {loanDetails.loanId}</div>
-        <div><strong>User ID:</strong> {loanDetails.userName}</div>
+        <div><strong>User Name:</strong> {loanDetails.userName}</div>
         <div><strong>SSN:</strong> {loanDetails.ssn}</div>
         <div><strong>Address Area:</strong> {loanDetails.addressArea}</div>
         <div><strong>Loan Amount:</strong> ${loanDetails.loanAmount}</div>
@@ -48,8 +49,8 @@ const { loanId } = useParams();
         <div><strong>Status:</strong> <span className="font-medium text-blue-600">{loanDetails.applicationStatus}</span></div>
         <div><strong>Credit Score:</strong> {loanDetails.creditScore}</div>
         <div><strong>Reasoning:</strong> {loanDetails.reasoning}</div>
-        <div><strong>Created At:</strong> {loanDetails.createdAt}</div>
-        <div><strong>Updated At:</strong> {loanDetails.updatedAt}</div>
+        {/* <div><strong>Created At:</strong> {loanDetails.createdAt}</div>
+        <div><strong>Updated At:</strong> {loanDetails.updatedAt}</div> */}
       </div>
     </div>
   );

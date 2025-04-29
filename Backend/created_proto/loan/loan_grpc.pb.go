@@ -21,7 +21,7 @@ type LoanServiceClient interface {
 	ApplyForLoan(ctx context.Context, in *LoanRequest, opts ...grpc.CallOption) (*LoanResponse, error)
 	GetLoanStatus(ctx context.Context, in *LoanStatusRequest, opts ...grpc.CallOption) (*LoanStatusResponse, error)
 	GetLoanApplicationDetails(ctx context.Context, in *LoanApplicationRequest, opts ...grpc.CallOption) (*LoanApplicationResponse, error)
-	GetAllLoanApplications(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*LoanApplicationList, error)
+	GetAllLoanApplications(ctx context.Context, in *GetAllLoanApplicationsRequest, opts ...grpc.CallOption) (*GetAllLoanApplicationsResponse, error)
 	UpdateApplicationStatus(ctx context.Context, in *UpdateApplicationStatusRequest, opts ...grpc.CallOption) (*UpdateApplicationStatusResponse, error)
 	GetLoanStatusCount(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*LoanStatsResponse, error)
 }
@@ -61,8 +61,8 @@ func (c *loanServiceClient) GetLoanApplicationDetails(ctx context.Context, in *L
 	return out, nil
 }
 
-func (c *loanServiceClient) GetAllLoanApplications(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*LoanApplicationList, error) {
-	out := new(LoanApplicationList)
+func (c *loanServiceClient) GetAllLoanApplications(ctx context.Context, in *GetAllLoanApplicationsRequest, opts ...grpc.CallOption) (*GetAllLoanApplicationsResponse, error) {
+	out := new(GetAllLoanApplicationsResponse)
 	err := c.cc.Invoke(ctx, "/loan.LoanService/GetAllLoanApplications", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -95,7 +95,7 @@ type LoanServiceServer interface {
 	ApplyForLoan(context.Context, *LoanRequest) (*LoanResponse, error)
 	GetLoanStatus(context.Context, *LoanStatusRequest) (*LoanStatusResponse, error)
 	GetLoanApplicationDetails(context.Context, *LoanApplicationRequest) (*LoanApplicationResponse, error)
-	GetAllLoanApplications(context.Context, *Empty) (*LoanApplicationList, error)
+	GetAllLoanApplications(context.Context, *GetAllLoanApplicationsRequest) (*GetAllLoanApplicationsResponse, error)
 	UpdateApplicationStatus(context.Context, *UpdateApplicationStatusRequest) (*UpdateApplicationStatusResponse, error)
 	GetLoanStatusCount(context.Context, *Empty) (*LoanStatsResponse, error)
 	mustEmbedUnimplementedLoanServiceServer()
@@ -114,7 +114,7 @@ func (UnimplementedLoanServiceServer) GetLoanStatus(context.Context, *LoanStatus
 func (UnimplementedLoanServiceServer) GetLoanApplicationDetails(context.Context, *LoanApplicationRequest) (*LoanApplicationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetLoanApplicationDetails not implemented")
 }
-func (UnimplementedLoanServiceServer) GetAllLoanApplications(context.Context, *Empty) (*LoanApplicationList, error) {
+func (UnimplementedLoanServiceServer) GetAllLoanApplications(context.Context, *GetAllLoanApplicationsRequest) (*GetAllLoanApplicationsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetAllLoanApplications not implemented")
 }
 func (UnimplementedLoanServiceServer) UpdateApplicationStatus(context.Context, *UpdateApplicationStatusRequest) (*UpdateApplicationStatusResponse, error) {
@@ -191,7 +191,7 @@ func _LoanService_GetLoanApplicationDetails_Handler(srv interface{}, ctx context
 }
 
 func _LoanService_GetAllLoanApplications_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+	in := new(GetAllLoanApplicationsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -203,7 +203,7 @@ func _LoanService_GetAllLoanApplications_Handler(srv interface{}, ctx context.Co
 		FullMethod: "/loan.LoanService/GetAllLoanApplications",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(LoanServiceServer).GetAllLoanApplications(ctx, req.(*Empty))
+		return srv.(LoanServiceServer).GetAllLoanApplications(ctx, req.(*GetAllLoanApplicationsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }

@@ -8,7 +8,7 @@ service LoanService {
   rpc ApplyForLoan (LoanRequest) returns (LoanResponse);
   rpc GetLoanStatus (LoanStatusRequest) returns (LoanStatusResponse);
   rpc GetLoanApplicationDetails (LoanApplicationRequest) returns (LoanApplicationResponse);
-  rpc GetAllLoanApplications(Empty) returns (LoanApplicationList);
+  rpc GetAllLoanApplications(GetAllLoanApplicationsRequest) returns (GetAllLoanApplicationsResponse);
   rpc UpdateApplicationStatus(UpdateApplicationStatusRequest) returns (UpdateApplicationStatusResponse);
   rpc GetLoanStatusCount (Empty) returns (LoanStatsResponse);
 }
@@ -65,8 +65,14 @@ message LoanApplicationResponse {
 
 message Empty {}
 
-message LoanApplicationList {
+message GetAllLoanApplicationsRequest {
+  int32 page = 1;
+  int32 limit = 2;
+}
+
+message GetAllLoanApplicationsResponse {
   repeated LoanApplicationResponse applications = 1;
+  int32 totalPages = 2;
 }
 
 message UpdateApplicationStatusRequest {

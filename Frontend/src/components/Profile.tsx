@@ -50,7 +50,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-lg rounded-lg text-gray-800">
+    <div className="p-6 max-w-4xl mx-auto bg-gray-50 shadow-lg rounded-lg text-gray-800 mt-15">
       <h1 className="text-2xl font-bold mb-4">My Profile</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div>

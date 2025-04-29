@@ -1,15 +1,15 @@
-import React from 'react';
+// import React from 'react';
 import { Link } from 'react-router-dom'; // For navigation
-import LoadingSpinner from './LoadingSpinner';
+// import LoadingSpinner from './LoadingSpinner';
 
 const Home = () => {
-  const [isLoading, setIsLoading] = React.useState(true);
+  // const [isLoading, setIsLoading] = React.useState(true);
 
-  React.useEffect(() => {
-    setTimeout(() => setIsLoading(false), 2000); // Simulate loading
-  }, []);
+  // React.useEffect(() => {
+  //   setTimeout(() => setIsLoading(false), 100); // Simulate loading
+  // }, []);
 
-  if (isLoading) return <LoadingSpinner />;
+  // if (isLoading) return <LoadingSpinner />;
 
   return (
     <div className="p-6 sm:p-12 bg-gray-50 min-h-screen">
