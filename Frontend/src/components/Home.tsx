@@ -13,8 +13,8 @@ const Home = () => {
 
   return (
     <div className="p-6 sm:p-12 bg-gray-50 min-h-screen">
-      <h1 className="text-3xl sm:text-4xl font-bold text-blue-700 mb-6">Welcome to the Loan Underwriting System</h1>
-      <p className="text-lg text-gray-700 mb-6">
+      <h1 className="text-3xl sm:text-4xl font-bold text-center text-blue-700 mb-6">Welcome to the Loan Underwriting System</h1>
+      <p className="text-lg text-gray-700 text-center mb-6">
         This platform allows users to apply for loans, track their applications, and manage their profiles.
       </p>
 
@@ -45,6 +45,7 @@ const Home = () => {
         </div>
       </div>
 
+      {/* <hr className='mt-15 border'/> */}
       {/* Additional Information Section */}
       <div className="mt-12">
         <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4">How it Works</h2>
